@@ -18,31 +18,36 @@ class _NavigationControllerState extends State<NavigationController> {
   final List<Widget> _pages = [
     const HomePage(),
     const SocialPage(),
-    const PublishPage(),
+    PublishPage(),
     const MessagePage(),
     const ArchiveProfilePage(),
   ];
 
-  final List<BottomNavigationBarItem> _items = [
+  final List<BottomNavigationBarItem> _items = const [
     BottomNavigationBarItem(
-      icon: Icon(Icons.archive),
+      icon: Icon(Icons.home_outlined),
+      activeIcon: Icon(Icons.home),
       label: '首页',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.people),
+      icon: Icon(Icons.people_alt_outlined),
+      activeIcon: Icon(Icons.people),
       label: '社交',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.add_circle),
+      icon: Icon(Icons.pets),
+      activeIcon: Icon(Icons.pets),
       label: '发布',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.message),
+      icon: Icon(Icons.chat_bubble_outline),
+      activeIcon: Icon(Icons.chat_bubble),
       label: '消息',
     ),
     BottomNavigationBarItem(
-      icon: Icon(Icons.person),
-      label: '个人、档案',
+      icon: Icon(Icons.person_outline),
+      activeIcon: Icon(Icons.person),
+      label: '档案',
     ),
   ];
 
@@ -52,17 +57,34 @@ class _NavigationControllerState extends State<NavigationController> {
     });
   }
 
+  bool _handlePopIntent() {
+    if (_currentIndex != 0) {
+      setState(() => _currentIndex = 0);
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _pages[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: _items,
-        currentIndex: _currentIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blue,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
+    return PopScope(
+      canPop: _currentIndex == 0,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _handlePopIntent();
+      },
+      child: Scaffold(
+        body: _pages[_currentIndex],
+        bottomNavigationBar: BottomNavigationBar(
+          items: _items,
+          currentIndex: _currentIndex,
+          onTap: _onItemTapped,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          type: BottomNavigationBarType.fixed,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+        ),
       ),
     );
   }

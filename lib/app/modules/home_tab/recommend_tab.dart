@@ -13,8 +13,33 @@ class _RecommendTabState extends State<RecommendTab> {
   final PageController _heroController = PageController(viewportFraction: 0.9);
   int _currentHeroIndex = 0;
   Timer? _heroTimer;
+  bool _userInteractingCarousel = false;
 
-  final List<String> _petCategories = ['全部', '狗狗', '猫咪', '小宠', '医疗', '美容', '训练', '救助'];
+  final List<_HeroCard> _heroCards = const [
+    _HeroCard(
+      title: '周末和Ta去公园',
+      subtitle: '附近遛狗路线推荐',
+      emoji: '🐕',
+      start: Color(0xFF8EC5FC),
+      end: Color(0xFFE0C3FC),
+    ),
+    _HeroCard(
+      title: '宠物健康小测',
+      subtitle: '3分钟评估健康状况',
+      emoji: '🏥',
+      start: Color(0xFFFFF1A1),
+      end: Color(0xFFFFC8A5),
+    ),
+    _HeroCard(
+      title: '萌宠摄影挑战',
+      subtitle: '参与话题赢好礼',
+      emoji: '📸',
+      start: Color(0xFFA1FFCE),
+      end: Color(0xFFFAD0C4),
+    ),
+  ];
+
+  final List<String> _petCategories = ['全部', '医疗', '美容', '训练', '救助'];
   String _selectedPetCategory = '全部';
   final List<_QuickAction> _quickActions = const [
     _QuickAction(icon: Icons.park, label: '附近公园', color: AppTheme.successColor),
@@ -41,7 +66,8 @@ class _RecommendTabState extends State<RecommendTab> {
     _heroTimer = Timer.periodic(const Duration(seconds: 4), (_) {
       if (!mounted) return;
       if (!_heroController.hasClients) return;
-      final next = (_currentHeroIndex + 1) % 3;
+      if (_userInteractingCarousel) return;
+      final next = (_currentHeroIndex + 1) % _heroCards.length;
       _heroController.animateToPage(
         next,
         duration: const Duration(milliseconds: 450),
@@ -64,6 +90,11 @@ class _RecommendTabState extends State<RecommendTab> {
         _buildDailyTipCard(),
         const SizedBox(height: 16),
         ...List.generate(10, (index) {
+          final List<String> images = List.generate(
+            (index % 9) + 1,
+            (i) => 'https://picsum.photos/seed/${index}_${i}/400/400',
+          );
+          final bool isVideo = index % 4 == 0;
           return _buildContentCard(
             title: '推荐内容  ${index + 1}',
             content: '这是一个有趣的推荐内容，包含了用户可能感兴趣的信息...（宠物主题强化版）',
@@ -71,6 +102,8 @@ class _RecommendTabState extends State<RecommendTab> {
             likes: (index + 1) * 12,
             comments: (index + 1) * 4,
             isLiked: index % 3 == 0,
+            images: isVideo ? const [] : images,
+            videoThumb: isVideo ? 'https://picsum.photos/seed/video_$index/800/450' : null,
           );
         }),
       ],
@@ -78,63 +111,92 @@ class _RecommendTabState extends State<RecommendTab> {
   }
 
   Widget _buildHeroCarousel() {
-    final List<_HeroCard> cards = const [
-      _HeroCard(title: '周末和Ta去公园', subtitle: '附近遛狗路线推荐', emoji: '🐕', start: Color(0xFF8EC5FC), end: Color(0xFFE0C3FC)),
-      _HeroCard(title: '宠物健康小测', subtitle: '3分钟评估健康状况', emoji: '🏥', start: Color(0xFFFFF1A1), end: Color(0xFFFFC8A5)),
-      _HeroCard(title: '萌宠摄影挑战', subtitle: '参与话题赢好礼', emoji: '📸', start: Color(0xFFA1FFCE), end: Color(0xFFFAD0C4)),
-    ];
     return SizedBox(
       height: 170,
       child: Stack(
         children: [
-          PageView.builder(
-            controller: _heroController,
-            itemCount: cards.length,
-            onPageChanged: (i) => setState(() => _currentHeroIndex = i),
-            itemBuilder: (context, index) {
-              final c = cards[index];
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [c.start, c.end],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: AppTheme.elevatedShadow,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(c.title, style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w700)),
-                            const SizedBox(height: 6),
-                            Text(c.subtitle, style: const TextStyle(color: Colors.black54, fontSize: 14)),
-                            const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.85),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text('了解更多', style: TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(c.emoji, style: const TextStyle(fontSize: 64)),
-                    ],
-                  ),
-                ),
-              );
+          GestureDetector(
+            onPanDown: (_) {
+              _userInteractingCarousel = true;
+              _heroTimer?.cancel();
             },
+            onPanEnd: (_) {
+              _userInteractingCarousel = false;
+              _startHeroAutoPlay();
+            },
+            child: PageView.builder(
+              controller: _heroController,
+              itemCount: _heroCards.length,
+              onPageChanged: (i) {
+                setState(() => _currentHeroIndex = i);
+                _heroTimer?.cancel();
+                _startHeroAutoPlay();
+              },
+              itemBuilder: (context, index) {
+                final c = _heroCards[index];
+                return AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [c.start, c.end],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: AppTheme.elevatedShadow,
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                c.title,
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                c.subtitle,
+                                style: const TextStyle(
+                                  color: Colors.black54,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 10),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.85),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: const Text(
+                                  '了解更多',
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(c.emoji, style: const TextStyle(fontSize: 64)),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
           Positioned(
             left: 0,
@@ -142,10 +204,123 @@ class _RecommendTabState extends State<RecommendTab> {
             bottom: 8,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (i) => _buildDot(i == _currentHeroIndex)),
+              children: List.generate(
+                _heroCards.length,
+                (i) => _buildDot(i == _currentHeroIndex),
+              ),
             ),
-          )
+          ),
+          // 左右分页按钮
+          Positioned(
+            left: 4,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _pagerButton(
+                icon: Icons.chevron_left,
+                onTap: () {
+                  final prev = (_currentHeroIndex - 1 + _heroCards.length) % _heroCards.length;
+                  _heroTimer?.cancel();
+                  _heroController.animateToPage(
+                    prev,
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOut,
+                  );
+                  setState(() => _currentHeroIndex = prev);
+                  _startHeroAutoPlay();
+                },
+              ),
+            ),
+          ),
+          Positioned(
+            right: 4,
+            top: 0,
+            bottom: 0,
+            child: Center(
+              child: _pagerButton(
+                icon: Icons.chevron_right,
+                onTap: () {
+                  final next = (_currentHeroIndex + 1) % _heroCards.length;
+                  _heroTimer?.cancel();
+                  _heroController.animateToPage(
+                    next,
+                    duration: const Duration(milliseconds: 350),
+                    curve: Curves.easeOut,
+                  );
+                  setState(() => _currentHeroIndex = next);
+                  _startHeroAutoPlay();
+                },
+              ),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _pagerButton({required IconData icon, required VoidCallback onTap}) {
+    return Material(
+      color: Colors.white.withValues(alpha: 0.8),
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Icon(icon, size: 20, color: Colors.black54),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoThumb(String url) {
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(
+            aspectRatio: 16 / 9,
+            child: Image.network(url, fit: BoxFit.cover),
+          ),
+        ),
+        Positioned.fill(
+          child: Center(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.35),
+                shape: BoxShape.circle,
+              ),
+              padding: const EdgeInsets.all(10),
+              child: const Icon(Icons.play_arrow, color: Colors.white, size: 30),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMediaGrid(List<String> images) {
+    final int count = images.length.clamp(1, 9);
+    final List<String> items = images.take(count).toList();
+    int crossAxisCount = count == 1 ? 1 : count <= 4 ? 2 : 3;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: crossAxisCount,
+          crossAxisSpacing: 4,
+          mainAxisSpacing: 4,
+        ),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final img = items[index];
+          return Container(
+            color: Colors.grey[200],
+            child: Image.network(img, fit: BoxFit.cover),
+          );
+        },
       ),
     );
   }
@@ -185,7 +360,11 @@ class _RecommendTabState extends State<RecommendTab> {
               ),
               child: Text(
                 c,
-                style: TextStyle(color: selected ? Colors.white : AppTheme.textPrimaryColor, fontSize: 12, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: selected ? Colors.white : AppTheme.textPrimaryColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           );
@@ -212,13 +391,16 @@ class _RecommendTabState extends State<RecommendTab> {
                     Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        color: qa.color.withOpacity(0.12),
+                        color: qa.color.withValues(alpha: 0.12),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(qa.icon, color: qa.color, size: 22),
                     ),
                     const SizedBox(height: 8),
-                    Text(qa.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                    Text(
+                      qa.label,
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                    ),
                   ],
                 ),
               ),
@@ -254,15 +436,14 @@ class _RecommendTabState extends State<RecommendTab> {
                 children: [
                   Text('今日小知识', style: AppTheme.subheadingStyle.copyWith(fontSize: 16)),
                   const SizedBox(height: 4),
-                  Text('夏季遛狗尽量避开正午时段，随身携带饮水，注意地面温度，避免烫伤肉垫。',
-                      style: AppTheme.captionStyle.copyWith(color: AppTheme.textPrimaryColor)),
+                  Text(
+                    '夏季遛狗尽量避开正午时段，随身携带饮水，注意地面温度，避免烫伤肉垫。',
+                    style: AppTheme.captionStyle.copyWith(color: AppTheme.textPrimaryColor),
+                  ),
                 ],
               ),
             ),
-            TextButton(
-              onPressed: () => _showSnackBar('查看更多小知识'),
-              child: const Text('更多'),
-            ),
+            TextButton(onPressed: () => _showSnackBar('查看更多小知识'), child: const Text('更多')),
           ],
         ),
       ),
@@ -276,20 +457,12 @@ class _RecommendTabState extends State<RecommendTab> {
     required int likes,
     required int comments,
     required bool isLiked,
+    required List<String> images,
+    String? videoThumb,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      decoration: AppTheme.cardDecoration,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -298,9 +471,9 @@ class _RecommendTabState extends State<RecommendTab> {
             Row(
               children: [
                 CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.blue[100],
-                  child: Icon(Icons.person, color: Colors.blue[700]),
+                  radius: 18,
+                  backgroundColor: AppTheme.primaryLightColor,
+                  child: Icon(Icons.pets, color: AppTheme.primaryColor, size: 18),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -309,47 +482,40 @@ class _RecommendTabState extends State<RecommendTab> {
                     children: [
                       Text(
                         author,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
                       ),
-                      Text(
-                        '刚刚',
-                        style: TextStyle(
-                          color: Colors.grey[500],
-                          fontSize: 12,
-                        ),
-                      ),
+                      Text('刚刚', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
                     ],
                   ),
                 ),
                 IconButton(
                   icon: const Icon(Icons.more_horiz),
-                  onPressed: () {
-                    _showSnackBar('更多功能开发中...');
-                  },
+                  onPressed: () => _showSnackBar('更多功能开发中...'),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             Text(
               content,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[700],
-                height: 1.4,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.4),
               maxLines: 3,
               overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 10),
+            if (videoThumb != null)
+              _buildVideoThumb(videoThumb)
+            else if (images.isNotEmpty)
+              _buildMediaGrid(images),
+            const SizedBox(height: 10),
+            const Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                _TagChip(label: '宠物'),
+                _TagChip(label: '健康'),
+              ],
             ),
             const SizedBox(height: 16),
             Row(
@@ -357,28 +523,22 @@ class _RecommendTabState extends State<RecommendTab> {
                 _buildActionButton(
                   icon: isLiked ? Icons.favorite : Icons.favorite_border,
                   label: '$likes',
-                  color: isLiked ? Colors.red : Colors.grey,
-                  onTap: () {
-                    setState(() {});
-                  },
+                  color: isLiked ? Colors.red : AppTheme.textSecondaryColor,
+                  onTap: () => setState(() {}),
                 ),
                 const SizedBox(width: 24),
                 _buildActionButton(
                   icon: Icons.comment_outlined,
                   label: '$comments',
-                  color: Colors.grey,
-                  onTap: () {
-                    _showSnackBar('评论功能开发中...');
-                  },
+                  color: AppTheme.textSecondaryColor,
+                  onTap: () => _showSnackBar('评论功能开发中...'),
                 ),
                 const SizedBox(width: 24),
                 _buildActionButton(
                   icon: Icons.share_outlined,
                   label: '分享',
-                  color: Colors.grey,
-                  onTap: () {
-                    _showSnackBar('分享功能开发中...');
-                  },
+                  color: AppTheme.textSecondaryColor,
+                  onTap: () => _showSnackBar('分享功能开发中...'),
                 ),
               ],
             ),
@@ -388,7 +548,7 @@ class _RecommendTabState extends State<RecommendTab> {
     );
   }
 
-  Widget _buildActionButton({
+  static Widget _buildActionButton({
     required IconData icon,
     required String label,
     required Color color,
@@ -400,22 +560,14 @@ class _RecommendTabState extends State<RecommendTab> {
         children: [
           Icon(icon, size: 20, color: color),
           const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 14,
-            ),
-          ),
+          Text(label, style: TextStyle(color: color, fontSize: 14)),
         ],
       ),
     );
   }
 
   void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 }
 
@@ -438,5 +590,32 @@ class _QuickAction {
   final IconData icon;
   final String label;
   final Color color;
-  const _QuickAction({required this.icon, required this.label, required this.color});
+  const _QuickAction({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
 }
+
+class _TagChip extends StatelessWidget {
+  final String label;
+  const _TagChip({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryLightColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Text(
+        '健康',
+        style: TextStyle(fontSize: 11, color: AppTheme.primaryDarkColor),
+      ),
+    );
+  }
+}
+
+
+

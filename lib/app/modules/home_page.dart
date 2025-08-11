@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import 'home_tab/recommend_tab.dart';
 import 'home_tab/follow_tab.dart';
 import 'home_tab/wiki_tab.dart';
+import 'tools/tools_hub_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,8 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late TabController _tabController;
-  final TextEditingController _searchController = TextEditingController();
-  String _searchQuery = '';
 
   @override
   void initState() {
@@ -25,7 +24,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _tabController.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -35,53 +33,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       backgroundColor: AppTheme.backgroundColor,
       body: Column(
         children: [
-          _buildSearchBar(),
           _buildTabBar(),
           Expanded(child: _buildTabBarView()),
         ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: _searchController,
-        onChanged: (value) {
-          setState(() {
-            _searchQuery = value;
-          });
-        },
-        decoration: InputDecoration(
-          hintText: '搜索内容、用户、话题...',
-          hintStyle: TextStyle(color: Colors.grey[500]),
-          prefixIcon: const Icon(Icons.search, color: Colors.grey),
-          suffixIcon: _searchQuery.isNotEmpty
-              ? IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.grey),
-                  onPressed: () {
-                    _searchController.clear();
-                    setState(() {
-                      _searchQuery = '';
-                    });
-                  },
-                )
-              : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-        ),
       ),
     );
   }
@@ -109,12 +63,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         labelColor: Colors.blue[700],
         unselectedLabelColor: Colors.grey[600],
         labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-        unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
-        tabs: const [
-          Tab(text: '推荐'),
-          Tab(text: '关注'),
-          Tab(text: '百科'),
-        ],
+        unselectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 16,
+        ),
+        tabs:
+            [
+                  const Tab(text: '推荐'),
+                  const Tab(text: '关注'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Icon(Icons.pets, size: 16),
+                      SizedBox(width: 6),
+                      Text('百科'),
+                    ],
+                  ),
+                ]
+                .map(
+                  (w) => Tab(
+                    child: w is Widget ? w : null,
+                    text: w is String ? w as String : null,
+                  ),
+                )
+                .toList(),
       ),
     );
   }
@@ -122,11 +94,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget _buildTabBarView() {
     return TabBarView(
       controller: _tabController,
-      children: const [
-        RecommendTab(),
-        FollowTab(),
-        WikiTab(),
-      ],
+      children: const [RecommendTab(), FollowTab(), WikiTab()],
     );
   }
 }
