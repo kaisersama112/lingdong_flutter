@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../app/modules/archive_page.dart';
+import '../../app/modules/home_page.dart';
 import '../../app/modules/social_page.dart';
 import '../../app/modules/publish_page.dart';
 import '../../app/modules/message_page.dart';
-import '../../app/modules/profile_page.dart';
+import '../../app/modules/archive_profile_page.dart';
 
 class NavigationController extends StatefulWidget {
   const NavigationController({super.key});
@@ -16,17 +16,17 @@ class _NavigationControllerState extends State<NavigationController> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const ArchivePage(),
+    const HomePage(),
     const SocialPage(),
     const PublishPage(),
     const MessagePage(),
-    const ProfilePage(),
+    const ArchiveProfilePage(),
   ];
 
   final List<BottomNavigationBarItem> _items = [
     BottomNavigationBarItem(
       icon: Icon(Icons.archive),
-      label: '档案',
+      label: '首页',
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.people),
@@ -42,7 +42,7 @@ class _NavigationControllerState extends State<NavigationController> {
     ),
     BottomNavigationBarItem(
       icon: Icon(Icons.person),
-      label: '个人',
+      label: '个人、档案',
     ),
   ];
 
