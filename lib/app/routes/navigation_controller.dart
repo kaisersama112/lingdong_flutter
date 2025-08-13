@@ -4,9 +4,10 @@ import '../modules/social_page.dart';
 import '../modules/publish_page.dart';
 import '../modules/message_page.dart';
 import '../modules/archive_profile_page.dart';
+import '../modules/auth/login_page.dart';
 import '../theme/app_theme.dart';
 import '../services/user_auth_service.dart';
-import '../modules/auth/login_page.dart';
+import '../modules/auth/guest_upgrade_page.dart';
 
 class NavigationController extends StatefulWidget {
   const NavigationController({super.key});
@@ -110,7 +111,96 @@ class _NavigationControllerState extends State<NavigationController> {
       child: Scaffold(
         body: _pages[_currentIndex],
         bottomNavigationBar: _buildBottomNavigationBar(),
+        // 如果是游客模式，在顶部显示游客标识
+        appBar: _authService.isGuestUser ? _buildGuestAppBar() : null,
       ),
+    );
+  }
+
+  PreferredSizeWidget? _buildGuestAppBar() {
+    return AppBar(
+      backgroundColor: Colors.orange.withOpacity(0.9),
+      elevation: 0,
+      title: Row(
+        children: [
+          const Icon(Icons.person_outline, color: Colors.white, size: 20),
+          const SizedBox(width: 8),
+          Text(
+            '游客模式',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: _showUpgradeDialog,
+          style: TextButton.styleFrom(
+            backgroundColor: Colors.white.withOpacity(0.2),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          child: const Text(
+            '升级账号',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        IconButton(
+          onPressed: _handleLogout,
+          icon: const Icon(
+            Icons.logout,
+            color: Colors.white,
+            size: 20,
+          ),
+          tooltip: '退出登录',
+        ),
+        const SizedBox(width: 16),
+      ],
+    );
+  }
+
+  void _showUpgradeDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('升级为正式账号'),
+        content: const Text(
+          '升级为正式账号后，您可以：\n'
+          '• 保存所有数据\n'
+          '• 使用手机号登录\n'
+          '• 享受完整功能\n'
+          '• 数据永久保存',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('稍后再说'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _navigateToUpgrade();
+            },
+            child: const Text('立即升级'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _navigateToUpgrade() {
+    // 这里可以导航到升级页面
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const GuestUpgradePage()),
     );
   }
 

@@ -274,4 +274,114 @@ class AppTheme {
     ),
     prefixIcon: const Icon(Icons.search, color: textSecondaryColor),
   );
+
+  // 完整主题配置
+  static ThemeData get lightTheme => ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.light,
+    ),
+    useMaterial3: true,
+    fontFamily: 'PingFang SC',
+    
+    // AppBar 主题
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: TextStyle(
+        color: textPrimaryColor,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+      iconTheme: IconThemeData(
+        color: textPrimaryColor,
+      ),
+    ),
+    
+    // 卡片主题
+    cardTheme: CardThemeData(
+      color: surfaceColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(borderRadiusLarge),
+      ),
+    ),
+    
+    // 按钮主题
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: primaryButtonStyle,
+    ),
+    
+    // 输入框主题
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: surfaceColor,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadiusMedium),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadiusMedium),
+        borderSide: BorderSide(color: dividerColor),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadiusMedium),
+        borderSide: const BorderSide(color: primaryColor, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: spacingM,
+        vertical: spacingM,
+      ),
+    ),
+    
+    // 底部导航栏主题
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: surfaceColor,
+      selectedItemColor: primaryColor,
+      unselectedItemColor: textSecondaryColor,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+    ),
+    
+    // 浮动操作按钮主题
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+      elevation: 8,
+    ),
+    
+    // 进度指示器主题
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: primaryColor,
+    ),
+    
+    // 开关主题
+    switchTheme: SwitchThemeData(
+      thumbColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return primaryColor;
+        }
+        return textLightColor;
+      }),
+      trackColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return primaryColor.withValues(alpha: 0.3);
+        }
+        return textLightColor.withValues(alpha: 0.3);
+      }),
+    ),
+    
+    // 复选框主题
+    checkboxTheme: CheckboxThemeData(
+      fillColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.selected)) {
+          return primaryColor;
+        }
+        return Colors.transparent;
+      }),
+      checkColor: MaterialStateProperty.all(Colors.white),
+      side: const BorderSide(color: dividerColor),
+    ),
+  );
 }
