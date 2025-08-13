@@ -32,12 +32,12 @@ class _FeedingCalculatorPageState extends State<FeedingCalculatorPage> {
       ),
       backgroundColor: AppTheme.backgroundColor,
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         children: [
           Container(
             decoration: AppTheme.cardDecoration,
             child: Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppTheme.spacingM),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -56,7 +56,7 @@ class _FeedingCalculatorPageState extends State<FeedingCalculatorPage> {
                           decoration: const InputDecoration(labelText: '宠物'),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppTheme.spacingM),
                       Expanded(
                         child: TextField(
                           controller: _weight,
@@ -68,13 +68,13 @@ class _FeedingCalculatorPageState extends State<FeedingCalculatorPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppTheme.spacingS),
                   TextField(
                     controller: _age,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(labelText: '年龄(月)'),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppTheme.spacingM),
                   SizedBox(
                     height: 44,
                     child: ElevatedButton.icon(
@@ -88,12 +88,12 @@ class _FeedingCalculatorPageState extends State<FeedingCalculatorPage> {
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.spacingM),
           if (_result.isNotEmpty)
             Container(
               decoration: AppTheme.cardDecoration,
-              child: Padding(
-                padding: const EdgeInsets.all(16),
+                              child: Padding(
+                  padding: const EdgeInsets.all(AppTheme.spacingM),
                 child: Text(_result, style: AppTheme.bodyStyle),
               ),
             ),

@@ -28,10 +28,10 @@ class _WikiTabState extends State<WikiTab> {
     }).toList();
 
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       children: [
         _buildSearchAndFilters(),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppTheme.spacingM),
         _buildBreedGrid(filtered),
       ],
     );
@@ -47,7 +47,7 @@ class _WikiTabState extends State<WikiTab> {
           ),
           onChanged: (v) => setState(() => _search = v),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppTheme.spacingM),
         SizedBox(
           height: 36,
           child: ListView.builder(
@@ -60,10 +60,10 @@ class _WikiTabState extends State<WikiTab> {
               return GestureDetector(
                 onTap: () => setState(() => _selectedSize = s),
                 child: Container(
-                  margin: EdgeInsets.only(right: i == sizes.length - 1 ? 0 : 8),
+                  margin: EdgeInsets.only(right: i == sizes.length - 1 ? 0 : AppTheme.spacingS),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
+                    horizontal: AppTheme.spacingM,
+                    vertical: AppTheme.spacingS,
                   ),
                   decoration: BoxDecoration(
                     color: selected ? AppTheme.primaryColor : Colors.white,
@@ -79,7 +79,7 @@ class _WikiTabState extends State<WikiTab> {
                     children: [
                       if (s != '全部')
                         Padding(
-                          padding: const EdgeInsets.only(right: 6),
+                          padding: const EdgeInsets.only(right: AppTheme.spacingXS),
                           child: Icon(Icons.pets, size: 14, color: color),
                         ),
                       Text(

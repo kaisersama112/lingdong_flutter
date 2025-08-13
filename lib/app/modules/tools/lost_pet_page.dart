@@ -35,7 +35,7 @@ class _LostPetPageState extends State<LostPetPage> {
       ),
       backgroundColor: AppTheme.backgroundColor,
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         children: [
           _section(
             '基础信息',
@@ -45,7 +45,7 @@ class _LostPetPageState extends State<LostPetPage> {
                   decoration: const InputDecoration(labelText: '宠物名称'),
                   controller: _petName,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppTheme.spacingS),
                 DropdownButtonFormField<String>(
                   value: _type,
                   items: ['狗狗', '猫咪', '其他']
@@ -57,7 +57,7 @@ class _LostPetPageState extends State<LostPetPage> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.spacingM),
           _section(
             '走失信息',
             Column(
@@ -97,12 +97,12 @@ class _LostPetPageState extends State<LostPetPage> {
                     );
                   },
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppTheme.spacingS),
                 TextField(
                   decoration: const InputDecoration(labelText: '城市/区域（用于同城推送）'),
                   onChanged: (v) => setState(() => _city = v),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppTheme.spacingS),
                 TextField(
                   controller: _desc,
                   maxLines: 4,
@@ -113,7 +113,7 @@ class _LostPetPageState extends State<LostPetPage> {
               ],
             ),
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.spacingM),
           _section(
             '联系信息',
             TextField(
@@ -121,7 +121,7 @@ class _LostPetPageState extends State<LostPetPage> {
               decoration: const InputDecoration(labelText: '联系电话/微信（至少一项）'),
             ),
           ),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppTheme.spacingL),
           SizedBox(
             height: 48,
             child: ElevatedButton.icon(
@@ -140,12 +140,12 @@ class _LostPetPageState extends State<LostPetPage> {
     return Container(
       decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(title, style: AppTheme.subheadingStyle),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.spacingS),
             child,
           ],
         ),

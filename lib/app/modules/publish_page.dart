@@ -17,6 +17,13 @@ class _PublishPageState extends State<PublishPage>
   String _selectedCategory = '社群动态';
   List<String> _selectedImages = [];
   bool _isPublic = true;
+  
+  // AI特效相关状态
+  String _selectedFilter = '原图';
+  String _selectedEffect = '无特效';
+  String _selectedSticker = '无贴纸';
+  bool _isAIAnalyzing = false;
+  String _aiAnalysisResult = '';
 
   final List<String> _categories = [
     '社群动态',
@@ -27,10 +34,44 @@ class _PublishPageState extends State<PublishPage>
     '其他',
   ];
 
+  // AI滤镜列表
+  final List<Map<String, dynamic>> _filters = [
+    {'name': '原图', 'icon': '🖼️', 'color': Colors.transparent},
+    {'name': '温暖', 'icon': '🌅', 'color': const Color(0xFFFFB74D)},
+    {'name': '清新', 'icon': '🌿', 'color': const Color(0xFF4ECDC4)},
+    {'name': '梦幻', 'icon': '✨', 'color': const Color(0xFFAB47BC)},
+    {'name': '复古', 'icon': '📷', 'color': const Color(0xFF8D6E63)},
+    {'name': '黑白', 'icon': '⚫', 'color': const Color(0xFF424242)},
+  ];
+
+  // AI特效列表
+  final List<Map<String, dynamic>> _effects = [
+    {'name': '无特效', 'icon': '🎬', 'description': '保持原样'},
+    {'name': 'AI美颜', 'icon': '✨', 'description': '智能美化宠物'},
+    {'name': '背景虚化', 'icon': '🌫️', 'description': '突出宠物主体'},
+    {'name': '表情识别', 'icon': '😊', 'description': '识别宠物情绪'},
+    {'name': '年龄预测', 'icon': '🎂', 'description': 'AI预测宠物年龄'},
+    {'name': '品种识别', 'icon': '🔍', 'description': '智能识别品种'},
+    {'name': '健康检测', 'icon': '🏥', 'description': 'AI健康评估'},
+    {'name': '动作捕捉', 'icon': '🎯', 'description': '捕捉精彩瞬间'},
+  ];
+
+  // 宠物贴纸列表
+  final List<Map<String, dynamic>> _stickers = [
+    {'name': '无贴纸', 'icon': '🎨', 'emoji': ''},
+    {'name': '可爱耳朵', 'icon': '🐰', 'emoji': '🐰'},
+    {'name': '天使光环', 'icon': '👼', 'emoji': '👼'},
+    {'name': '皇冠', 'icon': '👑', 'emoji': '👑'},
+    {'name': '蝴蝶结', 'icon': '🎀', 'emoji': '🎀'},
+    {'name': '墨镜', 'icon': '🕶️', 'emoji': '🕶️'},
+    {'name': '帽子', 'icon': '🎩', 'emoji': '🎩'},
+    {'name': '领结', 'icon': '🎗️', 'emoji': '🎗️'},
+  ];
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -45,264 +86,73 @@ class _PublishPageState extends State<PublishPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: Text(
-          '发布内容',
-          style: AppTheme.headingStyle.copyWith(
-            fontSize: AppTheme.fontSizeXL,
-            color: AppTheme.textPrimaryColor,
-          ),
-        ),
-        backgroundColor: AppTheme.surfaceColor,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppTheme.textPrimaryColor),
-          onPressed: () {
-            if (widget.onClose != null) {
-              widget.onClose!();
-              return;
-            }
-            if (Navigator.of(context).canPop()) {
-              Navigator.of(context).pop();
-            }
-          },
-        ),
-      ),
-      body: Column(
-        children: [
-          // 顶部宠物主题横幅
-          _buildHeaderBanner(),
-
-          // 发布类型选择
-          _buildPublishTypeSelector(),
-
-          // 标签页
-          _buildTabBar(),
-
-          // 内容区域
-          Expanded(child: _buildTabBarView()),
-        ],
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(
-            AppTheme.spacingM,
-            AppTheme.spacingS,
-            AppTheme.spacingM,
-            AppTheme.spacingM,
-          ),
-          decoration: BoxDecoration(
-            color: AppTheme.surfaceColor,
-            boxShadow: AppTheme.subtleShadow,
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () => _showSnackBar('已存为草稿'),
-                  style: AppTheme.secondaryButtonStyle,
-                  child: const Text('存草稿'),
-                ),
-              ),
-              const SizedBox(width: AppTheme.spacingM),
-              Expanded(
-                child: SizedBox(
-                  height: 48,
-                  child: ElevatedButton.icon(
-                    onPressed: _publishContent,
-                    style: AppTheme.primaryButtonStyle,
-                    icon: const Icon(Icons.pets, size: 18),
-                    label: const Text('发布'),
-                  ),
-                ),
-              ),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xFFFFF8F5),
+              Color(0xFFFEFEFE),
             ],
+            stops: [0.0, 0.8],
           ),
+        ),
+        child: Column(
+          children: [
+            _buildHeader(),
+            _buildTabBar(),
+            Expanded(child: _buildTabBarView()),
+            _buildBottomBar(),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeaderBanner() {
+  Widget _buildHeader() {
     return Container(
-      margin: const EdgeInsets.fromLTRB(
-        AppTheme.spacingM,
-        AppTheme.spacingM,
-        AppTheme.spacingM,
-        AppTheme.spacingS,
-      ),
-      decoration: AppTheme.elevatedCardDecoration.copyWith(
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-        gradient: AppTheme.secondaryGradient,
-      ),
-      child: Stack(
+      padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+      child: Row(
         children: [
-          // 背景爪印
-          Positioned(
-            right: -10,
-            top: -6,
-            child: Opacity(
-              opacity: 0.18,
-              child: Text('🐾', style: TextStyle(fontSize: 72)),
-            ),
+          IconButton(
+            icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimaryColor),
+            onPressed: () {
+              if (widget.onClose != null) {
+                widget.onClose!();
+                return;
+              }
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+            },
           ),
-          Positioned(
-            left: 12,
-            bottom: -10,
-            child: Opacity(
-              opacity: 0.12,
-              child: Text('🐶', style: TextStyle(fontSize: 64)),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(AppTheme.spacingL),
-            child: Row(
-              children: [
-                const Text('🐕', style: TextStyle(fontSize: 36)),
-                const SizedBox(width: AppTheme.spacingM),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '记录宠物的温馨瞬间',
-                        style: AppTheme.subheadingStyle.copyWith(
-                          color: Colors.white,
-                          fontSize: AppTheme.fontSizeXL,
-                        ),
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        '照片、心得、技巧… 与爱宠一起分享吧',
-                        style: AppTheme.captionStyle.copyWith(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPublishTypeSelector() {
-    return Container(
-      margin: const EdgeInsets.all(AppTheme.spacingM),
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('发布类型', style: AppTheme.subheadingStyle),
-          const SizedBox(height: AppTheme.spacingM),
-          Row(
-            children: [
-              Expanded(
-                child: _buildTypeOption(
-                  title: '社群公告',
-                  subtitle: '所有用户可见',
-                  icon: Icons.public,
-                  isSelected: _isPublic,
-                  onTap: () => setState(() => _isPublic = true),
-                ),
+          const Expanded(
+            child: Text(
+              '发布精彩瞬间',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
               ),
-              const SizedBox(width: AppTheme.spacingM),
-              Expanded(
-                child: _buildTypeOption(
-                  title: '个人动态',
-                  subtitle: '仅关注者可见',
-                  icon: Icons.person,
-                  isSelected: !_isPublic,
-                  onTap: () => setState(() => _isPublic = false),
-                ),
-              ),
-            ],
+              textAlign: TextAlign.center,
+            ),
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTypeOption({
-    required String title,
-    required String subtitle,
-    required IconData icon,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        children: [
           Container(
-            padding: const EdgeInsets.all(AppTheme.spacingM),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: isSelected ? null : AppTheme.surfaceColor,
-              gradient: isSelected ? AppTheme.primaryGradient : null,
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-              boxShadow: AppTheme.subtleShadow,
-              border: Border.all(
-                color: isSelected
-                    ? AppTheme.primaryDarkColor
-                    : AppTheme.dividerColor,
-                width: 1,
-              ),
+              gradient: AppTheme.primaryGradient,
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
-              children: [
-                Icon(
-                  icon,
-                  color: isSelected
-                      ? Colors.white
-                      : AppTheme.textSecondaryColor,
-                  size: 32,
-                ),
-                const SizedBox(height: AppTheme.spacingS),
-                Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: AppTheme.fontSizeL,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected
-                        ? Colors.white
-                        : AppTheme.textPrimaryColor,
-                  ),
-                ),
-                const SizedBox(height: AppTheme.spacingXS),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: AppTheme.fontSizeS,
-                    color: isSelected
-                        ? Colors.white70
-                        : AppTheme.textLightColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            child: const Text(
+              '发布',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+              ),
             ),
           ),
-          if (isSelected)
-            Positioned(
-              right: 8,
-              top: 8,
-              child: Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                padding: const EdgeInsets.all(2),
-                child: Icon(
-                  Icons.check_circle,
-                  color: AppTheme.primaryColor,
-                  size: 18,
-                ),
-              ),
-            ),
         ],
       ),
     );
@@ -310,27 +160,21 @@ class _PublishPageState extends State<PublishPage>
 
   Widget _buildTabBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      decoration: AppTheme.glassmorphismDecoration,
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-          color: AppTheme.primaryLightColor,
+          gradient: AppTheme.primaryGradient,
+          borderRadius: BorderRadius.circular(12),
         ),
-        labelColor: AppTheme.primaryColor,
+        labelColor: Colors.white,
         unselectedLabelColor: AppTheme.textSecondaryColor,
-        labelStyle: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: AppTheme.fontSizeL,
-        ),
-        unselectedLabelStyle: const TextStyle(
-          fontWeight: FontWeight.normal,
-          fontSize: AppTheme.fontSizeL,
-        ),
+        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
         tabs: const [
-          Tab(icon: Icon(Icons.edit_outlined), text: '内容编辑'),
-          Tab(icon: Icon(Icons.preview_outlined), text: '预览效果'),
+          Tab(text: '📝 文字'),
+          Tab(text: '📸 图片'),
+          Tab(text: '🎬 视频'),
         ],
       ),
     );
@@ -339,388 +183,143 @@ class _PublishPageState extends State<PublishPage>
   Widget _buildTabBarView() {
     return TabBarView(
       controller: _tabController,
-      children: [_buildContentEditTab(), _buildPreviewTab()],
+      children: [
+        _buildTextTab(),
+        _buildImageTab(),
+        _buildVideoTab(),
+      ],
     );
   }
 
-  Widget _buildContentEditTab() {
+  Widget _buildTextTab() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // 分类选择
           _buildCategorySelector(),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 选择宠物/犬种
-          _buildPetSelector(),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 标题输入
-          _buildTitleInput(),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 内容输入
+          const SizedBox(height: 20),
           _buildContentInput(),
-
-          const SizedBox(height: AppTheme.spacingS),
-          _buildEditorToolbar(),
-
-          const SizedBox(height: AppTheme.spacingS),
-          _buildMoodChips(),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 图片选择
-          _buildImageSelector(),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 位置选择
-          _buildLocationSelector(),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 标签选择
-          _buildTagSelector(),
-
-          const SizedBox(height: AppTheme.spacingXL),
+          const SizedBox(height: 20),
+          _buildAIAssistant(),
+          const SizedBox(height: 20),
+          _buildPrivacySettings(),
         ],
       ),
     );
   }
 
-  Widget _buildPetSelector() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Row(
+  Widget _buildImageTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: AppTheme.secondaryLightColor,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Icon(Icons.pets, color: AppTheme.secondaryDarkColor),
-          ),
-          const SizedBox(width: AppTheme.spacingM),
-          Expanded(child: Text('选择宠物/犬种', style: AppTheme.bodyStyle)),
-          IconButton(
-            icon: Icon(Icons.chevron_right, color: AppTheme.textSecondaryColor),
-            onPressed: () => _showSnackBar('选择宠物功能开发中…'),
-          ),
+          _buildImageUpload(),
+          const SizedBox(height: 20),
+          _buildFilterSelector(),
+          const SizedBox(height: 20),
+          _buildEffectSelector(),
+          const SizedBox(height: 20),
+          _buildStickerSelector(),
+          const SizedBox(height: 20),
+          _buildAIAnalysis(),
+          const SizedBox(height: 20),
+          _buildContentInput(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildVideoTab() {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildVideoUpload(),
+          const SizedBox(height: 20),
+          _buildVideoEffects(),
+          const SizedBox(height: 20),
+          _buildContentInput(),
         ],
       ),
     );
   }
 
   Widget _buildCategorySelector() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('选择分类', style: AppTheme.subheadingStyle),
-          const SizedBox(height: AppTheme.spacingM),
-          Wrap(
-            spacing: AppTheme.spacingS,
-            runSpacing: AppTheme.spacingS,
-            children: _categories.map((category) {
-              final isSelected = category == _selectedCategory;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedCategory = category),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingM,
-                    vertical: AppTheme.spacingS,
-                  ),
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppTheme.primaryColor
-                        : AppTheme.surfaceColor,
-                    borderRadius: BorderRadius.circular(
-                      AppTheme.borderRadiusMedium,
-                    ),
-                    border: Border.all(
-                      color: isSelected
-                          ? AppTheme.primaryColor
-                          : AppTheme.dividerColor,
-                    ),
-                  ),
-                  child: Text(
-                    category,
-                    style: TextStyle(
-                      color: isSelected
-                          ? Colors.white
-                          : AppTheme.textPrimaryColor,
-                      fontSize: AppTheme.fontSizeM,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.normal,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '选择分类',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTitleInput() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('标题', style: AppTheme.subheadingStyle),
-          const SizedBox(height: AppTheme.spacingM),
-          TextField(
-            controller: _titleController,
-            decoration: InputDecoration(
-              hintText: '请输入标题...',
-              hintStyle: TextStyle(color: AppTheme.textLightColor),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  AppTheme.borderRadiusMedium,
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 12,
+          runSpacing: 12,
+          children: _categories.map((category) {
+            final isSelected = category == _selectedCategory;
+            return GestureDetector(
+              onTap: () => setState(() => _selectedCategory = category),
+              child: AnimatedContainer(
+                duration: AppTheme.shortAnimation,
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                decoration: BoxDecoration(
+                  gradient: isSelected ? AppTheme.primaryGradient : null,
+                  color: isSelected ? null : Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                  boxShadow: isSelected ? [
+                    BoxShadow(
+                      color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ] : null,
                 ),
-                borderSide: BorderSide(color: AppTheme.dividerColor),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  AppTheme.borderRadiusMedium,
+                child: Text(
+                  category,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                  ),
                 ),
-                borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
               ),
-            ),
-          ),
-        ],
-      ),
+            );
+          }).toList(),
+        ),
+      ],
     );
   }
 
   Widget _buildContentInput() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('内容', style: AppTheme.subheadingStyle),
-          const SizedBox(height: AppTheme.spacingM),
-          TextField(
-            controller: _contentController,
-            maxLines: 6,
-            maxLength: 500,
-            decoration: InputDecoration(
-              hintText: '分享你的想法...',
-              hintStyle: TextStyle(color: AppTheme.textLightColor),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  AppTheme.borderRadiusMedium,
-                ),
-                borderSide: BorderSide(color: AppTheme.dividerColor),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  AppTheme.borderRadiusMedium,
-                ),
-                borderSide: BorderSide(color: AppTheme.primaryColor, width: 2),
-              ),
-              counterText: '',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEditorToolbar() {
-    Widget action(IconData icon, String label, VoidCallback onTap) {
-      return Expanded(
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingS),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryLightColor,
-                    borderRadius: BorderRadius.circular(
-                      AppTheme.borderRadiusSmall,
-                    ),
-                  ),
-                  child: Icon(icon, color: AppTheme.primaryDarkColor, size: 18),
-                ),
-                const SizedBox(height: 4),
-                Text(label, style: AppTheme.captionStyle),
-              ],
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      decoration: AppTheme.cardDecoration,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingM,
-          vertical: AppTheme.spacingS,
-        ),
-        child: Row(
-          children: [
-            action(Icons.photo_outlined, '相册', () => _showSnackBar('从相册选择')),
-            action(
-              Icons.photo_camera_outlined,
-              '相机',
-              () => _showSnackBar('打开相机'),
-            ),
-            action(Icons.alternate_email, '@话题', () => _showSnackBar('插入话题')),
-            action(Icons.tag_outlined, '标签', () => _showSnackBar('添加标签')),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMoodChips() {
-    final moods = [
-      ['开心', '😊'],
-      ['活力', '⚡'],
-      ['乖巧', '🧡'],
-      ['调皮', '😜'],
-    ];
-    return SizedBox(
-      height: 36,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemBuilder: (_, i) {
-          final m = moods[i];
-          return Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppTheme.spacingM,
-              vertical: AppTheme.spacingS,
-            ),
-            decoration: BoxDecoration(
-              color: AppTheme.successLightColor,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Row(
-              children: [
-                Text(m[1]),
-                const SizedBox(width: 6),
-                Text(
-                  m[0],
-                  style: AppTheme.bodyStyle.copyWith(
-                    color: AppTheme.successColor,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemCount: moods.length,
-      ),
-    );
-  }
-
-  Widget _buildImageSelector() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Text('添加图片', style: AppTheme.subheadingStyle),
-              const SizedBox(width: AppTheme.spacingS),
-              Text('(最多 9 张)', style: AppTheme.captionStyle),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingM),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              crossAxisSpacing: AppTheme.spacingS,
-              mainAxisSpacing: AppTheme.spacingS,
-            ),
-            itemCount: _selectedImages.length + 1,
-            itemBuilder: (context, index) {
-              if (index == _selectedImages.length) {
-                return _buildAddImageButton();
-              }
-              return _buildImageItem(_selectedImages[index], index);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddImageButton() {
-    return GestureDetector(
-      onTap: _addImage,
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-          border: Border.all(
-            color: AppTheme.dividerColor,
-            style: BorderStyle.solid,
-          ),
-        ),
-        child: Icon(
-          Icons.add_photo_alternate_outlined,
-          color: AppTheme.textSecondaryColor,
-          size: 32,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildImageItem(String image, int index) {
-    return Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          decoration: BoxDecoration(
-            color: AppTheme.backgroundColor,
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-            image: DecorationImage(
-              image: NetworkImage(image),
-              fit: BoxFit.cover,
-            ),
+        const Text(
+          '分享你的想法',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
           ),
         ),
-        Positioned(
-          top: 4,
-          right: 4,
-          child: GestureDetector(
-            onTap: () => _removeImage(index),
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: AppTheme.errorColor,
-                shape: BoxShape.circle,
-              ),
-              child: const Icon(Icons.close, color: Colors.white, size: 16),
+        const SizedBox(height: 12),
+        Container(
+          decoration: AppTheme.cardDecoration,
+          child: TextField(
+            controller: _contentController,
+            maxLines: 5,
+            decoration: const InputDecoration(
+              hintText: '分享你和宠物的美好时光...',
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.all(16),
             ),
           ),
         ),
@@ -728,45 +327,60 @@ class _PublishPageState extends State<PublishPage>
     );
   }
 
-  Widget _buildLocationSelector() {
+  Widget _buildAIAssistant() {
     return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Row(
-        children: [
-          Icon(Icons.location_on, color: AppTheme.primaryColor),
-          const SizedBox(width: AppTheme.spacingM),
-          Expanded(child: Text('添加位置', style: AppTheme.bodyStyle)),
-          IconButton(
-            icon: Icon(
-              Icons.arrow_forward_ios,
-              color: AppTheme.textSecondaryColor,
-            ),
-            onPressed: _selectLocation,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTagSelector() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
+      padding: const EdgeInsets.all(16),
+      decoration: AppTheme.glassmorphismDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('添加标签', style: AppTheme.subheadingStyle),
-          const SizedBox(height: AppTheme.spacingM),
-          Wrap(
-            spacing: AppTheme.spacingS,
-            runSpacing: AppTheme.spacingS,
+          Row(
             children: [
-              _buildTagChip('宠物健康', true),
-              _buildTagChip('日常分享', false),
-              _buildTagChip('萌宠瞬间', false),
-              _buildTagChip('训练技巧', false),
-              _buildTagChip('美食推荐', false),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: AppTheme.secondaryGradient,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.psychology, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'AI写作助手',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimaryColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () => _generateAIContent('温馨'),
+                  icon: const Icon(Icons.favorite, size: 16),
+                  label: const Text('温馨文案'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () => _generateAIContent('幽默'),
+                  icon: const Icon(Icons.sentiment_satisfied, size: 16),
+                  label: const Text('幽默文案'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppTheme.secondaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                ),
+              ),
             ],
           ),
         ],
@@ -774,149 +388,373 @@ class _PublishPageState extends State<PublishPage>
     );
   }
 
-  Widget _buildTagChip(String label, bool isSelected) {
-    return GestureDetector(
-      onTap: () {
-        // 这里可以添加标签选择逻辑
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppTheme.spacingM,
-          vertical: AppTheme.spacingS,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected ? AppTheme.primaryColor : AppTheme.surfaceColor,
-          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-          border: Border.all(
-            color: isSelected ? AppTheme.primaryColor : AppTheme.dividerColor,
+  Widget _buildImageUpload() {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.dividerColor, style: BorderStyle.solid),
+      ),
+      child: _selectedImages.isEmpty
+          ? _buildUploadPlaceholder()
+          : _buildImagePreview(),
+    );
+  }
+
+  Widget _buildUploadPlaceholder() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: AppTheme.primaryGradient,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Icon(Icons.add_a_photo, color: Colors.white, size: 32),
           ),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
-            fontSize: AppTheme.fontSizeS,
+          const SizedBox(height: 12),
+          const Text(
+            '点击上传图片',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppTheme.textPrimaryColor,
+            ),
           ),
-        ),
+          const SizedBox(height: 4),
+          Text(
+            '支持AI智能美化',
+            style: TextStyle(
+              fontSize: 12,
+              color: AppTheme.textSecondaryColor,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildPreviewTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      child: Column(children: [_buildPreviewCard()]),
+  Widget _buildImagePreview() {
+    return GridView.builder(
+      padding: const EdgeInsets.all(8),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 3,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
+      ),
+      itemCount: _selectedImages.length + 1,
+      itemBuilder: (context, index) {
+        if (index == _selectedImages.length) {
+          return _buildAddMoreButton();
+        }
+        return _buildImageItem(_selectedImages[index]);
+      },
     );
   }
 
-  Widget _buildPreviewCard() {
+  Widget _buildAddMoreButton() {
     return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 用户信息
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: AppTheme.primaryLightColor,
-                child: Icon(Icons.person, color: AppTheme.primaryColor),
+      decoration: BoxDecoration(
+        color: AppTheme.primaryLightColor,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: AppTheme.primaryColor, style: BorderStyle.solid),
+      ),
+      child: const Icon(Icons.add, color: AppTheme.primaryColor, size: 24),
+    );
+  }
+
+  Widget _buildImageItem(String imagePath) {
+    return Stack(
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Image.asset(imagePath, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+        ),
+        Positioned(
+          top: 4,
+          right: 4,
+          child: GestureDetector(
+            onTap: () => _removeImage(imagePath),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
               ),
-              const SizedBox(width: AppTheme.spacingM),
-              Expanded(
+              child: const Icon(Icons.close, color: Colors.white, size: 12),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'AI滤镜',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 80,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _filters.length,
+            itemBuilder: (context, index) {
+              final filter = _filters[index];
+              final isSelected = filter['name'] == _selectedFilter;
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('我的动态', style: AppTheme.subheadingStyle),
-                    Text('刚刚', style: AppTheme.captionStyle),
+                    GestureDetector(
+                      onTap: () => setState(() => _selectedFilter = filter['name']),
+                      child: AnimatedContainer(
+                        duration: AppTheme.shortAnimation,
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: isSelected ? AppTheme.primaryGradient : null,
+                          color: isSelected ? null : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                        ),
+                        child: Center(
+                          child: Text(
+                            filter['icon'],
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      filter['name'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isSelected ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildEffectSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'AI特效',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 12,
+            mainAxisSpacing: 12,
+            childAspectRatio: 2.5,
+          ),
+          itemCount: _effects.length,
+          itemBuilder: (context, index) {
+            final effect = _effects[index];
+            final isSelected = effect['name'] == _selectedEffect;
+            return GestureDetector(
+              onTap: () => setState(() => _selectedEffect = effect['name']),
+              child: AnimatedContainer(
+                duration: AppTheme.shortAnimation,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: isSelected ? AppTheme.primaryGradient : null,
+                  color: isSelected ? null : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      effect['icon'],
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            effect['name'],
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
+                            ),
+                          ),
+                          Text(
+                            effect['description'],
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: isSelected ? Colors.white70 : AppTheme.textSecondaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStickerSelector() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '可爱贴纸',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 80,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _stickers.length,
+            itemBuilder: (context, index) {
+              final sticker = _stickers[index];
+              final isSelected = sticker['name'] == _selectedSticker;
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () => setState(() => _selectedSticker = sticker['name']),
+                      child: AnimatedContainer(
+                        duration: AppTheme.shortAnimation,
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          gradient: isSelected ? AppTheme.warmGradient : null,
+                          color: isSelected ? null : Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                        ),
+                        child: Center(
+                          child: Text(
+                            sticker['icon'],
+                            style: const TextStyle(fontSize: 24),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      sticker['name'],
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: isSelected ? AppTheme.warningColor : AppTheme.textSecondaryColor,
+                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAIAnalysis() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: AppTheme.glassmorphismDecoration,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppTheme.spacingS,
-                  vertical: AppTheme.spacingXS,
-                ),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: _isPublic
-                      ? AppTheme.successLightColor
-                      : AppTheme.warningLightColor,
-                  borderRadius: BorderRadius.circular(
-                    AppTheme.borderRadiusSmall,
-                  ),
+                  gradient: AppTheme.secondaryGradient,
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  _isPublic ? '公开' : '私密',
-                  style: TextStyle(
-                    fontSize: AppTheme.fontSizeXS,
-                    color: _isPublic
-                        ? AppTheme.successColor
-                        : AppTheme.warningColor,
-                  ),
+                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              const Text(
+                'AI智能分析',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimaryColor,
                 ),
               ),
             ],
           ),
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 内容预览
-          if (_titleController.text.isNotEmpty) ...[
-            Text(_titleController.text, style: AppTheme.subheadingStyle),
-            const SizedBox(height: AppTheme.spacingS),
-          ],
-
-          if (_contentController.text.isNotEmpty)
-            Text(_contentController.text, style: AppTheme.bodyStyle),
-
-          if (_selectedImages.isNotEmpty) ...[
-            const SizedBox(height: AppTheme.spacingM),
+          const SizedBox(height: 12),
+          if (_aiAnalysisResult.isNotEmpty)
             Container(
-              height: 120,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: _selectedImages.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    width: 120,
-                    margin: const EdgeInsets.only(right: AppTheme.spacingS),
-                    decoration: BoxDecoration(
-                      color: AppTheme.backgroundColor,
-                      borderRadius: BorderRadius.circular(
-                        AppTheme.borderRadiusMedium,
-                      ),
-                      image: DecorationImage(
-                        image: NetworkImage(_selectedImages[index]),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
-
-          const SizedBox(height: AppTheme.spacingM),
-
-          // 分类标签
-          if (_selectedCategory.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingS,
-                vertical: AppTheme.spacingXS,
-              ),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: AppTheme.primaryLightColor,
-                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                color: AppTheme.secondaryLightColor,
+                borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                _selectedCategory,
-                style: TextStyle(
-                  fontSize: AppTheme.fontSizeXS,
-                  color: AppTheme.primaryColor,
+                _aiAnalysisResult,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: AppTheme.textPrimaryColor,
                 ),
+              ),
+            )
+          else
+            ElevatedButton.icon(
+              onPressed: _performAIAnalysis,
+              icon: _isAIAnalyzing 
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Icon(Icons.psychology, size: 16),
+              label: Text(_isAIAnalyzing ? '分析中...' : '开始AI分析'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.secondaryColor,
+                foregroundColor: Colors.white,
               ),
             ),
         ],
@@ -924,36 +762,215 @@ class _PublishPageState extends State<PublishPage>
     );
   }
 
-  void _addImage() {
-    // 这里可以添加图片选择逻辑
+  Widget _buildVideoUpload() {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.dividerColor, style: BorderStyle.solid),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: AppTheme.primaryGradient,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: const Icon(Icons.videocam, color: Colors.white, size: 32),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '录制或上传视频',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.textPrimaryColor,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '支持AI智能剪辑',
+              style: TextStyle(
+                fontSize: 12,
+                color: AppTheme.textSecondaryColor,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoEffects() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '视频特效',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.slow_motion_video, size: 16),
+                label: const Text('慢动作'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.music_note, size: 16),
+                label: const Text('配乐'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.secondaryColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: () {},
+                icon: const Icon(Icons.text_fields, size: 16),
+                label: const Text('字幕'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.warningColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrivacySettings() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: AppTheme.cardDecoration,
+      child: Row(
+        children: [
+          Icon(
+            _isPublic ? Icons.public : Icons.lock,
+            color: AppTheme.textSecondaryColor,
+          ),
+          const SizedBox(width: 12),
+          const Expanded(
+            child: Text(
+              '公开可见',
+              style: TextStyle(
+                fontSize: 16,
+                color: AppTheme.textPrimaryColor,
+              ),
+            ),
+          ),
+          Switch(
+            value: _isPublic,
+            onChanged: (value) => setState(() => _isPublic = value),
+            activeColor: AppTheme.primaryColor,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBottomBar() {
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.1),
+              blurRadius: 10,
+              offset: const Offset(0, -5),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton.icon(
+                onPressed: _publishContent,
+                icon: const Icon(Icons.send, size: 16),
+                label: const Text('发布'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 辅助方法
+  void _generateAIContent(String style) {
+    // 模拟AI生成内容
+    final contents = {
+      '温馨': '今天和我的小宝贝一起度过了美好的时光，看着它开心的样子，我的心里也充满了温暖。感谢有你的陪伴，让我的生活更加精彩！',
+      '幽默': '我家的小家伙今天又做了一件让人哭笑不得的事情，真是个活宝！有时候我在想，到底是我在养宠物，还是宠物在逗我玩呢？😂',
+    };
+    
     setState(() {
-      _selectedImages.add('https://via.placeholder.com/150');
+      _contentController.text = contents[style] ?? '';
     });
   }
 
-  void _removeImage(int index) {
+  void _performAIAnalysis() {
     setState(() {
-      _selectedImages.removeAt(index);
+      _isAIAnalyzing = true;
+    });
+
+    // 模拟AI分析过程
+    Future.delayed(const Duration(seconds: 2), () {
+      setState(() {
+        _isAIAnalyzing = false;
+        _aiAnalysisResult = 'AI分析结果：\n• 宠物情绪：开心 😊\n• 健康状况：良好\n• 建议：继续保持当前的护理方式';
+      });
     });
   }
 
-  void _selectLocation() {
-    _showSnackBar('位置选择功能开发中...');
+  void _removeImage(String imagePath) {
+    setState(() {
+      _selectedImages.remove(imagePath);
+    });
   }
 
   void _publishContent() {
-    if (_contentController.text.isEmpty) {
-      _showSnackBar('请输入内容');
-      return;
-    }
-
-    _showSnackBar('发布成功！');
-    // 这里可以添加发布逻辑
-  }
-
-  void _showSnackBar(String message) {
+    // 发布逻辑
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), backgroundColor: AppTheme.primaryColor),
+      const SnackBar(
+        content: Text('发布成功！'),
+        backgroundColor: AppTheme.successColor,
+      ),
     );
+    
+    if (widget.onClose != null) {
+      widget.onClose!();
+    } else if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
   }
 }

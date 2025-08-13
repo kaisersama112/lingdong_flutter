@@ -7,7 +7,7 @@ class FollowTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       itemCount: 8,
       itemBuilder: (context, index) {
         final List<String> images = List.generate(
@@ -44,10 +44,10 @@ class FollowTab extends StatelessWidget {
     String? videoThumb,
   }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
       decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -62,7 +62,7 @@ class FollowTab extends StatelessWidget {
                     size: 18,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppTheme.spacingM),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,12 +91,12 @@ class FollowTab extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingM),
             Text(
               title,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppTheme.spacingS),
             Text(
               content,
               style: TextStyle(

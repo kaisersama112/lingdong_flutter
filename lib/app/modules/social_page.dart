@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_components.dart';
 
 class SocialPage extends StatefulWidget {
   const SocialPage({super.key});
@@ -161,20 +162,85 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
-      body: Column(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: AppTheme.sunsetGradient,
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              // 头部区域
+              _buildHeader(),
+              
+              // 内容区域
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    color: AppTheme.backgroundColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(AppTheme.borderRadiusXLarge),
+                      topRight: Radius.circular(AppTheme.borderRadiusXLarge),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      // 搜索栏
+                      _buildSearchBar(),
+
+                      // 分类标签
+                      _buildCategoryTabs(),
+
+                      // 标签页
+                      _buildTabBar(),
+
+                      // 内容区域
+                      Expanded(child: _buildTabBarView()),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingL),
+      child: Row(
         children: [
-          // 搜索栏
-          _buildSearchBar(),
-
-          // 分类标签
-          _buildCategoryTabs(),
-
-          // 标签页
-          _buildTabBar(),
-
-          // 内容区域
-          Expanded(child: _buildTabBarView()),
+          Container(
+            padding: const EdgeInsets.all(AppTheme.spacingS),
+            decoration: AppTheme.glassmorphismDecoration,
+            child: const Icon(
+              Icons.location_on,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: AppTheme.spacingM),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '发现周边',
+                  style: AppTheme.headingStyle.copyWith(
+                    color: Colors.white,
+                    fontSize: AppTheme.fontSizeXXL,
+                  ),
+                ),
+                Text(
+                  '找到最适合你和宠物的好去处',
+                  style: AppTheme.captionStyle.copyWith(
+                    color: Colors.white.withOpacity(0.8),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -182,18 +248,8 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
 
   Widget _buildSearchBar() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.all(AppTheme.spacingM),
+      decoration: AppTheme.glassmorphismDecoration,
       child: TextField(
         controller: _searchController,
         onChanged: (value) {
@@ -203,11 +259,11 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
         },
         decoration: InputDecoration(
           hintText: '搜索周边宠物场所...',
-          hintStyle: TextStyle(color: Colors.grey[500]),
-          prefixIcon: const Icon(Icons.search, color: Colors.grey),
+          hintStyle: TextStyle(color: AppTheme.textSecondaryColor),
+          prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondaryColor),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, color: Colors.grey),
+                  icon: const Icon(Icons.clear, color: AppTheme.textSecondaryColor),
                   onPressed: () {
                     _searchController.clear();
                     setState(() {
@@ -218,8 +274,8 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
               : null,
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 15,
+            horizontal: AppTheme.spacingM,
+            vertical: AppTheme.spacingM,
           ),
         ),
       ),
@@ -229,7 +285,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
   Widget _buildCategoryTabs() {
     return Container(
       height: 50,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: _categories.length,
@@ -243,35 +299,31 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                 _selectedCategory = category;
               });
             },
-            child: Container(
-              margin: const EdgeInsets.only(right: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isSelected ? Colors.blue : Colors.grey[300]!,
-                  width: 1,
-                ),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: Colors.blue.withValues(alpha: 0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ]
-                    : null,
+            child: AnimatedContainer(
+              duration: AppTheme.mediumAnimation,
+              margin: const EdgeInsets.only(right: AppTheme.spacingS),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppTheme.spacingM,
+                vertical: AppTheme.spacingS,
               ),
+              decoration: isSelected
+                  ? BoxDecoration(
+                      gradient: AppTheme.primaryGradient,
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+                      boxShadow: AppTheme.cardShadow,
+                    )
+                  : BoxDecoration(
+                      color: AppTheme.surfaceColor,
+                      borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+                      border: Border.all(color: AppTheme.dividerColor),
+                    ),
               child: Center(
                 child: Text(
                   category,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : Colors.grey[700],
-                    fontWeight: isSelected
-                        ? FontWeight.w600
-                        : FontWeight.normal,
-                    fontSize: 14,
+                    color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
+                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                    fontSize: AppTheme.fontSizeM,
                   ),
                 ),
               ),
@@ -284,31 +336,18 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
 
   Widget _buildTabBar() {
     return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.all(AppTheme.spacingM),
+      decoration: AppTheme.glassmorphismDecoration,
       child: TabBar(
         controller: _tabController,
         indicator: BoxDecoration(
-          borderRadius: BorderRadius.circular(8),
-          color: Colors.blue[100],
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+          gradient: AppTheme.primaryGradient,
         ),
-        labelColor: Colors.blue[700],
-        unselectedLabelColor: Colors.grey[600],
-        labelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-        unselectedLabelStyle: const TextStyle(
-          fontWeight: FontWeight.normal,
-          fontSize: 16,
-        ),
+        labelColor: AppTheme.primaryColor,
+        unselectedLabelColor: AppTheme.textSecondaryColor,
+        labelStyle: AppTheme.subheadingStyle.copyWith(fontSize: AppTheme.fontSizeL),
+        unselectedLabelStyle: AppTheme.bodyStyle,
         tabs: const [
           Tab(text: '周边场所'),
           Tab(text: '社群动态'),
@@ -332,7 +371,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
               .toList();
 
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       itemCount: filteredPlaces.length,
       itemBuilder: (context, index) {
         final place = filteredPlaces[index];
@@ -343,18 +382,8 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
 
   Widget _buildPlaceCard(Place place) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
+      decoration: AppTheme.cardDecoration,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -362,10 +391,10 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
           Container(
             height: 120,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              gradient: AppTheme.secondaryGradient,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
+                topLeft: Radius.circular(AppTheme.borderRadiusLarge),
+                topRight: Radius.circular(AppTheme.borderRadiusLarge),
               ),
             ),
             child: Row(
@@ -382,35 +411,34 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                 Expanded(
                   flex: 3,
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.all(AppTheme.spacingM),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           place.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w600,
+                          style: AppTheme.subheadingStyle.copyWith(
+                            color: Colors.white,
+                            fontSize: AppTheme.fontSizeL,
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppTheme.spacingXS),
                         Row(
                           children: [
-                            Icon(
+                            const Icon(
                               Icons.location_on,
                               size: 16,
-                              color: Colors.grey[600],
+                              color: Colors.white,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppTheme.spacingXS),
                             Expanded(
                               child: Text(
                                 place.address,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.grey[600],
+                                style: AppTheme.captionStyle.copyWith(
+                                  color: Colors.white.withOpacity(0.8),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -418,44 +446,43 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppTheme.spacingXS),
                         Row(
                           children: [
-                            Icon(Icons.star, size: 16, color: Colors.amber),
-                            const SizedBox(width: 4),
+                            const Icon(Icons.star, size: 16, color: Colors.amber),
+                            const SizedBox(width: AppTheme.spacingXS),
                             Text(
                               '${place.rating}',
-                              style: const TextStyle(
-                                fontSize: 12,
+                              style: AppTheme.captionStyle.copyWith(
+                                color: Colors.white,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             Text(
                               ' (${place.reviewCount})',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey[600],
+                              style: AppTheme.captionStyle.copyWith(
+                                color: Colors.white.withOpacity(0.8),
                               ),
                             ),
                             const Spacer(),
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 2,
+                                horizontal: AppTheme.spacingS,
+                                vertical: AppTheme.spacingXS,
                               ),
                               decoration: BoxDecoration(
                                 color: place.isOpen
-                                    ? Colors.green[100]
-                                    : Colors.red[100],
-                                borderRadius: BorderRadius.circular(12),
+                                    ? AppTheme.successColor.withOpacity(0.2)
+                                    : AppTheme.errorColor.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                               ),
                               child: Text(
                                 place.isOpen ? '营业中' : '已关闭',
-                                style: TextStyle(
-                                  fontSize: 10,
+                                style: AppTheme.captionStyle.copyWith(
                                   color: place.isOpen
-                                      ? Colors.green[700]
-                                      : Colors.red[700],
+                                      ? AppTheme.successColor
+                                      : AppTheme.errorColor,
+                                  fontWeight: FontWeight.w600,
                                 ),
                               ),
                             ),
@@ -471,47 +498,48 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
 
           // 场所详情
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppTheme.spacingM),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   place.description,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[700],
-                    height: 1.4,
+                  style: AppTheme.bodyStyle.copyWith(
+                    color: AppTheme.textSecondaryColor,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
 
-                const SizedBox(height: 12),
+                const SizedBox(height: AppTheme.spacingM),
 
                 // 特色功能标签
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: AppTheme.spacingS,
+                  runSpacing: AppTheme.spacingS,
                   children: place.features.map((feature) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: AppTheme.spacingS,
+                        vertical: AppTheme.spacingXS,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.blue[50],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.blue[200]!),
+                        color: AppTheme.primaryLightColor,
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
                       ),
                       child: Text(
                         feature,
-                        style: TextStyle(fontSize: 10, color: Colors.blue[700]),
+                        style: AppTheme.captionStyle.copyWith(
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     );
                   }).toList(),
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: AppTheme.spacingM),
 
                 // 操作按钮
                 Row(
@@ -523,13 +551,10 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                         },
                         icon: const Icon(Icons.info_outline, size: 16),
                         label: const Text('查看详情'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.blue,
-                          side: const BorderSide(color: Colors.blue),
-                        ),
+                        style: AppTheme.secondaryButtonStyle,
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppTheme.spacingM),
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () {
@@ -537,10 +562,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                         },
                         icon: const Icon(Icons.directions, size: 16),
                         label: const Text('导航'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                        ),
+                        style: AppTheme.primaryButtonStyle,
                       ),
                     ),
                   ],
@@ -555,7 +577,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
 
   Widget _buildCommunityTab() {
     return ListView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppTheme.spacingM),
       itemCount: _communityPosts.length,
       itemBuilder: (context, index) {
         final post = _communityPosts[index];
@@ -566,44 +588,39 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
 
   Widget _buildCommunityPostCard(CommunityPost post) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
+      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 用户信息
             Row(
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.blue[100],
-                  child: Text(
-                    post.avatar,
-                    style: const TextStyle(fontSize: 20),
+                                 Container(
+                   width: 40,
+                   height: 40,
+                   decoration: BoxDecoration(
+                     gradient: AppTheme.softGradient,
+                     borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+                   ),
+                  child: Center(
+                    child: Text(
+                      post.avatar,
+                      style: const TextStyle(fontSize: 20),
+                    ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppTheme.spacingM),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         post.user,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                        style: AppTheme.subheadingStyle.copyWith(
+                          fontSize: AppTheme.fontSizeL,
                         ),
                       ),
                       Row(
@@ -611,23 +628,17 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                           Icon(
                             Icons.location_on,
                             size: 14,
-                            color: Colors.grey[500],
+                            color: AppTheme.textSecondaryColor,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppTheme.spacingXS),
                           Text(
                             post.location,
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 12,
-                            ),
+                            style: AppTheme.captionStyle,
                           ),
-                          const SizedBox(width: 8),
+                          const SizedBox(width: AppTheme.spacingS),
                           Text(
                             post.time,
-                            style: TextStyle(
-                              color: Colors.grey[500],
-                              fontSize: 12,
-                            ),
+                            style: AppTheme.captionStyle,
                           ),
                         ],
                       ),
@@ -643,15 +654,15 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
               ],
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingM),
 
             // 动态内容
             Text(
               post.content,
-              style: const TextStyle(fontSize: 14, height: 1.4),
+              style: AppTheme.bodyStyle,
             ),
 
-            const SizedBox(height: 12),
+            const SizedBox(height: AppTheme.spacingM),
 
             // 图片展示
             if (post.images.isNotEmpty)
@@ -663,10 +674,10 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                   itemBuilder: (context, index) {
                     return Container(
                       width: 80,
-                      margin: const EdgeInsets.only(right: 8),
+                      margin: const EdgeInsets.only(right: AppTheme.spacingS),
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(8),
+                        gradient: AppTheme.warmGradient,
+                        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
                       ),
                       child: Center(
                         child: Text(
@@ -679,7 +690,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                 ),
               ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: AppTheme.spacingM),
 
             // 互动按钮
             Row(
@@ -691,7 +702,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                     _likePost(post);
                   },
                 ),
-                const SizedBox(width: 24),
+                const SizedBox(width: AppTheme.spacingL),
                 _buildActionButton(
                   icon: Icons.comment_outlined,
                   label: '${post.comments}',
@@ -699,7 +710,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                     _commentPost(post);
                   },
                 ),
-                const SizedBox(width: 24),
+                const SizedBox(width: AppTheme.spacingL),
                 _buildActionButton(
                   icon: Icons.share_outlined,
                   label: '分享',
@@ -724,9 +735,14 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
       onTap: onTap,
       child: Row(
         children: [
-          Icon(icon, size: 20, color: Colors.grey[600]),
-          const SizedBox(width: 6),
-          Text(label, style: TextStyle(color: Colors.grey[600], fontSize: 14)),
+          Icon(icon, size: 20, color: AppTheme.textSecondaryColor),
+          const SizedBox(width: AppTheme.spacingS),
+          Text(
+            label,
+            style: AppTheme.captionStyle.copyWith(
+              color: AppTheme.textSecondaryColor,
+            ),
+          ),
         ],
       ),
     );
@@ -736,12 +752,15 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        ),
         title: Row(
           children: [
             Text(place.image, style: const TextStyle(fontSize: 24)),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppTheme.spacingM),
             Expanded(
-              child: Text(place.name, style: const TextStyle(fontSize: 18)),
+              child: Text(place.name, style: AppTheme.subheadingStyle),
             ),
           ],
         ),
@@ -749,20 +768,17 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('地址: ${place.address}'),
-            Text('距离: ${place.distance}'),
-            Text('评分: ${place.rating} (${place.reviewCount}条评价)'),
-            Text('状态: ${place.isOpen ? "营业中" : "已关闭"}'),
-            const SizedBox(height: 8),
-            Text('特色功能:'),
+            AppComponents.infoRow(label: '地址', value: place.address),
+            AppComponents.infoRow(label: '距离', value: place.distance),
+            AppComponents.infoRow(label: '评分', value: '${place.rating} (${place.reviewCount}条评价)'),
+            AppComponents.infoRow(label: '状态', value: place.isOpen ? "营业中" : "已关闭"),
+            const SizedBox(height: AppTheme.spacingM),
+            Text('特色功能:', style: AppTheme.subheadingStyle),
+            const SizedBox(height: AppTheme.spacingS),
             Wrap(
-              spacing: 8,
+              spacing: AppTheme.spacingS,
               children: place.features.map((feature) {
-                return Chip(
-                  label: Text(feature),
-                  backgroundColor: Colors.blue[50],
-                  labelStyle: TextStyle(color: Colors.blue[700]),
-                );
+                return AppComponents.tag(text: feature);
               }).toList(),
             ),
           ],
@@ -777,6 +793,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
               Navigator.of(context).pop();
               _navigateToPlace(place);
             },
+            style: AppTheme.primaryButtonStyle,
             child: const Text('导航'),
           ),
         ],
@@ -791,8 +808,13 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
   void _showPostOptions(CommunityPost post) {
     showModalBottomSheet(
       context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppTheme.borderRadiusLarge),
+        ),
+      ),
       builder: (context) => Container(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

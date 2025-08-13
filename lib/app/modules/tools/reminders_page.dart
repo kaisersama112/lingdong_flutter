@@ -31,7 +31,7 @@ class _RemindersPageState extends State<RemindersPage> {
               child: Text('暂无提醒，点击“新建提醒”添加', style: AppTheme.captionStyle),
             )
           : ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(AppTheme.spacingM),
               itemCount: _reminders.length,
               itemBuilder: (_, i) => _buildReminderTile(_reminders[i], i),
             ),
@@ -40,7 +40,7 @@ class _RemindersPageState extends State<RemindersPage> {
 
   Widget _buildReminderTile(_Reminder r, int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
       decoration: AppTheme.cardDecoration,
       child: ListTile(
         leading: Icon(r.icon, color: AppTheme.primaryColor),
@@ -84,6 +84,7 @@ class _ReminderEditor extends StatefulWidget {
 }
 
 class _ReminderEditorState extends State<_ReminderEditor> {
+  
   late TextEditingController _title;
   late TextEditingController _note;
   DateTime _date = DateTime.now().add(const Duration(hours: 1));
