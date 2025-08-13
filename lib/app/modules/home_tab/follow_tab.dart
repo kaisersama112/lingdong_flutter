@@ -161,10 +161,10 @@ class _FollowTabState extends State<FollowTab> {
             const SizedBox(height: 16),
             Row(
               children: [
-                _buildActionButton(
+                _buildPillAction(
                   icon: isLiked ? Icons.favorite : Icons.favorite_border,
                   label: '$likes',
-                  color: isLiked ? Colors.red : AppTheme.textSecondaryColor,
+                  active: isLiked,
                   onTap: () async {
                     try {
                       await _feedService.toggleLike(postId);
@@ -175,10 +175,10 @@ class _FollowTabState extends State<FollowTab> {
                   },
                 ),
                 const SizedBox(width: 24),
-                _buildActionButton(
+                _buildPillAction(
                   icon: isFavorited ? Icons.bookmark : Icons.bookmark_border,
                   label: isFavorited ? '已收藏' : '收藏',
-                  color: isFavorited ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+                  active: isFavorited,
                   onTap: () async {
                     try {
                       await _feedService.toggleFavorite(postId);
@@ -189,19 +189,19 @@ class _FollowTabState extends State<FollowTab> {
                   },
                 ),
                 const SizedBox(width: 24),
-                _buildActionButton(
+                _buildPillAction(
                   icon: Icons.comment_outlined,
                   label: '$comments',
-                  color: AppTheme.textSecondaryColor,
+                  active: false,
                   onTap: () {
                     _openCommentInput(context, postId);
                   },
                 ),
                 const SizedBox(width: 24),
-                _buildActionButton(
+                _buildPillAction(
                   icon: Icons.share_outlined,
                   label: '转发',
-                  color: AppTheme.textSecondaryColor,
+                  active: false,
                   onTap: () async {
                     await _feedService.incrementShare(postId);
                     if (!mounted) return;
@@ -230,6 +230,47 @@ class _FollowTabState extends State<FollowTab> {
           const SizedBox(width: 6),
           Text(label, style: TextStyle(color: color, fontSize: 14)),
         ],
+      ),
+    );
+  }
+
+  Widget _buildPillAction({
+    required IconData icon,
+    required String label,
+    required bool active,
+    required VoidCallback onTap,
+  }) {
+    final Color textColor = active ? Colors.white : AppTheme.textSecondaryColor;
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          gradient: active ? AppTheme.primaryGradient : null,
+          color: active ? null : Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          border: active ? null : Border.all(color: AppTheme.dividerColor),
+          boxShadow: active
+              ? [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : const [
+                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+                ],
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 18, color: textColor),
+            const SizedBox(width: 6),
+            Text(label, style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.w600)),
+          ],
+        ),
       ),
     );
   }

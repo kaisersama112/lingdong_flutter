@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/user_auth_service.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/app_components.dart';
 import '../../routes/navigation_controller.dart';
 import 'register_page.dart';
 import 'forgot_password_page.dart';
@@ -129,11 +128,11 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           width: 80,
           height: 80,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -175,15 +174,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingL),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -220,10 +219,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingS),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -244,7 +243,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                   boxShadow: _loginMethod == 0 ? [
                     BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.3),
+                      color: AppTheme.primaryColor.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -277,7 +276,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                   boxShadow: _loginMethod == 1 ? [
                     BoxShadow(
-                      color: AppTheme.primaryColor.withOpacity(0.3),
+                      color: AppTheme.primaryColor.withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -303,10 +302,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   Widget _buildPhoneInput() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -320,12 +319,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         decoration: InputDecoration(
           hintText: '请输入手机号',
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha: 0.4),
             fontSize: 16,
           ),
           prefixIcon: Icon(
             Icons.phone,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             size: 20,
           ),
           border: InputBorder.none,
@@ -352,10 +351,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       // 密码登录
       return Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
           border: Border.all(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
@@ -369,18 +368,18 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           decoration: InputDecoration(
             hintText: '请输入密码',
             hintStyle: TextStyle(
-              color: Colors.white.withOpacity(0.4),
+              color: Colors.white.withValues(alpha: 0.4),
               fontSize: 16,
             ),
             prefixIcon: Icon(
               Icons.lock,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               size: 20,
             ),
             suffixIcon: IconButton(
               icon: Icon(
                 _obscurePassword ? Icons.visibility : Icons.visibility_off,
-                color: Colors.white.withOpacity(0.8),
+                color: Colors.white.withValues(alpha: 0.8),
                 size: 20,
               ),
               onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -409,10 +408,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.1),
+                color: Colors.white.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.2),
+                  color: Colors.white.withValues(alpha: 0.2),
                   width: 1,
                 ),
               ),
@@ -426,12 +425,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 decoration: InputDecoration(
                   hintText: '请输入验证码',
                   hintStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.4),
+                    color: Colors.white.withValues(alpha: 0.4),
                     fontSize: 16,
                   ),
                   prefixIcon: Icon(
                     Icons.security,
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                     size: 20,
                   ),
                   border: InputBorder.none,
@@ -460,7 +459,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               gradient: LinearGradient(
                 colors: [
                   AppTheme.primaryColor,
-                  AppTheme.primaryColor.withOpacity(0.8),
+                  AppTheme.primaryColor.withValues(alpha: 0.8),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -468,7 +467,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryColor.withOpacity(0.3),
+                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -504,7 +503,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
           ),
           child: Checkbox(
@@ -513,7 +512,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             activeColor: AppTheme.primaryColor,
             checkColor: Colors.white,
             side: BorderSide(
-              color: Colors.white.withOpacity(0.3),
+              color: Colors.white.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
@@ -522,14 +521,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         Text(
           '记住密码',
           style: TextStyle(
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha: 0.8),
             fontSize: 14,
           ),
         ),
         const Spacer(),
         Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: Colors.white.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
           ),
           child: TextButton(
@@ -565,7 +564,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         gradient: LinearGradient(
           colors: [
             AppTheme.primaryColor,
-            AppTheme.primaryColor.withOpacity(0.8),
+            AppTheme.primaryColor.withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -573,7 +572,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.4),
+            color: AppTheme.primaryColor.withValues(alpha: 0.4),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -617,7 +616,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            AppTheme.primaryColor.withOpacity(0.8),
+            AppTheme.primaryColor.withValues(alpha: 0.8),
             AppTheme.primaryColor,
           ],
           begin: Alignment.topLeft,
@@ -626,7 +625,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.4),
+            color: AppTheme.primaryColor.withValues(alpha: 0.4),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -731,7 +730,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
               boxShadow: [
                 BoxShadow(
-                  color: color.withOpacity(0.3),
+                  color: color.withValues(alpha: 0.3),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -760,10 +759,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingM),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -773,14 +772,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           Text(
             '还没有账号？',
             style: TextStyle(
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha: 0.8),
               fontSize: 14,
             ),
           ),
           const SizedBox(width: AppTheme.spacingS),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
             ),
             child: TextButton(

@@ -37,7 +37,7 @@ class _NavigationControllerState extends State<NavigationController> {
     _NavigationItem(
       icon: Icons.people_alt_outlined,
       activeIcon: Icons.people_alt_rounded,
-      label: '社交',
+      label: '探索',
     ),
     _NavigationItem(
       icon: Icons.add_circle_outline,
@@ -119,7 +119,7 @@ class _NavigationControllerState extends State<NavigationController> {
 
   PreferredSizeWidget? _buildGuestAppBar() {
     return AppBar(
-      backgroundColor: Colors.orange.withOpacity(0.9),
+      backgroundColor: Colors.orange.withValues(alpha: 0.9),
       elevation: 0,
       title: Row(
         children: [
@@ -139,7 +139,7 @@ class _NavigationControllerState extends State<NavigationController> {
         TextButton(
           onPressed: _showUpgradeDialog,
           style: TextButton.styleFrom(
-            backgroundColor: Colors.white.withOpacity(0.2),
+            backgroundColor: Colors.white.withValues(alpha: 0.2),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20),
             ),
@@ -244,6 +244,7 @@ class _NavigationControllerState extends State<NavigationController> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           gradient: isSelected ? AppTheme.primaryGradient : null,
+          color: isSelected ? null : Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: isSelected ? [
             BoxShadow(
@@ -251,7 +252,14 @@ class _NavigationControllerState extends State<NavigationController> {
               blurRadius: 12,
               offset: const Offset(0, 4),
             ),
-          ] : null,
+          ] : [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+          border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -275,6 +283,8 @@ class _NavigationControllerState extends State<NavigationController> {
       ),
     );
   }
+
+  
 }
 
 class _NavigationItem {

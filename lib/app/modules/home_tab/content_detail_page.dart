@@ -223,23 +223,36 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     required Color color,
     required VoidCallback onTap,
   }) {
+    final bool isActive = color != AppTheme.textSecondaryColor;
+    final Color textColor = isActive ? Colors.white : AppTheme.textSecondaryColor;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         decoration: BoxDecoration(
-          color: Colors.white,
+          gradient: isActive ? AppTheme.primaryGradient : null,
+          color: isActive ? null : Colors.white,
           borderRadius: BorderRadius.circular(24),
-          boxShadow: const [
-            BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
-          ],
+          border: isActive ? null : Border.all(color: AppTheme.dividerColor, width: 1),
+          boxShadow: isActive
+              ? [
+                  BoxShadow(
+                    color: AppTheme.primaryColor.withValues(alpha: 0.25),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ]
+              : const [
+                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+                ],
         ),
         child: Row(
           children: [
-            Icon(icon, size: 18, color: color),
+            Icon(icon, size: 18, color: textColor),
             const SizedBox(width: 6),
-            Text(label, style: TextStyle(color: color, fontSize: 14)),
+            Text(label, style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w600)),
           ],
         ),
       ),

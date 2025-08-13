@@ -90,10 +90,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingL),
       decoration: BoxDecoration(
-        color: Colors.orange.withOpacity(0.2),
+        color: Colors.orange.withValues(alpha:0.2),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.orange.withOpacity(0.3),
+          color: Colors.orange.withValues(alpha:0.3),
           width: 1,
         ),
       ),
@@ -131,15 +131,15 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingL),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.15),
+        color: Colors.white.withValues(alpha:0.15),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha:0.1),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -190,10 +190,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
   Widget _buildNicknameInput() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
       ),
@@ -206,12 +206,12 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         decoration: InputDecoration(
           hintText: '请输入昵称',
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha:0.4),
             fontSize: 16,
           ),
           prefixIcon: Icon(
             Icons.person,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             size: 20,
           ),
           border: InputBorder.none,
@@ -239,10 +239,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
   Widget _buildPhoneInput() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
       ),
@@ -256,12 +256,12 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         decoration: InputDecoration(
           hintText: '请输入手机号',
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha:0.4),
             fontSize: 16,
           ),
           prefixIcon: Icon(
             Icons.phone,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             size: 20,
           ),
           border: InputBorder.none,
@@ -289,10 +289,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         Expanded(
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
               border: Border.all(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha:0.2),
                 width: 1,
               ),
             ),
@@ -306,12 +306,12 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
               decoration: InputDecoration(
                 hintText: '请输入验证码',
                 hintStyle: TextStyle(
-                  color: Colors.white.withOpacity(0.4),
+                  color: Colors.white.withValues(alpha:0.4),
                   fontSize: 16,
                 ),
                 prefixIcon: Icon(
                   Icons.security,
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha:0.8),
                   size: 20,
                 ),
                 border: InputBorder.none,
@@ -340,7 +340,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
             gradient: LinearGradient(
               colors: [
                 AppTheme.primaryColor,
-                AppTheme.primaryColor.withOpacity(0.8),
+                AppTheme.primaryColor.withValues(alpha:0.8),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -348,7 +348,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
             boxShadow: [
               BoxShadow(
-                color: AppTheme.primaryColor.withOpacity(0.3),
+                color: AppTheme.primaryColor.withValues(alpha:0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -381,10 +381,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
   Widget _buildEmailInput() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
       ),
@@ -398,12 +398,12 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         decoration: InputDecoration(
           hintText: '请输入邮箱（可选）',
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha:0.4),
             fontSize: 16,
           ),
           prefixIcon: Icon(
             Icons.email,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             size: 20,
           ),
           border: InputBorder.none,
@@ -427,10 +427,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
   Widget _buildPasswordInput() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
       ),
@@ -444,18 +444,18 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         decoration: InputDecoration(
           hintText: '请输入密码',
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha:0.4),
             fontSize: 16,
           ),
           prefixIcon: Icon(
             Icons.lock,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             size: 20,
           ),
           suffixIcon: IconButton(
             icon: Icon(
               _obscurePassword ? Icons.visibility : Icons.visibility_off,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha:0.8),
               size: 20,
             ),
             onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -485,10 +485,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
   Widget _buildConfirmPasswordInput() {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
       ),
@@ -502,18 +502,18 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         decoration: InputDecoration(
           hintText: '请确认密码',
           hintStyle: TextStyle(
-            color: Colors.white.withOpacity(0.4),
+            color: Colors.white.withValues(alpha:0.4),
             fontSize: 16,
           ),
           prefixIcon: Icon(
             Icons.lock_outline,
-            color: Colors.white.withOpacity(0.8),
+            color: Colors.white.withValues(alpha:0.8),
             size: 20,
           ),
           suffixIcon: IconButton(
             icon: Icon(
               _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
-              color: Colors.white.withOpacity(0.8),
+              color: Colors.white.withValues(alpha:0.8),
               size: 20,
             ),
             onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
@@ -541,10 +541,10 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingM),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
+        color: Colors.white.withValues(alpha:0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withValues(alpha:0.2),
           width: 1,
         ),
       ),
@@ -552,7 +552,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha:0.1),
               borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
             ),
             child: Checkbox(
@@ -561,7 +561,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
               activeColor: AppTheme.primaryColor,
               checkColor: Colors.white,
               side: BorderSide(
-                color: Colors.white.withOpacity(0.3),
+                color: Colors.white.withValues(alpha:0.3),
                 width: 1,
               ),
             ),
@@ -571,7 +571,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
             child: RichText(
               text: TextSpan(
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.8),
+                  color: Colors.white.withValues(alpha:0.8),
                   fontSize: 14,
                 ),
                 children: [
@@ -607,7 +607,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         gradient: LinearGradient(
           colors: [
             AppTheme.primaryColor,
-            AppTheme.primaryColor.withOpacity(0.8),
+            AppTheme.primaryColor.withValues(alpha:0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -615,7 +615,7 @@ class _GuestUpgradePageState extends State<GuestUpgradePage> {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withOpacity(0.4),
+            color: AppTheme.primaryColor.withValues(alpha:0.4),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),

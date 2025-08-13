@@ -139,7 +139,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                 Text(
                   '宠物档案管理',
                   style: AppTheme.captionStyle.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -151,7 +151,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
             child: IconButton(
               icon: CircleAvatar(
                 radius: 16,
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
                 child: Text(
                   _userProfile.avatar,
                   style: const TextStyle(fontSize: 16, color: Colors.white),
@@ -238,7 +238,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                               gradient: LinearGradient(
                                 colors: [
                                   pet.color,
-                                  pet.color.withOpacity(0.8),
+                                  pet.color.withValues(alpha: 0.8),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
@@ -342,15 +342,15 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    pet.color.withOpacity(0.2),
-                    pet.color.withOpacity(0.1),
+                    pet.color.withValues(alpha: 0.2),
+                    pet.color.withValues(alpha: 0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
                 border: Border.all(
-                  color: pet.color.withOpacity(0.3),
+                  color: pet.color.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
@@ -374,7 +374,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                       const SizedBox(width: AppTheme.spacingS),
                       AppComponents.tag(
                         text: pet.type,
-                        backgroundColor: pet.color.withOpacity(0.1),
+                        backgroundColor: pet.color.withValues(alpha: 0.1),
                         textColor: pet.color,
                       ),
                     ],
@@ -413,7 +413,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
       decoration: BoxDecoration(
         color: AppTheme.primaryLightColor,
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+        border: Border.all(color: AppTheme.primaryColor.withValues(alpha: 0.3)),
       ),
       child: Text(
         text,
@@ -570,7 +570,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                 Container(
                   padding: const EdgeInsets.all(AppTheme.spacingS),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
+                    color: color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                   ),
                   child: Icon(icon, color: color, size: 20),
@@ -603,7 +603,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
             shape: BoxShape.circle,
             boxShadow: [
               BoxShadow(
-                color: color.withOpacity(0.3),
+                color: color.withValues(alpha: 0.3),
                 blurRadius: 4,
                 spreadRadius: 1,
               ),
@@ -665,7 +665,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         color: AppTheme.primaryLightColor,
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         border: Border.all(
-          color: AppTheme.primaryColor.withOpacity(0.3),
+          color: AppTheme.primaryColor.withValues(alpha: 0.3),
           width: 1,
         ),
       ),

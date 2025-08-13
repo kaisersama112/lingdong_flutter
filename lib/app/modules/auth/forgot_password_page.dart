@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/user_auth_service.dart';
 import '../../theme/app_theme.dart';
-import '../../theme/app_components.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -129,11 +128,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
           width: 60,
           height: 60,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.2),
+            color: Colors.white.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.1),
+                color: Colors.black.withValues(alpha: 0.1),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -193,7 +192,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isActive ? AppTheme.primaryColor : Colors.white.withOpacity(0.3),
+              color: isActive ? AppTheme.primaryColor : Colors.white.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
               border: isCurrent ? Border.all(color: Colors.white, width: 2) : null,
             ),
@@ -220,7 +219,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
   Widget _buildStepLine() {
     return Container(
       height: 2,
-      color: _currentStep > 0 ? AppTheme.primaryColor : Colors.white.withOpacity(0.3),
+      color: _currentStep > 0 ? AppTheme.primaryColor : Colors.white.withValues(alpha: 0.3),
     );
   }
 

@@ -5,7 +5,7 @@ import '../wiki/breed_data.dart';
 import '../wiki/breed_detail_page.dart';
 
 class WikiTab extends StatefulWidget {
-  const WikiTab({Key? key}) : super(key: key);
+  const WikiTab({super.key});
 
   @override
   State<WikiTab> createState() => _WikiTabState();
@@ -145,7 +145,7 @@ class _WikiTabState extends State<WikiTab> {
                   decoration: BoxDecoration(
                     color: BreedTagStyle.colorForSize(
                       breed.size,
-                    ).withOpacity(0.15),
+                    ).withValues(alpha:0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(

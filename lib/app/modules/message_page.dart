@@ -165,7 +165,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
                 Text(
                   '及时了解最新动态和通知',
                   style: AppTheme.captionStyle.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha:0.8),
                   ),
                 ),
               ],
@@ -285,15 +285,15 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                message.avatarColor.withOpacity(0.2),
-                message.avatarColor.withOpacity(0.1),
+                message.avatarColor.withValues(alpha:0.2),
+                message.avatarColor.withValues(alpha:0.1),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
             border: Border.all(
-              color: message.avatarColor.withOpacity(0.3),
+              color: message.avatarColor.withValues(alpha:0.3),
               width: 1,
             ),
           ),
@@ -324,7 +324,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.errorColor.withOpacity(0.3),
+                      color: AppTheme.errorColor.withValues(alpha:0.3),
                       blurRadius: 4,
                       spreadRadius: 1,
                     ),
@@ -396,15 +396,15 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    message.avatarColor.withOpacity(0.2),
-                    message.avatarColor.withOpacity(0.1),
+                    message.avatarColor.withValues(alpha:0.2),
+                    message.avatarColor.withValues(alpha:0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
                 border: Border.all(
-                  color: message.avatarColor.withOpacity(0.3),
+                  color: message.avatarColor.withValues(alpha:0.3),
                   width: 1,
                 ),
               ),

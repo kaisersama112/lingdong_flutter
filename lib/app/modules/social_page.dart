@@ -235,7 +235,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                 Text(
                   '找到最适合你和宠物的好去处',
                   style: AppTheme.captionStyle.copyWith(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withValues(alpha:0.8),
                   ),
                 ),
               ],
@@ -438,7 +438,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                               child: Text(
                                 place.address,
                                 style: AppTheme.captionStyle.copyWith(
-                                  color: Colors.white.withOpacity(0.8),
+                                  color: Colors.white.withValues(alpha:0.8),
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -461,7 +461,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                             Text(
                               ' (${place.reviewCount})',
                               style: AppTheme.captionStyle.copyWith(
-                                color: Colors.white.withOpacity(0.8),
+                                color: Colors.white.withValues(alpha:0.8),
                               ),
                             ),
                             const Spacer(),
@@ -472,8 +472,8 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                               ),
                               decoration: BoxDecoration(
                                 color: place.isOpen
-                                    ? AppTheme.successColor.withOpacity(0.2)
-                                    : AppTheme.errorColor.withOpacity(0.2),
+                                    ? AppTheme.successColor.withValues(alpha:0.2)
+                                    : AppTheme.errorColor.withValues(alpha:0.2),
                                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
                               ),
                               child: Text(
@@ -526,7 +526,7 @@ class _SocialPageState extends State<SocialPage> with TickerProviderStateMixin {
                       decoration: BoxDecoration(
                         color: AppTheme.primaryLightColor,
                         borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                        border: Border.all(color: AppTheme.primaryColor.withOpacity(0.3)),
+                        border: Border.all(color: AppTheme.primaryColor.withValues(alpha:0.3)),
                       ),
                       child: Text(
                         feature,

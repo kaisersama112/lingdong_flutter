@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 
 /// 用户基础信息模型
 class User {

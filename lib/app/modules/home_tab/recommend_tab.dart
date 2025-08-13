@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import '../../theme/app_theme.dart';
+import 'content_detail_page.dart';
 
 class RecommendTab extends StatefulWidget {
-  const RecommendTab({Key? key}) : super(key: key);
+  const RecommendTab({super.key});
 
   @override
   State<RecommendTab> createState() => _RecommendTabState();
 }
 
 class _RecommendTabState extends State<RecommendTab> {
-  final PageController _heroController = PageController(viewportFraction: 0.9);
+  late PageController _heroController;
   int _currentHeroIndex = 0;
   Timer? _heroTimer;
   bool _userInteractingCarousel = false;
+  late int _initialHeroPage;
 
   final List<_HeroCard> _heroCards = const [
     _HeroCard(
@@ -85,6 +87,11 @@ class _RecommendTabState extends State<RecommendTab> {
   @override
   void initState() {
     super.initState();
+    _initialHeroPage = _heroCards.length * 1000;
+    _heroController = PageController(
+      viewportFraction: 0.9,
+      initialPage: _initialHeroPage,
+    );
     _startHeroAutoPlay();
   }
 
@@ -101,9 +108,7 @@ class _RecommendTabState extends State<RecommendTab> {
       if (!mounted) return;
       if (!_heroController.hasClients) return;
       if (_userInteractingCarousel) return;
-      final next = (_currentHeroIndex + 1) % _heroCards.length;
-      _heroController.animateToPage(
-        next,
+      _heroController.nextPage(
         duration: const Duration(milliseconds: 450),
         curve: Curves.easeOut,
       );
@@ -143,16 +148,20 @@ class _RecommendTabState extends State<RecommendTab> {
         const SizedBox(height: 16),
         SizedBox(
           height: 180,
-          child: PageView.builder(
-            controller: _heroController,
-            onPageChanged: (index) {
-              setState(() => _currentHeroIndex = index);
-            },
-            itemCount: _heroCards.length,
-            itemBuilder: (context, index) {
-              final card = _heroCards[index];
-              return _buildHeroCard(card, index);
-            },
+          child: Listener(
+            onPointerDown: (_) => setState(() => _userInteractingCarousel = true),
+            onPointerUp: (_) => setState(() => _userInteractingCarousel = false),
+            onPointerCancel: (_) => setState(() => _userInteractingCarousel = false),
+            child: PageView.builder(
+              controller: _heroController,
+              onPageChanged: (index) {
+                setState(() => _currentHeroIndex = index % _heroCards.length);
+              },
+              itemBuilder: (context, index) {
+                final card = _heroCards[index % _heroCards.length];
+                return _buildHeroCard(card, index);
+              },
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -180,7 +189,18 @@ class _RecommendTabState extends State<RecommendTab> {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            // 处理点击事件
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => ContentDetailPage(
+                  postId: 'hero_$index',
+                  title: card.title,
+                  content: card.subtitle,
+                  author: '系统推荐',
+                  images: const [],
+                  videoThumb: null,
+                ),
+              ),
+            );
           },
           child: Padding(
             padding: const EdgeInsets.all(24),
@@ -473,6 +493,19 @@ class _RecommendTabState extends State<RecommendTab> {
               author: '宠物达人${index + 1}',
               likes: (index + 1) * 123,
               comments: (index + 1) * 45,
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ContentDetailPage(
+                      postId: 'recommend_$index',
+                      title: '推荐内容 ${index + 1}',
+                      content: '这是一个有趣的推荐内容，包含了用户可能感兴趣的信息...',
+                      author: '宠物达人${index + 1}',
+                      images: const [],
+                    ),
+                  ),
+                );
+              },
             ),
           );
         }),
@@ -486,8 +519,14 @@ class _RecommendTabState extends State<RecommendTab> {
     required String author,
     required int likes,
     required int comments,
+    VoidCallback? onTap,
   }) {
-    return Container(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        onTap: onTap,
+        child: Container(
       decoration: AppTheme.cardDecoration,
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -570,26 +609,30 @@ class _RecommendTabState extends State<RecommendTab> {
           ],
         ),
       ),
+    ),
+      ),
     );
   }
 
   Widget _buildActionButton(IconData icon, String label) {
-    return Row(
-      children: [
-        Icon(
-          icon,
-          size: 18,
-          color: AppTheme.textSecondaryColor,
-        ),
-        const SizedBox(width: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: AppTheme.textSecondaryColor,
-          ),
-        ),
-      ],
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.dividerColor),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: AppTheme.textSecondaryColor),
+          const SizedBox(width: 6),
+          Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondaryColor, fontWeight: FontWeight.w600)),
+        ],
+      ),
     );
   }
 }

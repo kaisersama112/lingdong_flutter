@@ -358,14 +358,14 @@ class AppTheme {
     
     // 开关主题
     switchTheme: SwitchThemeData(
-      thumbColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return primaryColor;
         }
         return textLightColor;
       }),
-      trackColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return primaryColor.withValues(alpha: 0.3);
         }
         return textLightColor.withValues(alpha: 0.3);
@@ -374,13 +374,13 @@ class AppTheme {
     
     // 复选框主题
     checkboxTheme: CheckboxThemeData(
-      fillColor: MaterialStateProperty.resolveWith((states) {
-        if (states.contains(MaterialState.selected)) {
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
           return primaryColor;
         }
         return Colors.transparent;
       }),
-      checkColor: MaterialStateProperty.all(Colors.white),
+      checkColor: WidgetStateProperty.all(Colors.white),
       side: const BorderSide(color: dividerColor),
     ),
   );

@@ -15,7 +15,7 @@ class _PublishPageState extends State<PublishPage>
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   String _selectedCategory = '社群动态';
-  List<String> _selectedImages = [];
+  final List<String> _selectedImages = [];
   bool _isPublic = true;
   
   // AI特效相关状态
