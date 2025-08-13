@@ -26,7 +26,7 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -103,11 +103,91 @@ class DatabaseService {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
+
+    // 帖子统计表
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS post_stats (
+        post_id TEXT PRIMARY KEY,
+        likes INTEGER NOT NULL DEFAULT 0,
+        favorites INTEGER NOT NULL DEFAULT 0,
+        comments INTEGER NOT NULL DEFAULT 0,
+        shares INTEGER NOT NULL DEFAULT 0
+      )
+    ''');
+
+    // 点赞表
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS post_likes (
+        post_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        PRIMARY KEY (post_id, user_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // 收藏表
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS post_favorites (
+        post_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        PRIMARY KEY (post_id, user_id),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // 评论表
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS post_comments (
+        id TEXT PRIMARY KEY,
+        post_id TEXT NOT NULL,
+        user_id TEXT NOT NULL,
+        content TEXT NOT NULL,
+        created_at DATETIME NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
   }
 
   /// 数据库升级
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    // 未来版本升级逻辑
+    // 版本升级：添加互动相关表
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS post_stats (
+          post_id TEXT PRIMARY KEY,
+          likes INTEGER NOT NULL DEFAULT 0,
+          favorites INTEGER NOT NULL DEFAULT 0,
+          comments INTEGER NOT NULL DEFAULT 0,
+          shares INTEGER NOT NULL DEFAULT 0
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS post_likes (
+          post_id TEXT NOT NULL,
+          user_id TEXT NOT NULL,
+          PRIMARY KEY (post_id, user_id)
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS post_favorites (
+          post_id TEXT NOT NULL,
+          user_id TEXT NOT NULL,
+          PRIMARY KEY (post_id, user_id)
+        )
+      ''');
+
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS post_comments (
+          id TEXT PRIMARY KEY,
+          post_id TEXT NOT NULL,
+          user_id TEXT NOT NULL,
+          content TEXT NOT NULL,
+          created_at DATETIME NOT NULL
+        )
+      ''');
+    }
   }
 
   /// 保存用户

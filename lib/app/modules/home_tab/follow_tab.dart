@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../services/feed_service.dart';
+import 'content_detail_page.dart';
+import '../../services/user_auth_service.dart';
 
-class FollowTab extends StatelessWidget {
+class FollowTab extends StatefulWidget {
   const FollowTab({Key? key}) : super(key: key);
+
+  @override
+  State<FollowTab> createState() => _FollowTabState();
+}
+
+class _FollowTabState extends State<FollowTab> {
+  final FeedService _feedService = FeedService();
 
   @override
   Widget build(BuildContext context) {
@@ -15,18 +25,43 @@ class FollowTab extends StatelessWidget {
           (i) => 'https://picsum.photos/seed/follow_${index}_$i/400/400',
         );
         final bool isVideo = index % 3 == 0;
-        return _buildContentCard(
-          context: context,
-          title: '关注内容  ${index + 1}',
-          content: '这是你关注的人发布的内容，保持关注获取最新动态...',
-          author: '关注用户',
-          likes: (index + 1) * 15,
-          comments: (index + 1) * 5,
-          isLiked: index % 3 == 0,
-          images: isVideo ? const [] : images,
-          videoThumb: isVideo
-              ? 'https://picsum.photos/seed/follow_video_$index/800/450'
-              : null,
+        final String postId = 'follow_$index';
+        return FutureBuilder<PostStats>(
+          future: _feedService.getPostStats(postId),
+          builder: (context, snapshot) {
+            final stats = snapshot.data ?? const PostStats(likes: 0, favorites: 0, comments: 0, shares: 0, likedByCurrentUser: false, favoritedByCurrentUser: false);
+            return GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => ContentDetailPage(
+                      postId: postId,
+                      title: '关注内容  ${index + 1}',
+                      content: '这是你关注的人发布的内容，保持关注获取最新动态...',
+                      author: '关注用户',
+                      images: isVideo ? const [] : images,
+                      videoThumb: isVideo ? 'https://picsum.photos/seed/follow_video_$index/800/450' : null,
+                    ),
+                  ),
+                );
+              },
+              child: _buildContentCard(
+              context: context,
+              postId: postId,
+              title: '关注内容  ${index + 1}',
+              content: '这是你关注的人发布的内容，保持关注获取最新动态...',
+              author: '关注用户',
+              likes: stats.likes,
+              comments: stats.comments,
+              isLiked: stats.likedByCurrentUser,
+              isFavorited: stats.favoritedByCurrentUser,
+              images: isVideo ? const [] : images,
+              videoThumb: isVideo
+                  ? 'https://picsum.photos/seed/follow_video_$index/800/450'
+                  : null,
+              ),
+            );
+          },
         );
       },
     );
@@ -34,12 +69,14 @@ class FollowTab extends StatelessWidget {
 
   Widget _buildContentCard({
     required BuildContext context,
+    required String postId,
     required String title,
     required String content,
     required String author,
     required int likes,
     required int comments,
     required bool isLiked,
+    required bool isFavorited,
     required List<String> images,
     String? videoThumb,
   }) {
@@ -128,10 +165,27 @@ class FollowTab extends StatelessWidget {
                   icon: isLiked ? Icons.favorite : Icons.favorite_border,
                   label: '$likes',
                   color: isLiked ? Colors.red : AppTheme.textSecondaryColor,
-                  onTap: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('点赞功能开发中...')));
+                  onTap: () async {
+                    try {
+                      await _feedService.toggleLike(postId);
+                      if (mounted) setState(() {});
+                    } catch (e) {
+                      _showLoginTip(context, e.toString());
+                    }
+                  },
+                ),
+                const SizedBox(width: 24),
+                _buildActionButton(
+                  icon: isFavorited ? Icons.bookmark : Icons.bookmark_border,
+                  label: isFavorited ? '已收藏' : '收藏',
+                  color: isFavorited ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+                  onTap: () async {
+                    try {
+                      await _feedService.toggleFavorite(postId);
+                      if (mounted) setState(() {});
+                    } catch (e) {
+                      _showLoginTip(context, e.toString());
+                    }
                   },
                 ),
                 const SizedBox(width: 24),
@@ -140,20 +194,18 @@ class FollowTab extends StatelessWidget {
                   label: '$comments',
                   color: AppTheme.textSecondaryColor,
                   onTap: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('评论功能开发中...')));
+                    _openCommentInput(context, postId);
                   },
                 ),
                 const SizedBox(width: 24),
                 _buildActionButton(
                   icon: Icons.share_outlined,
-                  label: '分享',
+                  label: '转发',
                   color: AppTheme.textSecondaryColor,
-                  onTap: () {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text('分享功能开发中...')));
+                  onTap: () async {
+                    await _feedService.incrementShare(postId);
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('已转发')));
                   },
                 ),
               ],
@@ -180,6 +232,76 @@ class FollowTab extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _openCommentInput(BuildContext context, String postId) {
+    final controller = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+            left: 16,
+            right: 16,
+            top: 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                maxLines: 3,
+                decoration: const InputDecoration(
+                  hintText: '写下你的评论...',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('取消'),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final text = controller.text.trim();
+                      if (text.isEmpty) return;
+                      try {
+                        await FeedService().addComment(postId, text);
+                        if (mounted) setState(() {});
+                        if (context.mounted) Navigator.of(context).pop();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('评论成功')));
+                        }
+                      } catch (e) {
+                        if (context.mounted) _showLoginTip(context, e.toString());
+                      }
+                    },
+                    child: const Text('发送'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showLoginTip(BuildContext context, String message) {
+    if (UserAuthService().currentUser == null) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 
   Widget _buildVideoThumb(String url) {
