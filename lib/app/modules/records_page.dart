@@ -3,11 +3,12 @@ import '../theme/app_theme.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../core/components.dart';
-// import '../core/error_handler.dart';
+import '../core/models.dart' as models;
+import '../core/pet_components.dart';
 
 class RecordsPage extends StatefulWidget {
   final String? initialPetId;
-  final HealthRecordType? initialFilterType;
+  final models.HealthRecordType? initialFilterType;
   final bool openAddSheet;
 
   const RecordsPage({
@@ -28,11 +29,9 @@ class _RecordsPageState extends State<RecordsPage> {
   DateTimeRange? _dateRange;
   final TextEditingController _searchController = TextEditingController();
 
-
-
   // 模拟宠物数据
-  final List<Pet> _pets = [
-    Pet(
+  final List<models.Pet> _pets = [
+    models.Pet(
       id: '1',
       name: '小白',
       type: '猫咪',
@@ -44,7 +43,7 @@ class _RecordsPageState extends State<RecordsPage> {
       weight: 4.2,
       gender: '公',
     ),
-    Pet(
+    models.Pet(
       id: '2',
       name: '旺财',
       type: '狗狗',
@@ -56,7 +55,7 @@ class _RecordsPageState extends State<RecordsPage> {
       weight: 25.5,
       gender: '公',
     ),
-    Pet(
+    models.Pet(
       id: '3',
       name: '咪咪',
       type: '猫咪',
@@ -72,8 +71,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
   // 健康记录：状态与筛选
   late String _selectedPetIdForHealth;
-  final List<HealthRecord> _healthRecords = [];
-  final Set<HealthRecordType> _activeTypeFilters = {};
+  final List<models.HealthRecord> _healthRecords = [];
+  final Set<models.HealthRecordType> _activeTypeFilters = {};
 
   @override
   void initState() {
@@ -138,18 +137,23 @@ class _RecordsPageState extends State<RecordsPage> {
         ],
       ),
       body: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppTheme.spacingL),
-          child: Column(
-            children: [
+        padding: const EdgeInsets.all(AppTheme.spacingL),
+        child: Column(
+          children: [
             // 宠物选择器
-            _buildPetSelector(),
-              
-              const SizedBox(height: AppTheme.spacingL),
-              
+            PetSelector(
+              pets: _pets,
+              selectedPetId: _selectedPetIdForHealth,
+              onPetSelected: (petId) => setState(() => _selectedPetIdForHealth = petId),
+              showAddButton: false,
+            ),
+            
+            const SizedBox(height: AppTheme.spacingL),
+            
             // 搜索与日期范围
             _buildSearchAndDateBar(),
 
-                          const SizedBox(height: AppTheme.spacingM),
+            const SizedBox(height: AppTheme.spacingM),
 
             // 类型筛选
             _buildTypeFilters(),
@@ -159,8 +163,8 @@ class _RecordsPageState extends State<RecordsPage> {
             // 健康记录列表
             _isTimelineView ? _buildHealthRecordsTimeline() : _buildHealthRecordsList(),
           
-          const SizedBox(height: AppTheme.spacingL),
-          
+            const SizedBox(height: AppTheme.spacingL),
+            
             // 底部统计与快速清空
             _buildBottomSummaryBar(),
           ],
@@ -170,68 +174,6 @@ class _RecordsPageState extends State<RecordsPage> {
         onPressed: () => _showAddHealthRecordSheet(presetPetId: _selectedPetIdForHealth),
         backgroundColor: AppTheme.primaryColor,
         child: const Icon(Icons.add, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildPetSelector() {
-    return PetAppComponents.buildCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                    Text(
-            '选择宠物',
-                      style: const TextStyle(
-                        fontSize: AppTheme.fontSizeL,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textPrimaryColor,
-                      ),
-                ),
-                const SizedBox(height: AppTheme.spacingM),
-                
-                SizedBox(
-                  height: 68,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _pets.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: AppTheme.spacingM),
-                    itemBuilder: (context, index) {
-                      final pet = _pets[index];
-                      final bool selected = pet.id == _selectedPetIdForHealth;
-                      return GestureDetector(
-                        onTap: () => setState(() => _selectedPetIdForHealth = pet.id),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.spacingM,
-                            vertical: AppTheme.spacingS,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected ? pet.color.withValues(alpha: 0.12) : AppTheme.backgroundColor,
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-                            border: Border.all(
-                              color: selected ? pet.color.withValues(alpha: 0.35) : AppTheme.dividerColor,
-                            ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(pet.avatar, style: const TextStyle(fontSize: 18)),
-                              const SizedBox(width: 6),
-                              Text(
-                                pet.name,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  color: selected ? pet.color : AppTheme.textPrimaryColor,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-        ],
       ),
     );
   }
@@ -249,35 +191,35 @@ class _RecordsPageState extends State<RecordsPage> {
               color: AppTheme.textPrimaryColor,
             ),
           ),
-                const SizedBox(height: AppTheme.spacingM),
+          const SizedBox(height: AppTheme.spacingM),
 
-                Wrap(
-                  spacing: AppTheme.spacingS,
-                  runSpacing: AppTheme.spacingS,
-                  children: HealthRecordType.values.map((t) {
-                    final bool isOn = _activeTypeFilters.contains(t);
-                    final color = _healthTypeColor(t);
-                    return FilterChip(
-                      label: Text(_healthTypeLabel(t)),
-                      selected: isOn,
-                      onSelected: (v) => setState(() {
-                        if (v) {
-                          _activeTypeFilters.add(t);
-                        } else {
-                          _activeTypeFilters.remove(t);
-                        }
-                      }),
-                      backgroundColor: Colors.grey[100],
-                      selectedColor: color.withValues(alpha: 0.15),
-                      checkmarkColor: color,
-                      labelStyle: TextStyle(
-                        color: isOn ? color : AppTheme.textSecondaryColor,
-                        fontWeight: isOn ? FontWeight.w700 : FontWeight.w500,
-                      ),
-                      side: BorderSide(color: isOn ? color.withValues(alpha: 0.35) : AppTheme.dividerColor),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-                    );
-                  }).toList(),
+          Wrap(
+            spacing: AppTheme.spacingS,
+            runSpacing: AppTheme.spacingS,
+            children: models.HealthRecordType.values.map((t) {
+              final bool isOn = _activeTypeFilters.contains(t);
+              final color = models.HealthRecordUtils.getTypeColor(t);
+              return FilterChip(
+                label: Text(models.HealthRecordUtils.getTypeLabel(t)),
+                selected: isOn,
+                onSelected: (v) => setState(() {
+                  if (v) {
+                    _activeTypeFilters.add(t);
+                  } else {
+                    _activeTypeFilters.remove(t);
+                  }
+                }),
+                backgroundColor: Colors.grey[100],
+                selectedColor: color.withValues(alpha: 0.15),
+                checkmarkColor: color,
+                labelStyle: TextStyle(
+                  color: isOn ? color : AppTheme.textSecondaryColor,
+                  fontWeight: isOn ? FontWeight.w700 : FontWeight.w500,
+                ),
+                side: BorderSide(color: isOn ? color.withValues(alpha: 0.35) : AppTheme.dividerColor),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+              );
+            }).toList(),
           ),
         ],
       ),
@@ -286,12 +228,12 @@ class _RecordsPageState extends State<RecordsPage> {
 
   Widget _buildSearchAndDateBar() {
     return PetAppComponents.buildCard(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
@@ -314,9 +256,9 @@ class _RecordsPageState extends State<RecordsPage> {
                 label: Text(_dateRange == null
                     ? '选择日期'
                     : '${_formatDate(_dateRange!.start)} ~ ${_formatDate(_dateRange!.end)}'),
-                    ),
-                  ],
-                ),
+              ),
+            ],
+          ),
           if (_dateRange != null)
             Padding(
               padding: const EdgeInsets.only(top: AppTheme.spacingS),
@@ -363,22 +305,22 @@ class _RecordsPageState extends State<RecordsPage> {
                   color: AppTheme.textSecondaryColor,
                 ),
                 const SizedBox(height: AppTheme.spacingM),
-        Text(
+                Text(
                   '暂无健康记录',
-          style: TextStyle(
+                  style: TextStyle(
                     color: AppTheme.textSecondaryColor,
-            fontSize: AppTheme.fontSizeL,
-          ),
-        ),
+                    fontSize: AppTheme.fontSizeL,
+                  ),
+                ),
                 const SizedBox(height: AppTheme.spacingS),
-        Text(
+                Text(
                   '点击右下角按钮添加第一条记录',
-          style: TextStyle(
-            color: AppTheme.textSecondaryColor,
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryColor,
                     fontSize: AppTheme.fontSizeS,
-          ),
-        ),
-      ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -415,7 +357,7 @@ class _RecordsPageState extends State<RecordsPage> {
       return _buildHealthRecordsList();
     }
 
-    final Map<String, List<HealthRecord>> grouped = {};
+    final Map<String, List<models.HealthRecord>> grouped = {};
     for (final r in list) {
       final key = '${r.date.year}-${r.date.month.toString().padLeft(2, '0')}';
       grouped.putIfAbsent(key, () => []).add(r);
@@ -425,8 +367,8 @@ class _RecordsPageState extends State<RecordsPage> {
       ..sort((a, b) => _sortDesc ? b.compareTo(a) : a.compareTo(b));
 
     return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         for (final k in keys) ...[
           Padding(
             padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
@@ -462,54 +404,42 @@ class _RecordsPageState extends State<RecordsPage> {
     );
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
   // ---------- 健康记录：逻辑与UI ----------
   void _seedHealthRecords() {
     // 为每只示例宠物添加若干记录，便于展示
     if (_pets.isEmpty) return;
     final now = DateTime.now();
     _healthRecords.addAll([
-      HealthRecord(
+      models.HealthRecord(
         id: 'r1',
         petId: _pets[1].id, // 狗狗 旺财
         date: now.subtract(const Duration(days: 12)),
-        type: HealthRecordType.vaccination,
+        type: models.HealthRecordType.vaccination,
         title: '八联疫苗 第2针',
         notes: '状态良好，无不良反应',
       ),
-      HealthRecord(
+      models.HealthRecord(
         id: 'r2',
         petId: _pets[1].id,
         date: now.subtract(const Duration(days: 35)),
-        type: HealthRecordType.deworming,
+        type: models.HealthRecordType.deworming,
         title: '体内驱虫',
         notes: '使用拜耳，按体重25kg剂量',
       ),
-      HealthRecord(
+      models.HealthRecord(
         id: 'r3',
         petId: _pets[0].id, // 猫咪 小白
         date: now.subtract(const Duration(days: 5)),
-        type: HealthRecordType.weight,
+        type: models.HealthRecordType.weight,
         title: '称重 4.3kg',
         notes: '体重较稳定，食欲正常',
         weight: 4.3,
       ),
-      HealthRecord(
+      models.HealthRecord(
         id: 'r4',
         petId: _pets[2].id, // 猫咪 咪咪
         date: now.subtract(const Duration(days: 3)),
-        type: HealthRecordType.vetVisit,
+        type: models.HealthRecordType.vetVisit,
         title: '年度体检',
         notes: '常规体检正常，建议继续控制体重',
         clinic: '星辰宠物医院',
@@ -517,8 +447,8 @@ class _RecordsPageState extends State<RecordsPage> {
     ]);
   }
 
-  List<HealthRecord> _filteredHealthRecords() {
-    List<HealthRecord> base = _healthRecords
+  List<models.HealthRecord> _filteredHealthRecords() {
+    List<models.HealthRecord> base = _healthRecords
         .where((r) => r.petId == _selectedPetIdForHealth)
         .toList();
     base.sort((a, b) => _sortDesc ? b.date.compareTo(a.date) : a.date.compareTo(b.date));
@@ -526,8 +456,8 @@ class _RecordsPageState extends State<RecordsPage> {
     return base.where((r) => _activeTypeFilters.contains(r.type)).toList();
   }
 
-  List<HealthRecord> _applySearchAndDateFilters(List<HealthRecord> list) {
-    Iterable<HealthRecord> it = list;
+  List<models.HealthRecord> _applySearchAndDateFilters(List<models.HealthRecord> list) {
+    Iterable<models.HealthRecord> it = list;
     final q = _searchController.text.trim();
     if (q.isNotEmpty) {
       it = it.where((r) => r.title.contains(q) || (r.notes ?? '').contains(q));
@@ -538,9 +468,9 @@ class _RecordsPageState extends State<RecordsPage> {
     return it.toList();
   }
 
-  Widget _healthRecordTile(HealthRecord record) {
-    final color = _healthTypeColor(record.type);
-    final icon = _healthTypeIcon(record.type);
+  Widget _healthRecordTile(models.HealthRecord record) {
+    final color = models.HealthRecordUtils.getTypeColor(record.type);
+    final icon = models.HealthRecordUtils.getTypeIcon(record.type);
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingM),
       decoration: BoxDecoration(
@@ -627,7 +557,7 @@ class _RecordsPageState extends State<RecordsPage> {
                   spacing: 8,
                   runSpacing: 6,
                   children: [
-                    _miniBadge(_healthTypeLabel(record.type), color),
+                    _miniBadge(models.HealthRecordUtils.getTypeLabel(record.type), color),
                     if (record.weight != null) _miniBadge('${record.weight} kg', Colors.teal),
                     if ((record.clinic ?? '').isNotEmpty) _miniBadge(record.clinic!, Colors.indigo),
                   ],
@@ -640,7 +570,7 @@ class _RecordsPageState extends State<RecordsPage> {
     );
   }
 
-  Pet? _currentPet() => _pets.firstWhere((p) => p.id == _selectedPetIdForHealth, orElse: () => _pets.first);
+  models.Pet? _currentPet() => _pets.firstWhere((p) => p.id == _selectedPetIdForHealth, orElse: () => _pets.first);
 
   void _showIdentityQrDialog(String code) {
     showDialog(
@@ -696,9 +626,9 @@ class _RecordsPageState extends State<RecordsPage> {
     );
   }
 
-  Future<void> _showAddHealthRecordSheet({HealthRecordType? presetType, String? presetPetId}) async {
+  Future<void> _showAddHealthRecordSheet({models.HealthRecordType? presetType, String? presetPetId}) async {
     final formKey = GlobalKey<FormState>();
-    HealthRecordType? type = presetType ?? HealthRecordType.vaccination;
+    models.HealthRecordType? type = presetType ?? models.HealthRecordType.vaccination;
     DateTime date = DateTime.now();
     String title = '';
     String notes = '';
@@ -762,13 +692,13 @@ class _RecordsPageState extends State<RecordsPage> {
                   const SizedBox(height: AppTheme.spacingM),
 
                   // 类型
-                  DropdownButtonFormField<HealthRecordType>(
+                  DropdownButtonFormField<models.HealthRecordType>(
                     value: type,
                     decoration: const InputDecoration(labelText: '记录类型'),
-                    items: HealthRecordType.values
+                    items: models.HealthRecordType.values
                         .map((t) => DropdownMenuItem(
                               value: t,
-                              child: Text(_healthTypeLabel(t)),
+                              child: Text(models.HealthRecordUtils.getTypeLabel(t)),
                             ))
                         .toList(),
                     onChanged: (v) => type = v,
@@ -824,12 +754,12 @@ class _RecordsPageState extends State<RecordsPage> {
                   const SizedBox(height: AppTheme.spacingM),
 
                   // 可选字段：体重/医院
-                  if (type == HealthRecordType.weight) ...[
+                  if (type == models.HealthRecordType.weight) ...[
                     TextFormField(
                       decoration: const InputDecoration(labelText: '体重 kg'),
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       validator: (v) {
-                        if (type == HealthRecordType.weight) {
+                        if (type == models.HealthRecordType.weight) {
                           final parsed = double.tryParse(v ?? '');
                           if (parsed == null) return '请输入有效体重';
                         }
@@ -837,30 +767,30 @@ class _RecordsPageState extends State<RecordsPage> {
                       },
                       onChanged: (v) => weight = double.tryParse(v),
                     ),
-                  ] else if (type == HealthRecordType.vetVisit || type == HealthRecordType.vaccination || type == HealthRecordType.medication) ...[
+                  ] else if (type == models.HealthRecordType.vetVisit || type == models.HealthRecordType.vaccination || type == models.HealthRecordType.medication) ...[
                     TextFormField(
                       decoration: const InputDecoration(labelText: '医院/机构（可选）'),
                       onChanged: (v) => clinic = v.trim(),
                     ),
                   ] else ...[
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          decoration: const InputDecoration(labelText: '体重 kg（可选）'),
-                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            decoration: const InputDecoration(labelText: '体重 kg（可选）'),
+                            keyboardType: const TextInputType.numberWithOptions(decimal: true),
                             onChanged: (v) => weight = double.tryParse(v),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: AppTheme.spacingM),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: const InputDecoration(labelText: '医院/机构（可选）'),
-                          onChanged: (v) => clinic = v.trim(),
+                        const SizedBox(width: AppTheme.spacingM),
+                        Expanded(
+                          child: TextFormField(
+                            decoration: const InputDecoration(labelText: '医院/机构（可选）'),
+                            onChanged: (v) => clinic = v.trim(),
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
+                      ],
+                    ),
                   ],
 
                   const SizedBox(height: AppTheme.spacingL),
@@ -870,11 +800,11 @@ class _RecordsPageState extends State<RecordsPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() != true) return;
-                        final rec = HealthRecord(
+                        final rec = models.HealthRecord(
                           id: DateTime.now().millisecondsSinceEpoch.toString(),
                           petId: petId,
                           date: date,
-                          type: type ?? HealthRecordType.vetVisit,
+                          type: type ?? models.HealthRecordType.vetVisit,
                           title: title,
                           notes: notes.isEmpty ? null : notes,
                           weight: weight,
@@ -913,107 +843,4 @@ class _RecordsPageState extends State<RecordsPage> {
   String _formatDate(DateTime d) {
     return '${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
   }
-
-  String _healthTypeLabel(HealthRecordType t) {
-    switch (t) {
-      case HealthRecordType.vaccination:
-        return '疫苗';
-      case HealthRecordType.deworming:
-        return '驱虫';
-      case HealthRecordType.vetVisit:
-        return '就诊体检';
-      case HealthRecordType.weight:
-        return '体重';
-      case HealthRecordType.medication:
-        return '用药';
-    }
-  }
-
-  IconData _healthTypeIcon(HealthRecordType t) {
-    switch (t) {
-      case HealthRecordType.vaccination:
-        return Icons.vaccines;
-      case HealthRecordType.deworming:
-        return Icons.bug_report;
-      case HealthRecordType.vetVisit:
-        return Icons.local_hospital;
-      case HealthRecordType.weight:
-        return Icons.monitor_weight;
-      case HealthRecordType.medication:
-        return Icons.medication_liquid;
-    }
-  }
-
-  Color _healthTypeColor(HealthRecordType t) {
-    switch (t) {
-      case HealthRecordType.vaccination:
-        return Colors.deepPurple;
-      case HealthRecordType.deworming:
-        return Colors.teal;
-      case HealthRecordType.vetVisit:
-        return Colors.indigo;
-      case HealthRecordType.weight:
-        return Colors.orange;
-      case HealthRecordType.medication:
-        return Colors.pink;
-    }
-  }
-}
-
-
-
-class Pet {
-  final String id;
-  final String name;
-  final String type;
-  final String breed;
-  final String avatar;
-  final String identityCode; // 唯一身份码
-  final Color color;
-  final DateTime birthDate;
-  final double weight;
-  final String gender;
-
-  const Pet({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.breed,
-    required this.avatar,
-    required this.identityCode,
-    required this.color,
-    required this.birthDate,
-    required this.weight,
-    required this.gender,
-  });
-}
-
-enum HealthRecordType {
-  vaccination,
-  deworming,
-  vetVisit,
-  weight,
-  medication,
-}
-
-class HealthRecord {
-  final String id;
-  final String petId;
-  final DateTime date;
-  final HealthRecordType type;
-  final String title;
-  final String? notes;
-  final double? weight; // 体重（可选）
-  final String? clinic; // 医院/机构（可选）
-
-  const HealthRecord({
-    required this.id,
-    required this.petId,
-    required this.date,
-    required this.type,
-    required this.title,
-    this.notes,
-    this.weight,
-    this.clinic,
-  });
 }
