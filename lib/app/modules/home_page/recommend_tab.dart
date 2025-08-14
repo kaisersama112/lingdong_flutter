@@ -381,8 +381,9 @@ class _RecommendTabState extends State<RecommendTab> {
             // 处理点击事件
           },
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(10), // 原始值：16
             child: Column(
+              
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(

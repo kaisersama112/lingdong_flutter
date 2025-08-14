@@ -34,13 +34,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       backgroundColor: AppTheme.backgroundColor,
       body: Column(
         children: [
-          // 使用新的简洁头部组件
+          // 使用新的简洁头部组件，添加快捷工具按钮
           BeautifulPageHeader(
             title: '灵宠',
             subtitle: '让爱宠生活更美好',
             icon: Icons.pets,
             height: 120,
-            // 工具功能已集成到底部导航栏
+            actions: [
+              // 快捷工具按钮
+              Container(
+                margin: const EdgeInsets.only(left: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.psychology,
+                    color: Colors.white,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ToolsHubPage(),
+                      ),
+                    );
+                  },
+                  tooltip: '实用工具',
+                ),
+              ),
+            ],
           ),
           
           // 使用新的简洁标签栏组件
