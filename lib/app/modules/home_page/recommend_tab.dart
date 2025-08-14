@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../../theme/app_theme.dart';
+import '../../routes/app_router.dart';
 
 class RecommendTab extends StatefulWidget {
   const RecommendTab({super.key});
@@ -9,233 +11,503 @@ class RecommendTab extends StatefulWidget {
 }
 
 class _RecommendTabState extends State<RecommendTab> {
-  final PageController _heroController = PageController(viewportFraction: 0.9);
+  late PageController _heroController;
   int _currentHeroIndex = 0;
-  final List<String> _petCategories = ['全部', '狗狗', '猫咪', '小宠', '医疗', '美容', '训练', '救助'];
-  String _selectedPetCategory = '全部';
-  final List<_QuickAction> _quickActions = const [
-    _QuickAction(icon: Icons.park, label: '附近公园', color: AppTheme.successColor),
-    _QuickAction(icon: Icons.local_hospital, label: '宠物医院', color: AppTheme.primaryColor),
-    _QuickAction(icon: Icons.content_cut, label: '美容护理', color: AppTheme.secondaryColor),
-    _QuickAction(icon: Icons.volunteer_activism, label: '领养救助', color: AppTheme.warningColor),
+  Timer? _heroTimer;
+  bool _userInteractingCarousel = false;
+  late int _initialHeroPage;
+
+  final List<_HeroCard> _heroCards = const [
+    _HeroCard(
+      title: '周末和Ta去公园',
+      subtitle: '附近遛狗路线推荐',
+      emoji: '🐕',
+      gradient: LinearGradient(
+        colors: [Color(0xFF4ECDC4), Color(0xFF26D0CE)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ),
+    _HeroCard(
+      title: '宠物健康小测',
+      subtitle: '3分钟评估健康状况',
+      emoji: '🏥',
+      gradient: LinearGradient(
+        colors: [Color(0xFFFF6B35), Color(0xFFFF8A65)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ),
+    _HeroCard(
+      title: '萌宠摄影挑战',
+      subtitle: '参与话题赢好礼',
+      emoji: '📸',
+      gradient: LinearGradient(
+        colors: [Color(0xFFFF9FF3), Color(0xFFAB47BC)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ),
   ];
+
+  final List<String> _petCategories = ['全部', '医疗', '美容', '训练', '救助'];
+  String _selectedPetCategory = '全部';
+  
+  final List<_QuickAction> _quickActions = const [
+    _QuickAction(
+      icon: Icons.park,
+      label: '附近公园',
+      color: AppTheme.successColor,
+      gradient: LinearGradient(
+        colors: [Color(0xFF66BB6A), Color(0xFF4CAF50)],
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+      ),
+    ),
+    _QuickAction(
+      icon: Icons.local_hospital,
+      label: '宠物医院',
+      color: AppTheme.primaryColor,
+      gradient: AppTheme.primaryGradient,
+    ),
+    _QuickAction(
+      icon: Icons.content_cut,
+      label: '美容护理',
+      color: AppTheme.secondaryColor,
+      gradient: AppTheme.secondaryGradient,
+    ),
+    _QuickAction(
+      icon: Icons.volunteer_activism,
+      label: '领养救助',
+      color: AppTheme.warningColor,
+      gradient: AppTheme.warmGradient,
+    ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _initialHeroPage = _heroCards.length * 1000;
+    _heroController = PageController(
+      viewportFraction: 0.9,
+      initialPage: _initialHeroPage,
+    );
+    _startHeroAutoPlay();
+  }
+
+  @override
+  void dispose() {
+    _heroTimer?.cancel();
+    _heroController.dispose();
+    super.dispose();
+  }
+
+  void _startHeroAutoPlay() {
+    _heroTimer?.cancel();
+    _heroTimer = Timer.periodic(const Duration(seconds: 4), (_) {
+      if (!mounted) return;
+      if (!_heroController.hasClients) return;
+      if (_userInteractingCarousel) return;
+      _heroController.nextPage(
+        duration: const Duration(milliseconds: 450),
+        curve: Curves.easeOut,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
       children: [
         _buildHeroCarousel(),
-        const SizedBox(height: 12),
+        const SizedBox(height: 24),
         _buildPetCategoryChips(),
-        const SizedBox(height: 12),
+        const SizedBox(height: 24),
         _buildQuickActionsRow(),
-        const SizedBox(height: 12),
+        const SizedBox(height: 24),
         _buildDailyTipCard(),
-        const SizedBox(height: 16),
-        ...List.generate(10, (index) {
-          return _buildContentCard(
-            title: '推荐内容  ${index + 1}',
-            content: '这是一个有趣的推荐内容，包含了用户可能感兴趣的信息...（宠物主题强化版）',
-            author: index % 2 == 0 ? '训宠师Kris' : '兽医Lily',
-            likes: (index + 1) * 12,
-            comments: (index + 1) * 4,
-            isLiked: index % 3 == 0,
-          );
-        }),
+        const SizedBox(height: 24),
+        _buildContentSection(),
       ],
     );
   }
 
   Widget _buildHeroCarousel() {
-    final List<_HeroCard> cards = const [
-      _HeroCard(title: '周末和Ta去公园', subtitle: '附近遛狗路线推荐', emoji: '🐕', start: Color(0xFF8EC5FC), end: Color(0xFFE0C3FC)),
-      _HeroCard(title: '宠物健康小测', subtitle: '3分钟评估健康状况', emoji: '🏥', start: Color(0xFFFFF1A1), end: Color(0xFFFFC8A5)),
-      _HeroCard(title: '萌宠摄影挑战', subtitle: '参与话题赢好礼', emoji: '📸', start: Color(0xFFA1FFCE), end: Color(0xFFFAD0C4)),
-    ];
-    return SizedBox(
-      height: 170,
-      child: Stack(
-        children: [
-          PageView.builder(
-            controller: _heroController,
-            itemCount: cards.length,
-            onPageChanged: (i) => setState(() => _currentHeroIndex = i),
-            itemBuilder: (context, index) {
-              final c = cards[index];
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 6),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [c.start, c.end],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: AppTheme.elevatedShadow,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Row(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '今日推荐',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 180,
+          child: Listener(
+            onPointerDown: (_) => setState(() => _userInteractingCarousel = true),
+            onPointerUp: (_) => setState(() => _userInteractingCarousel = false),
+            onPointerCancel: (_) => setState(() => _userInteractingCarousel = false),
+            child: PageView.builder(
+              controller: _heroController,
+              onPageChanged: (index) {
+                setState(() => _currentHeroIndex = index % _heroCards.length);
+              },
+              itemBuilder: (context, index) {
+                final card = _heroCards[index % _heroCards.length];
+                return _buildHeroCard(card, index);
+              },
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        _buildPageIndicator(),
+      ],
+    );
+  }
+
+  Widget _buildHeroCard(_HeroCard card, int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        gradient: card.gradient,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: card.gradient.colors.first.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            Navigator.of(context).pushNamed(
+              AppRouter.contentDetailRoute,
+              arguments: ContentDetailArgs(
+                postId: 'hero_$index',
+                title: card.title,
+                content: card.subtitle,
+                author: '系统推荐',
+                images: const [],
+                videoThumb: null,
+              ),
+            );
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(c.title, style: const TextStyle(color: Colors.black87, fontSize: 18, fontWeight: FontWeight.w700)),
-                            const SizedBox(height: 6),
-                            Text(c.subtitle, style: const TextStyle(color: Colors.black54, fontSize: 14)),
-                            const SizedBox(height: 10),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha:0.85),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Text('了解更多', style: TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w600)),
-                            ),
-                          ],
+                      Text(
+                        card.title,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
                         ),
                       ),
-                      Text(c.emoji, style: const TextStyle(fontSize: 64)),
+                      const SizedBox(height: 8),
+                      Text(
+                        card.subtitle,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white.withValues(alpha: 0.9),
+                        ),
+                      ),
                     ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    card.emoji,
+                    style: const TextStyle(fontSize: 32),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(_heroCards.length, (index) {
+        return AnimatedContainer(
+          duration: AppTheme.shortAnimation,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          width: index == _currentHeroIndex ? 24 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: index == _currentHeroIndex 
+                ? AppTheme.primaryColor 
+                : AppTheme.textLightColor,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        );
+      }),
+    );
+  }
+
+  Widget _buildPetCategoryChips() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '分类浏览',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 40,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: _petCategories.length,
+            itemBuilder: (context, index) {
+              final category = _petCategories[index];
+              final isSelected = category == _selectedPetCategory;
+              
+              return Container(
+                margin: const EdgeInsets.only(right: 12),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(20),
+                    onTap: () {
+                      setState(() => _selectedPetCategory = category);
+                    },
+                    child: AnimatedContainer(
+                      duration: AppTheme.shortAnimation,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(
+                        gradient: isSelected ? AppTheme.primaryGradient : null,
+                        color: isSelected ? null : Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        border: isSelected ? null : Border.all(
+                          color: AppTheme.dividerColor,
+                          width: 1,
+                        ),
+                        boxShadow: isSelected ? [
+                          BoxShadow(
+                            color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ] : null,
+                      ),
+                      child: Text(
+                        category,
+                        style: TextStyle(
+                          color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               );
             },
           ),
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 8,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(3, (i) => _buildDot(i == _currentHeroIndex)),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDot(bool active) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      margin: const EdgeInsets.symmetric(horizontal: 3),
-      width: active ? 18 : 6,
-      height: 6,
-      decoration: BoxDecoration(
-        color: active ? AppTheme.primaryColor : AppTheme.textLightColor,
-        borderRadius: BorderRadius.circular(3),
-      ),
-    );
-  }
-
-  Widget _buildPetCategoryChips() {
-    return SizedBox(
-      height: 38,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: _petCategories.length,
-        itemBuilder: (context, index) {
-          final c = _petCategories[index];
-          final selected = c == _selectedPetCategory;
-          return GestureDetector(
-            onTap: () => setState(() => _selectedPetCategory = c),
-            child: Container(
-              margin: EdgeInsets.only(right: index == _petCategories.length - 1 ? 0 : 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: selected ? AppTheme.primaryColor : Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: selected ? AppTheme.primaryColor : AppTheme.dividerColor),
-                boxShadow: selected ? AppTheme.subtleShadow : null,
-              ),
-              child: Text(
-                c,
-                style: TextStyle(color: selected ? Colors.white : AppTheme.textPrimaryColor, fontSize: 12, fontWeight: FontWeight.w600),
-              ),
-            ),
-          );
-        },
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildQuickActionsRow() {
-    return Row(
-      children: _quickActions.map((qa) {
-        return Expanded(
-          child: Container(
-            margin: EdgeInsets.only(right: qa == _quickActions.last ? 0 : 12),
-            decoration: AppTheme.cardDecoration,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-              onTap: () => _showSnackBar('${qa.label} 功能开发中...'),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: qa.color.withValues(alpha:0.12),
-                        borderRadius: BorderRadius.circular(12),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '快速服务',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
+        ),
+        const SizedBox(height: 16),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 0.8,
+          ),
+          itemCount: _quickActions.length,
+          itemBuilder: (context, index) {
+            final action = _quickActions[index];
+            return _buildQuickActionCard(action);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuickActionCard(_QuickAction action) {
+    return Container(
+      decoration: AppTheme.cardDecoration,
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+          onTap: () {
+            // 处理点击事件
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: action.gradient,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: action.color.withValues(alpha: 0.3),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                      child: Icon(qa.icon, color: qa.color, size: 22),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(qa.label, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                  ],
+                    ],
+                  ),
+                  child: Icon(
+                    action.icon,
+                    color: Colors.white,
+                    size: 24,
+                  ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                Text(
+                  action.label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textPrimaryColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
             ),
           ),
-        );
-      }).toList(),
+        ),
+      ),
     );
   }
 
   Widget _buildDailyTipCard() {
     return Container(
-      decoration: AppTheme.cardDecoration.copyWith(
-        borderRadius: BorderRadius.circular(12),
+      padding: const EdgeInsets.all(20),
+      decoration: AppTheme.glassmorphismDecoration,
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              gradient: AppTheme.warmGradient,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: const Icon(
+              Icons.lightbulb_outline,
+              color: Colors.white,
+              size: 24,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '今日小贴士',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimaryColor,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  '定期为宠物梳毛不仅能保持毛发健康，还能增进感情哦！',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: AppTheme.textSecondaryColor,
+                    height: 1.4,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: AppTheme.secondaryLightColor,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Text('💡', style: TextStyle(fontSize: 22)),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('今日小知识', style: AppTheme.subheadingStyle.copyWith(fontSize: 16)),
-                  const SizedBox(height: 4),
-                  Text('夏季遛狗尽量避开正午时段，随身携带饮水，注意地面温度，避免烫伤肉垫。',
-                      style: AppTheme.captionStyle.copyWith(color: AppTheme.textPrimaryColor)),
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () => _showSnackBar('查看更多小知识'),
-              child: const Text('更多'),
-            ),
-          ],
+    );
+  }
+
+  Widget _buildContentSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          '推荐内容',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimaryColor,
+          ),
         ),
-      ),
+        const SizedBox(height: 16),
+        ...List.generate(5, (index) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            child: _buildContentCard(
+              title: '推荐内容 ${index + 1}',
+              content: '这是一个有趣的推荐内容，包含了用户可能感兴趣的信息...',
+              author: '宠物达人${index + 1}',
+              likes: (index + 1) * 123,
+              comments: (index + 1) * 45,
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  AppRouter.contentDetailRoute,
+                  arguments: ContentDetailArgs(
+                    postId: 'recommend_$index',
+                    title: '推荐内容 ${index + 1}',
+                    content: '这是一个有趣的推荐内容，包含了用户可能感兴趣的信息...',
+                    author: '宠物达人${index + 1}',
+                    images: const [],
+                  ),
+                );
+              },
+            ),
+          );
+        }),
+      ],
     );
   }
 
@@ -245,21 +517,15 @@ class _RecommendTabState extends State<RecommendTab> {
     required String author,
     required int likes,
     required int comments,
-    required bool isLiked,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha:0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        onTap: onTap,
+        child: Container(
+      decoration: AppTheme.cardDecoration,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -267,10 +533,18 @@ class _RecommendTabState extends State<RecommendTab> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Colors.blue[100],
-                  child: Icon(Icons.person, color: Colors.blue[700]),
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    gradient: AppTheme.primaryGradient,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.pets,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -280,15 +554,16 @@ class _RecommendTabState extends State<RecommendTab> {
                       Text(
                         author,
                         style: const TextStyle(
+                          fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          fontSize: 16,
+                          color: AppTheme.textPrimaryColor,
                         ),
                       ),
                       Text(
-                        '刚刚',
+                        '2小时前',
                         style: TextStyle(
-                          color: Colors.grey[500],
                           fontSize: 12,
+                          color: AppTheme.textLightColor,
                         ),
                       ),
                     ],
@@ -296,9 +571,8 @@ class _RecommendTabState extends State<RecommendTab> {
                 ),
                 IconButton(
                   icon: const Icon(Icons.more_horiz),
-                  onPressed: () {
-                    _showSnackBar('更多功能开发中...');
-                  },
+                  onPressed: () {},
+                  color: AppTheme.textSecondaryColor,
                 ),
               ],
             ),
@@ -306,85 +580,57 @@ class _RecommendTabState extends State<RecommendTab> {
             Text(
               title,
               style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               content,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
-                color: Colors.grey[700],
+                color: AppTheme.textSecondaryColor,
                 height: 1.4,
               ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Row(
               children: [
-                _buildActionButton(
-                  icon: isLiked ? Icons.favorite : Icons.favorite_border,
-                  label: '$likes',
-                  color: isLiked ? Colors.red : Colors.grey,
-                  onTap: () {
-                    setState(() {});
-                  },
-                ),
-                const SizedBox(width: 24),
-                _buildActionButton(
-                  icon: Icons.comment_outlined,
-                  label: '$comments',
-                  color: Colors.grey,
-                  onTap: () {
-                    _showSnackBar('评论功能开发中...');
-                  },
-                ),
-                const SizedBox(width: 24),
-                _buildActionButton(
-                  icon: Icons.share_outlined,
-                  label: '分享',
-                  color: Colors.grey,
-                  onTap: () {
-                    _showSnackBar('分享功能开发中...');
-                  },
-                ),
+                _buildActionButton(Icons.favorite_border, '$likes'),
+                const SizedBox(width: 16),
+                _buildActionButton(Icons.chat_bubble_outline, '$comments'),
+                const SizedBox(width: 16),
+                _buildActionButton(Icons.share, '分享'),
               ],
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 14,
-            ),
-          ),
-        ],
+    ),
       ),
     );
   }
 
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+  Widget _buildActionButton(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.dividerColor),
+        boxShadow: const [
+          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: AppTheme.textSecondaryColor),
+          const SizedBox(width: 6),
+          Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondaryColor, fontWeight: FontWeight.w600)),
+        ],
+      ),
     );
   }
 }
@@ -393,14 +639,13 @@ class _HeroCard {
   final String title;
   final String subtitle;
   final String emoji;
-  final Color start;
-  final Color end;
+  final LinearGradient gradient;
+
   const _HeroCard({
     required this.title,
     required this.subtitle,
     required this.emoji,
-    required this.start,
-    required this.end,
+    required this.gradient,
   });
 }
 
@@ -408,5 +653,15 @@ class _QuickAction {
   final IconData icon;
   final String label;
   final Color color;
-  const _QuickAction({required this.icon, required this.label, required this.color});
+  final LinearGradient gradient;
+
+  const _QuickAction({
+    required this.icon,
+    required this.label,
+    required this.color,
+    required this.gradient,
+  });
 }
+
+
+

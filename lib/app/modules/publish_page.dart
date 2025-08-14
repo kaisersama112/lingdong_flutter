@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../theme/app_components.dart';
 
 class PublishPage extends StatefulWidget {
   final VoidCallback? onClose;
@@ -86,26 +87,36 @@ class _PublishPageState extends State<PublishPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFF8F5),
-              Color(0xFFFEFEFE),
-            ],
-            stops: [0.0, 0.8],
+      body: Column(
+        children: [
+          // 使用新的简洁头部组件
+          BeautifulPageHeader(
+            title: '发布精彩瞬间',
+            subtitle: '分享你和宠物的美好时光',
+            icon: Icons.add_photo_alternate,
+            showBackButton: true,
+            height: 120,
+            onBackPressed: () {
+              if (widget.onClose != null) {
+                widget.onClose!();
+                return;
+              }
+              if (Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+            },
+            // 移除发布按钮，放在底部更合理
           ),
-        ),
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildTabBar(),
-            Expanded(child: _buildTabBarView()),
-            _buildBottomBar(),
-          ],
-        ),
+          
+          // 标签页
+          _buildTabBar(),
+          
+          // 标签页内容
+          Expanded(child: _buildTabBarView()),
+          
+          // 底部操作栏 - 发布按钮放在这里更符合用户习惯
+          _buildBottomBar(),
+        ],
       ),
     );
   }
@@ -516,6 +527,7 @@ class _PublishPageState extends State<PublishPage>
               return Container(
                 margin: const EdgeInsets.only(right: 12),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min, // 添加这行
                   children: [
                     GestureDetector(
                       onTap: () => setState(() => _selectedFilter = filter['name']),
@@ -537,11 +549,11 @@ class _PublishPageState extends State<PublishPage>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 3), // 减少间距从4到3
                     Text(
                       filter['name'],
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 11, // 稍微减小字体从12到11
                         color: isSelected ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                       ),
@@ -657,6 +669,7 @@ class _PublishPageState extends State<PublishPage>
               return Container(
                 margin: const EdgeInsets.only(right: 12),
                 child: Column(
+                  mainAxisSize: MainAxisSize.min, // 添加这行
                   children: [
                     GestureDetector(
                       onTap: () => setState(() => _selectedSticker = sticker['name']),
@@ -678,11 +691,11 @@ class _PublishPageState extends State<PublishPage>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: 3), // 减少间距从4到3
                     Text(
                       sticker['name'],
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: 11, // 稍微减小字体从12到11
                         color: isSelected ? AppTheme.warningColor : AppTheme.textSecondaryColor,
                         fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                       ),

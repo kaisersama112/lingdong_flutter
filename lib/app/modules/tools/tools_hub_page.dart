@@ -3,6 +3,7 @@ import '../../theme/app_theme.dart';
 import 'feeding_calculator_page.dart';
 import 'reminders_page.dart';
 import 'lost_pet_page.dart';
+import '../publish_page.dart';
 
 class ToolsHubPage extends StatelessWidget {
   const ToolsHubPage({super.key});
@@ -10,6 +11,13 @@ class ToolsHubPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tools = [
+      _ToolItem(
+        icon: Icons.add_photo_alternate,
+        title: '发布动态',
+        subtitle: '分享你和宠物的美好时光',
+        color: AppTheme.primaryColor,
+        builder: (_) => const PublishPage(),
+      ),
       _ToolItem(
         icon: Icons.event_available,
         title: '智能提醒',

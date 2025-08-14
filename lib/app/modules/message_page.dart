@@ -93,45 +93,42 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.sunsetGradient,
-        ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // 头部区域
-              _buildHeader(),
-              
-              // 内容区域
-              Expanded(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    color: AppTheme.backgroundColor,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(AppTheme.borderRadiusXLarge),
-                      topRight: Radius.circular(AppTheme.borderRadiusXLarge),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      // 搜索栏
-                      _buildSearchBar(),
-                      
-                      // 分类标签
-                      _buildCategoryTabs(),
-                      
-                      // 消息列表
-                      Expanded(
-                        child: _buildMessageList(),
-                      ),
-                    ],
-                  ),
+      backgroundColor: AppTheme.backgroundColor,
+      body: Column(
+        children: [
+          // 页面头部
+          BeautifulPageHeader(
+            title: '消息中心',
+            subtitle: '查看最新消息和通知',
+            icon: Icons.message,
+            height: 120,
+          ),
+          
+          // 搜索栏 - 移到头部下方，更符合用户习惯
+          BeautifulSearchBar(
+            controller: _searchController,
+            hintText: '搜索消息...',
+            onChanged: (value) {
+              setState(() {
+                _searchQuery = value;
+              });
+            },
+          ),
+          
+          // 消息列表
+          Expanded(
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppTheme.backgroundColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(AppTheme.borderRadiusLarge),
+                  topRight: Radius.circular(AppTheme.borderRadiusLarge),
                 ),
               ),
-            ],
+              child: _buildMessageList(),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -363,11 +360,30 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
   }
 
   Widget _buildEmptyState() {
-    return AppComponents.emptyState(
-      icon: Icons.inbox_outlined,
-      title: '暂无消息',
-      subtitle: '当有新消息时，会在这里显示',
-      iconColor: AppTheme.textLightColor,
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.inbox_outlined,
+            size: 80,
+            color: AppTheme.textLightColor,
+          ),
+          const SizedBox(height: AppTheme.spacingM),
+          Text(
+            '暂无消息',
+            style: AppTheme.subheadingStyle.copyWith(
+              color: AppTheme.textSecondaryColor,
+            ),
+          ),
+          const SizedBox(height: AppTheme.spacingS),
+          Text(
+            '当有新消息时，会在这里显示',
+            style: AppTheme.captionStyle,
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 
@@ -432,13 +448,27 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
               style: AppTheme.bodyStyle,
             ),
             const SizedBox(height: AppTheme.spacingM),
-            AppComponents.infoRow(
-              label: '时间',
-              value: message.time,
-              labelStyle: AppTheme.captionStyle.copyWith(
-                color: AppTheme.textSecondaryColor,
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingS),
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 80,
+                    child: Text(
+                      '时间',
+                      style: AppTheme.captionStyle.copyWith(
+                        color: AppTheme.textSecondaryColor,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      message.time,
+                      style: AppTheme.captionStyle,
+                    ),
+                  ),
+                ],
               ),
-              valueStyle: AppTheme.captionStyle,
             ),
           ],
         ),

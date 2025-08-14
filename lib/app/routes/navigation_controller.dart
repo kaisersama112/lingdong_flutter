@@ -8,6 +8,7 @@ import '../modules/auth/login_page.dart';
 import '../theme/app_theme.dart';
 import '../services/user_auth_service.dart';
 import '../modules/auth/guest_upgrade_page.dart';
+import '../modules/tools/tools_hub_page.dart';
 
 class NavigationController extends StatefulWidget {
   const NavigationController({super.key});
@@ -16,49 +17,87 @@ class NavigationController extends StatefulWidget {
   State<NavigationController> createState() => _NavigationControllerState();
 }
 
-class _NavigationControllerState extends State<NavigationController> {
+class _NavigationControllerState extends State<NavigationController>
+    with TickerProviderStateMixin {
   int _currentIndex = 0;
   final _authService = UserAuthService();
+  late AnimationController _animationController;
+  late Animation<double> _scaleAnimation;
 
-  final List<Widget> _pages = [
+  final List<Widget> _pages = <Widget>[
     const HomePage(),
     const SocialPage(),
-    PublishPage(),
+    const PublishPage(),
     const MessagePage(),
     const ArchiveProfilePage(),
   ];
 
-  final List<_NavigationItem> _items = const [
+  final List<_NavigationItem> _items = <_NavigationItem>[
     _NavigationItem(
       icon: Icons.home_outlined,
       activeIcon: Icons.home_rounded,
       label: '首页',
+      color: Color(0xFFFF6B6B),
     ),
     _NavigationItem(
-      icon: Icons.people_alt_outlined,
-      activeIcon: Icons.people_alt_rounded,
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore_rounded,
       label: '探索',
+      color: Color(0xFF4ECDC4),
     ),
     _NavigationItem(
       icon: Icons.add_circle_outline,
       activeIcon: Icons.add_circle_rounded,
       label: '发布',
+      color: Color(0xFF4CAF50),
     ),
+  
     _NavigationItem(
       icon: Icons.chat_bubble_outline,
       activeIcon: Icons.chat_bubble_rounded,
       label: '消息',
+      color: Color(0xFF9C27B0),
     ),
     _NavigationItem(
       icon: Icons.person_outline,
       activeIcon: Icons.person_rounded,
       label: '档案',
+      color: Color(0xFF2196F3),
     ),
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: AppTheme.mediumAnimation,
+      vsync: this,
+    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void _onItemTapped(int index) {
+    if (index == _currentIndex) return;
+    
     setState(() {
       _currentIndex = index;
+    });
+    
+    // 触发动画
+    _animationController.forward().then((_) {
+      _animationController.reverse();
     });
   }
 
@@ -210,16 +249,15 @@ class _NavigationControllerState extends State<NavigationController> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, -5),
-            spreadRadius: 0,
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: _items.asMap().entries.map((entry) {
@@ -239,42 +277,27 @@ class _NavigationControllerState extends State<NavigationController> {
     return GestureDetector(
       onTap: () => _onItemTapped(index),
       child: AnimatedContainer(
-        duration: AppTheme.mediumAnimation,
+        duration: const Duration(milliseconds: 200),
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected ? AppTheme.primaryGradient : null,
-          color: isSelected ? null : Colors.white,
+          color: isSelected ? item.color.withValues(alpha: 0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
-          boxShadow: isSelected ? [
-            BoxShadow(
-              color: AppTheme.primaryColor.withValues(alpha: 0.3),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ] : [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-          border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
               isSelected ? item.activeIcon : item.icon,
-              color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
+              color: isSelected ? item.color : Colors.grey[600],
               size: 24,
             ),
             const SizedBox(height: 4),
             Text(
               item.label,
               style: TextStyle(
-                color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
-                fontSize: 12,
+                color: isSelected ? item.color : Colors.grey[600],
+                fontSize: 11,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),
@@ -283,18 +306,21 @@ class _NavigationControllerState extends State<NavigationController> {
       ),
     );
   }
-
-  
 }
 
 class _NavigationItem {
   final IconData icon;
   final IconData activeIcon;
   final String label;
+  final Color color;
   
   const _NavigationItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-  });
+    required IconData icon,
+    required IconData activeIcon,
+    required String label,
+    required Color color,
+  }) : icon = icon,
+       activeIcon = activeIcon,
+       label = label,
+       color = color;
 }
