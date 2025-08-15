@@ -32,73 +32,149 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Column(
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 简洁的页面头部
+            _buildSimpleHeader(),
+            
+            // 简洁的标签栏
+            _buildSimpleTabBar(),
+            
+            // 标签页内容
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  const RecommendTab(),
+                  const FollowTab(),
+                  const WikiTab(),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 简洁的页面头部
+  Widget _buildSimpleHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingL,
+        vertical: AppTheme.spacingM,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor,
+            AppTheme.primaryColor.withValues(alpha: 0.8),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryColor.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
         children: [
-          // 使用新的简洁头部组件，添加快捷工具按钮
-          BeautifulPageHeader(
-            title: '灵宠',
-            subtitle: '让爱宠生活更美好',
-            icon: Icons.pets,
-            height: 120,
-            actions: [
-              // 快捷工具按钮
+          // 应用图标和标题
+          Row(
+            children: [
               Container(
-                margin: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.psychology,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ToolsHubPage(),
-                      ),
-                    );
-                  },
-                  tooltip: '实用工具',
+                child: const Icon(
+                  Icons.pets,
+                  color: Colors.white,
+                  size: 24,
                 ),
               ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '灵宠',
+                    style: TextStyle(
+                      fontSize: AppTheme.fontSizeXL,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    '让爱宠生活更美好',
+                    style: TextStyle(
+                      fontSize: AppTheme.fontSizeS,
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
           
-          // 使用新的简洁标签栏组件
-          BeautifulTabBar(
-            controller: _tabController,
-            tabs: [
-              BeautifulTab(
-                label: '推荐',
-                icon: Icons.home_outlined,
-                content: const RecommendTab(),
-              ),
-              BeautifulTab(
-                label: '关注',
-                icon: Icons.favorite_outline,
-                content: const FollowTab(),
-              ),
-              BeautifulTab(
-                label: '百科',
-                icon: Icons.auto_stories_outlined,
-                content: const WikiTab(),
-              ),
-            ],
-          ),
+          const Spacer(),
           
-          // 标签页内容
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: [
-                const RecommendTab(),
-                const FollowTab(),
-                const WikiTab(),
-              ],
+          // 快捷工具按钮
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
             ),
+            child: IconButton(
+              icon: const Icon(
+                Icons.psychology,
+                color: Colors.white,
+                size: 20,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ToolsHubPage(),
+                  ),
+                );
+              },
+              tooltip: '实用工具',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 简洁的标签栏
+  Widget _buildSimpleTabBar() {
+    return Container(
+      color: Colors.white,
+      child: TabBar(
+        controller: _tabController,
+        labelColor: AppTheme.primaryColor,
+        unselectedLabelColor: AppTheme.textSecondaryColor,
+        indicatorColor: AppTheme.primaryColor,
+        indicatorWeight: 3,
+        tabs: const [
+          Tab(
+            icon: Icon(Icons.home_outlined),
+            text: '推荐',
+          ),
+          Tab(
+            icon: Icon(Icons.favorite_outline),
+            text: '关注',
+          ),
+          Tab(
+            icon: Icon(Icons.auto_stories_outlined),
+            text: '百科',
           ),
         ],
       ),

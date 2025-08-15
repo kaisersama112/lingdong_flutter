@@ -68,8 +68,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.sunsetGradient,
+        decoration: BoxDecoration(
+          gradient: AppTheme.primaryGradient,
         ),
         child: SafeArea(
           child: FadeTransition(

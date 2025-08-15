@@ -94,39 +94,147 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Column(
-        children: [
-          // 页面头部
-          BeautifulPageHeader(
-            title: '消息中心',
-            subtitle: '查看最新消息和通知',
-            icon: Icons.message,
-            height: 120,
-          ),
-          
-          // 搜索栏 - 移到头部下方，更符合用户习惯
-          BeautifulSearchBar(
-            controller: _searchController,
-            hintText: '搜索消息...',
-            onChanged: (value) {
-              setState(() {
-                _searchQuery = value;
-              });
-            },
-          ),
-          
-          // 消息列表
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: AppTheme.backgroundColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(AppTheme.borderRadiusLarge),
-                  topRight: Radius.circular(AppTheme.borderRadiusLarge),
-                ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 简洁的页面头部
+            _buildSimpleHeader(),
+            
+            // 简洁的标签栏
+            _buildSimpleTabBar(),
+            
+            // 标签页内容
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildAllMessagesTab(),
+                  _buildSystemTab(),
+                  _buildOrderTab(),
+                  _buildServiceTab(),
+                ],
               ),
-              child: _buildMessageList(),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 简洁的页面头部
+  Widget _buildSimpleHeader() {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingL,
+        vertical: AppTheme.spacingM,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          // 页面标题
+          Expanded(
+            child: Text(
+              '消息中心',
+              style: TextStyle(
+                fontSize: AppTheme.fontSizeXL,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
+              ),
+            ),
+          ),
+          
+          // 搜索按钮
+          IconButton(
+            onPressed: () => _showSearchDialog(),
+            icon: const Icon(
+              Icons.search,
+              color: AppTheme.textSecondaryColor,
+            ),
+            tooltip: '搜索消息',
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 简洁的标签栏
+  Widget _buildSimpleTabBar() {
+    return Container(
+      color: Colors.white,
+      child: TabBar(
+        controller: _tabController,
+        labelColor: AppTheme.primaryColor,
+        unselectedLabelColor: AppTheme.textSecondaryColor,
+        indicatorColor: AppTheme.primaryColor,
+        indicatorWeight: 3,
+        tabs: const [
+          Tab(text: '全部'),
+          Tab(text: '系统'),
+          Tab(text: '订单'),
+          Tab(text: '客服'),
+        ],
+      ),
+    );
+  }
+
+  // 构建全部消息标签页
+  Widget _buildAllMessagesTab() {
+    return _buildMessageListView(_filteredMessages);
+  }
+
+  // 构建系统消息标签页
+  Widget _buildSystemTab() {
+    return _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.system).toList());
+  }
+
+  // 构建订单消息标签页
+  Widget _buildOrderTab() {
+    return _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.order).toList());
+  }
+
+  // 构建客服消息标签页
+  Widget _buildServiceTab() {
+    return _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.service).toList());
+  }
+
+  // 显示搜索对话框
+  void _showSearchDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('搜索消息'),
+        content: TextField(
+          controller: _searchController,
+          decoration: const InputDecoration(
+            hintText: '输入关键词搜索...',
+            border: OutlineInputBorder(),
+          ),
+          onChanged: (value) {
+            setState(() {
+              _searchQuery = value;
+            });
+          },
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('取消'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              setState(() {});
+            },
+            child: const Text('搜索'),
           ),
         ],
       ),

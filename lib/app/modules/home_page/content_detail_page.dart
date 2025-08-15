@@ -80,7 +80,11 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   Widget _buildHeader() {
     return Container(
       margin: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+        boxShadow: AppTheme.subtleShadow,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingL),
         child: Column(

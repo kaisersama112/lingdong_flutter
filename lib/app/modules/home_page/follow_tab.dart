@@ -82,7 +82,11 @@ class _FollowTabState extends State<FollowTab> {
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceColor,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+        boxShadow: AppTheme.subtleShadow,
+      ),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Column(
@@ -420,7 +424,7 @@ class _FollowTagChip extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: const TextStyle(fontSize: 11, color: AppTheme.primaryDarkColor),
+        style: const TextStyle(fontSize: 11, color: AppTheme.primaryColor),
       ),
     );
   }

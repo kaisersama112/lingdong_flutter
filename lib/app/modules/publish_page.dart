@@ -87,81 +87,120 @@ class _PublishPageState extends State<PublishPage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Column(
-        children: [
-          // 使用新的简洁头部组件
-          BeautifulPageHeader(
-            title: '发布精彩瞬间',
-            subtitle: '分享你和宠物的美好时光',
-            icon: Icons.add_photo_alternate,
-            showBackButton: true,
-            height: 120,
-            onBackPressed: () {
-              if (widget.onClose != null) {
-                widget.onClose!();
-                return;
-              }
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop();
-              }
-            },
-            // 移除发布按钮，放在底部更合理
-          ),
-          
-          // 标签页
-          _buildTabBar(),
-          
-          // 标签页内容
-          Expanded(child: _buildTabBarView()),
-          
-          // 底部操作栏 - 发布按钮放在这里更符合用户习惯
-          _buildBottomBar(),
-        ],
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 简洁的页面头部
+            _buildSimpleHeader(),
+            
+            // 简洁的标签栏
+            _buildSimpleTabBar(),
+            
+            // 标签页内容
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildTextTab(),
+                  _buildImageTab(),
+                  _buildVideoTab(),
+                ],
+              ),
+            ),
+            
+            // 底部操作栏 - 发布按钮放在这里更符合用户习惯
+            _buildBottomBar(),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  // 简洁的页面头部
+  Widget _buildSimpleHeader() {
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingL,
+        vertical: AppTheme.spacingM,
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor,
+            AppTheme.primaryColor.withValues(alpha: 0.8),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.primaryColor.withValues(alpha: 0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
-          IconButton(
-            icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimaryColor),
-            onPressed: () {
-              if (widget.onClose != null) {
-                widget.onClose!();
-                return;
-              }
-              if (Navigator.of(context).canPop()) {
-                Navigator.of(context).pop();
-              }
-            },
-          ),
-          const Expanded(
-            child: Text(
-              '发布精彩瞬间',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textPrimaryColor,
+          // 图标和标题
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.2),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.add_photo_alternate,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
+              const SizedBox(width: 12),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '发布精彩瞬间',
+                    style: TextStyle(
+                      fontSize: AppTheme.fontSizeXL,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    '分享你和宠物的美好时光',
+                    style: TextStyle(
+                      fontSize: AppTheme.fontSizeS,
+                      color: Colors.white.withValues(alpha: 0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
+          const Spacer(),
+          // 快捷工具按钮
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              gradient: AppTheme.primaryGradient,
-              borderRadius: BorderRadius.circular(20),
+              color: Colors.white.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: const Text(
-              '发布',
-              style: TextStyle(
+            child: IconButton(
+              icon: const Icon(
+                Icons.psychology,
                 color: Colors.white,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
+                size: 20,
               ),
+              onPressed: () {
+                // AI助手功能
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('AI助手功能开发中...')),
+                );
+              },
+              tooltip: 'AI助手',
             ),
           ),
         ],
@@ -169,19 +208,16 @@ class _PublishPageState extends State<PublishPage>
     );
   }
 
-  Widget _buildTabBar() {
+  // 简洁的标签栏
+  Widget _buildSimpleTabBar() {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20),
-      decoration: AppTheme.glassmorphismDecoration,
+      color: Colors.white,
       child: TabBar(
         controller: _tabController,
-        indicator: BoxDecoration(
-          gradient: AppTheme.primaryGradient,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        labelColor: Colors.white,
+        labelColor: AppTheme.primaryColor,
         unselectedLabelColor: AppTheme.textSecondaryColor,
-        labelStyle: const TextStyle(fontWeight: FontWeight.w600),
+        indicatorColor: AppTheme.primaryColor,
+        indicatorWeight: 3,
         tabs: const [
           Tab(text: '📝 文字'),
           Tab(text: '📸 图片'),
@@ -191,16 +227,7 @@ class _PublishPageState extends State<PublishPage>
     );
   }
 
-  Widget _buildTabBarView() {
-    return TabBarView(
-      controller: _tabController,
-      children: [
-        _buildTextTab(),
-        _buildImageTab(),
-        _buildVideoTab(),
-      ],
-    );
-  }
+
 
   Widget _buildTextTab() {
     return SingleChildScrollView(

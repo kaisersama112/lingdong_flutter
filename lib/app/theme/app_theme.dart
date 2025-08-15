@@ -31,6 +31,14 @@ class AppTheme {
   static const Color textLightColor = Color(0xFFBDC3C7); // 浅灰色
   static const Color dividerColor = Color(0xFFECF0F1); // 浅蓝灰色
   
+  // 深色模式颜色
+  static const Color darkBackgroundColor = Color(0xFF121212); // 深色背景
+  static const Color darkSurfaceColor = Color(0xFF1E1E1E); // 深色表面
+  static const Color darkTextPrimaryColor = Color(0xFFE0E0E0); // 深色模式主文本
+  static const Color darkTextSecondaryColor = Color(0xFFB0B0B0); // 深色模式次要文本
+  static const Color darkTextLightColor = Color(0xFF808080); // 深色模式浅色文本
+  static const Color darkDividerColor = Color(0xFF2C2C2C); // 深色模式分割线
+  
   // 宠物主题色 - 温暖的色彩
   static const List<Color> petColors = [
     Color(0xFFFF6B6B), // 珊瑚粉 - 猫咪
@@ -75,6 +83,19 @@ class AppTheme {
     end: Alignment.bottomRight,
   );
 
+  // 深色模式渐变
+  static const LinearGradient darkPrimaryGradient = LinearGradient(
+    colors: [Color(0xFFE55A5A), Color(0xFFD32F2F)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const LinearGradient darkSecondaryGradient = LinearGradient(
+    colors: [Color(0xFF26A69A), Color(0xFF00796B)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
   // 阴影 - 更柔和
   static List<BoxShadow> get cardShadow => [
     BoxShadow(
@@ -102,6 +123,73 @@ class AppTheme {
       spreadRadius: 0,
     ),
   ];
+
+  // 深色模式阴影
+  static List<BoxShadow> get darkCardShadow => [
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.3),
+      blurRadius: 12,
+      offset: const Offset(0, 4),
+      spreadRadius: 0,
+    ),
+  ];
+
+  static List<BoxShadow> get darkElevatedShadow => [
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.5),
+      blurRadius: 20,
+      offset: const Offset(0, 8),
+      spreadRadius: 0,
+    ),
+  ];
+
+  // 获取当前主题的颜色
+  static Color getBackgroundColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkBackgroundColor : backgroundColor;
+  }
+
+  static Color getSurfaceColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkSurfaceColor : surfaceColor;
+  }
+
+  static Color getTextPrimaryColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkTextPrimaryColor : textPrimaryColor;
+  }
+
+  static Color getTextSecondaryColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkTextSecondaryColor : textSecondaryColor;
+  }
+
+  static Color getDividerColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkDividerColor : dividerColor;
+  }
+
+  // 获取当前主题的渐变
+  static LinearGradient getPrimaryGradient(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkPrimaryGradient : primaryGradient;
+  }
+
+  static LinearGradient getSecondaryGradient(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkSecondaryGradient : secondaryGradient;
+  }
+
+  // 获取当前主题的阴影
+  static List<BoxShadow> getCardShadow(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkCardShadow : cardShadow;
+  }
+
+  static List<BoxShadow> getElevatedShadow(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark ? darkElevatedShadow : elevatedShadow;
+  }
 
   // 圆角 - 更圆润
   static const double borderRadiusSmall = 12.0;
@@ -385,3 +473,4 @@ class AppTheme {
     ),
   );
 }
+

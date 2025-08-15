@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_components.dart';
-import '../core/components.dart';
 import '../core/error_handler.dart';
 import '../core/optimized_list.dart';
+import '../core/components/layout/page_header.dart';
+import '../core/components/forms/search_field.dart';
+import '../core/components/forms/category_selector.dart';
+import '../core/components/layout/loading_widget.dart';
+import '../core/components/layout/empty_state.dart';
+import '../core/components/lists/place_list_item.dart';
+import '../core/components/modals/place_detail_modal.dart';
 
 class SocialPage extends StatefulWidget {
   const SocialPage({super.key});
@@ -138,6 +143,8 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   Future<void> _loadData() async {
+    if (!mounted) return;
+    
     setState(() {
       _isLoading = true;
     });
@@ -146,14 +153,16 @@ class _SocialPageState extends State<SocialPage> {
       // 模拟网络请求延迟
       await Future.delayed(const Duration(milliseconds: 800));
       
-      setState(() {
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
       if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
         AppErrorHandler.handleError(context, e);
       }
     }
@@ -174,65 +183,87 @@ class _SocialPageState extends State<SocialPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: Column(
-        children: [
-          // 页面头部
-          BeautifulPageHeader(
-            title: '探索周边',
-            subtitle: '发现宠物友好的好去处',
-            icon: Icons.location_on,
-            backgroundColor: AppTheme.secondaryColor,
-            height: 120,
-          ),
-          
-          // 搜索栏 - 移到头部下方，更符合用户习惯
-          BeautifulSearchBar(
-            controller: _searchController,
-            hintText: '搜索周边场所...',
-            onChanged: (value) {
-              setState(() {
-                _searchQuery = value;
-              });
-            },
-          ),
-          
-          // 分类标签 - 紧跟在搜索栏下方
-          BeautifulCategoryTabs(
-            categories: _categories,
-            selectedIndex: _categories.indexOf(_selectedCategory),
-            onCategoryChanged: (index) {
-              setState(() {
-                _selectedCategory = _categories[index];
-              });
-            },
-            activeColor: AppTheme.secondaryColor,
-          ),
-          
-          // 内容区域 - 简化布局，直接显示列表
-          Expanded(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: AppTheme.backgroundColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(AppTheme.borderRadiusLarge),
-                  topRight: Radius.circular(AppTheme.borderRadiusLarge),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 使用新的页面头部组件
+            PageHeader(
+              title: '探索周边',
+              subtitle: '发现宠物友好的好去处',
+              icon: Icons.location_on,
+              backgroundColor: AppTheme.secondaryColor,
+              actions: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.my_location,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('定位功能开发中...')),
+                      );
+                    },
+                    tooltip: '定位',
+                  ),
                 ),
-              ),
-              child: _buildPlacesList(),
+              ],
             ),
-          ),
-        ],
+            
+            // 使用新的搜索组件
+            SearchField(
+              controller: _searchController,
+              hintText: '搜索周边场所...',
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value;
+                });
+              },
+            ),
+            
+            // 使用新的分类选择器组件
+            CategorySelector(
+              categories: _categories,
+              selectedCategory: _selectedCategory,
+              onCategoryChanged: (category) {
+                setState(() {
+                  _selectedCategory = category;
+                });
+              },
+              activeColor: AppTheme.secondaryColor,
+            ),
+            
+            // 内容区域
+            Expanded(
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: AppTheme.backgroundColor,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(AppTheme.borderRadiusLarge),
+                    topRight: Radius.circular(AppTheme.borderRadiusLarge),
+                  ),
+                ),
+                child: _buildPlacesList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildPlacesList() {
     if (_isLoading) {
-      return PetAppComponents.buildLoading(message: '正在加载周边场所...');
+      return const LoadingWidget(message: '正在加载周边场所...');
     }
 
     if (_filteredPlaces.isEmpty) {
-      return PetAppComponents.buildEmptyState(
+      return EmptyState(
         message: _searchQuery.isEmpty 
             ? '暂无周边场所信息'
             : '没有找到相关场所',
@@ -246,171 +277,12 @@ class _SocialPageState extends State<SocialPage> {
 
     return OptimizedListView<Place>(
       items: _filteredPlaces,
-      itemBuilder: (context, place, index) => _buildPlaceCard(place),
+      itemBuilder: (context, place, index) => PlaceListItem(
+        place: place,
+        onTap: () => _showPlaceDetail(place),
+      ),
       padding: const EdgeInsets.all(AppTheme.spacingM),
       separator: const SizedBox(height: AppTheme.spacingM),
-    );
-  }
-
-  Widget _buildPlaceCard(Place place) {
-    return PetAppComponents.buildCard(
-      onTap: () => _showPlaceDetail(place),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 头部信息
-          Row(
-            children: [
-              // 场所图标
-              Container(
-                width: 50,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppTheme.secondaryLightColor,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-                ),
-                child: Center(
-                  child: Text(place.image, style: const TextStyle(fontSize: 24)),
-                ),
-              ),
-              const SizedBox(width: AppTheme.spacingM),
-              
-              // 场所信息
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            place.name,
-                            style: const TextStyle(
-                              fontSize: AppTheme.fontSizeL,
-                              fontWeight: FontWeight.w600,
-                              color: AppTheme.textPrimaryColor,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.spacingS,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: place.isOpen ? AppTheme.successLightColor : AppTheme.errorLightColor,
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                          ),
-                          child: Text(
-                            place.isOpen ? '营业中' : '已关闭',
-                            style: TextStyle(
-                              fontSize: AppTheme.fontSizeS,
-                              color: place.isOpen ? AppTheme.successColor : AppTheme.errorColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      place.address,
-                      style: TextStyle(
-                        fontSize: AppTheme.fontSizeS,
-                        color: AppTheme.textSecondaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          
-          const SizedBox(height: AppTheme.spacingM),
-          
-          // 评分和距离
-          Row(
-            children: [
-              // 评分
-              Row(
-                children: [
-                  const Icon(
-                    Icons.star,
-                    size: 16,
-                    color: AppTheme.warningColor,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    place.rating.toString(),
-                    style: const TextStyle(
-                      fontSize: AppTheme.fontSizeS,
-                      fontWeight: FontWeight.w600,
-                      color: AppTheme.textPrimaryColor,
-                    ),
-                  ),
-                  Text(
-                    ' (${place.reviewCount})',
-                    style: TextStyle(
-                      fontSize: AppTheme.fontSizeS,
-                      color: AppTheme.textSecondaryColor,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(width: AppTheme.spacingL),
-              
-              // 距离
-              Row(
-                children: [
-                  const Icon(
-                    Icons.location_on,
-                    size: 16,
-                    color: AppTheme.secondaryColor,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    place.distance,
-                    style: TextStyle(
-                      fontSize: AppTheme.fontSizeS,
-                      color: AppTheme.textSecondaryColor,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          
-          const SizedBox(height: AppTheme.spacingM),
-          
-          // 特色标签
-          if (place.features.isNotEmpty) ...[
-            Wrap(
-              spacing: AppTheme.spacingS,
-              runSpacing: AppTheme.spacingS,
-              children: place.features.take(3).map((feature) => 
-                PetAppComponents.buildTag(
-                  text: feature,
-                  backgroundColor: AppTheme.primaryLightColor,
-                  textColor: AppTheme.primaryColor,
-                ),
-              ).toList(),
-            ),
-            const SizedBox(height: AppTheme.spacingS),
-          ],
-          
-          // 描述
-          Text(
-            place.description,
-            style: TextStyle(
-              fontSize: AppTheme.fontSizeS,
-              color: AppTheme.textSecondaryColor,
-              height: 1.4,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
     );
   }
 
@@ -419,186 +291,10 @@ class _SocialPageState extends State<SocialPage> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        decoration: const BoxDecoration(
-          color: AppTheme.surfaceColor,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(AppTheme.borderRadiusLarge),
-            topRight: Radius.circular(AppTheme.borderRadiusLarge),
-          ),
-        ),
-        child: Column(
-          children: [
-            // 拖拽指示器
-            Container(
-              margin: const EdgeInsets.only(top: AppTheme.spacingM),
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: AppTheme.dividerColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            
-            // 内容
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppTheme.spacingL),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 头部信息
-                    Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: AppTheme.secondaryLightColor,
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-                          ),
-                          child: Center(
-                            child: Text(place.image, style: const TextStyle(fontSize: 40)),
-                          ),
-                        ),
-                        const SizedBox(width: AppTheme.spacingL),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                place.name,
-                                style: const TextStyle(
-                                  fontSize: AppTheme.fontSizeXL,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.textPrimaryColor,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                place.category,
-                                style: TextStyle(
-                                  fontSize: AppTheme.fontSizeM,
-                                  color: AppTheme.secondaryColor,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    
-                    const SizedBox(height: AppTheme.spacingL),
-                    
-                    // 详细信息
-                    PetAppComponents.buildInfoRow(
-                      label: '地址',
-                      value: place.address,
-                      icon: Icons.location_on,
-                    ),
-                    PetAppComponents.buildInfoRow(
-                      label: '距离',
-                      value: place.distance,
-                      icon: Icons.directions_walk,
-                    ),
-                    PetAppComponents.buildInfoRow(
-                      label: '评分',
-                      value: '${place.rating} (${place.reviewCount}条评价)',
-                      icon: Icons.star,
-                    ),
-                    PetAppComponents.buildInfoRow(
-                      label: '营业状态',
-                      value: place.isOpen ? '营业中' : '已关闭',
-                      icon: place.isOpen ? Icons.check_circle : Icons.cancel,
-                      showDivider: false,
-                    ),
-                    
-                    const SizedBox(height: AppTheme.spacingL),
-                    
-                    // 特色服务
-                    if (place.features.isNotEmpty) ...[
-                      Text(
-                        '特色服务',
-                        style: TextStyle(
-                          fontSize: AppTheme.fontSizeL,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimaryColor,
-                        ),
-                      ),
-                      const SizedBox(height: AppTheme.spacingM),
-                      Wrap(
-                        spacing: AppTheme.spacingS,
-                        runSpacing: AppTheme.spacingS,
-                        children: place.features.map((feature) => 
-                          PetAppComponents.buildTag(
-                            text: feature,
-                            backgroundColor: AppTheme.primaryLightColor,
-                            textColor: AppTheme.primaryColor,
-                          ),
-                        ).toList(),
-                      ),
-                      const SizedBox(height: AppTheme.spacingL),
-                    ],
-                    
-                    // 描述
-                    Text(
-                      '详细介绍',
-                      style: TextStyle(
-                        fontSize: AppTheme.fontSizeL,
-                        fontWeight: FontWeight.w600,
-                        color: AppTheme.textPrimaryColor,
-                      ),
-                    ),
-                    const SizedBox(height: AppTheme.spacingM),
-                    Text(
-                      place.description,
-                      style: TextStyle(
-                        fontSize: AppTheme.fontSizeM,
-                        color: AppTheme.textSecondaryColor,
-                        height: 1.5,
-                      ),
-                    ),
-                    
-                    const SizedBox(height: AppTheme.spacingXL),
-                    
-                    // 操作按钮
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton.icon(
-                            onPressed: () => _navigateToPlace(place),
-                            icon: const Icon(Icons.directions),
-                            label: const Text('导航'),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: AppTheme.primaryColor,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingM),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: AppTheme.spacingM),
-                        Expanded(
-                          child: OutlinedButton.icon(
-                            onPressed: () => _callPlace(place),
-                            icon: const Icon(Icons.phone),
-                            label: const Text('电话'),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: AppTheme.primaryColor,
-                              side: const BorderSide(color: AppTheme.primaryColor),
-                              padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingM),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      builder: (context) => PlaceDetailModal(
+        place: place,
+        onNavigate: () => _navigateToPlace(place),
+        onCall: () => _callPlace(place),
       ),
     );
   }
@@ -614,32 +310,5 @@ class _SocialPageState extends State<SocialPage> {
   }
 }
 
-// 场所数据模型
-class Place {
-  final String id;
-  final String name;
-  final String category;
-  final String address;
-  final String distance;
-  final double rating;
-  final int reviewCount;
-  final String image;
-  final bool isOpen;
-  final List<String> features;
-  final String description;
-
-  const Place({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.address,
-    required this.distance,
-    required this.rating,
-    required this.reviewCount,
-    required this.image,
-    required this.isOpen,
-    required this.features,
-    required this.description,
-  });
-}
+// 使用组件中定义的Place类
 

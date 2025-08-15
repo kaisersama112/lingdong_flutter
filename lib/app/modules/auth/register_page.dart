@@ -84,8 +84,8 @@ class _RegisterPageState extends State<RegisterPage> with TickerProviderStateMix
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.sunsetGradient,
+        decoration: BoxDecoration(
+          gradient: AppTheme.primaryGradient,
         ),
         child: SafeArea(
           child: FadeTransition(

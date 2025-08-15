@@ -83,7 +83,8 @@ class _RecordsPageState extends State<RecordsPage> {
 
     // 初始筛选
     if (widget.initialFilterType != null) {
-      _activeTypeFilters.add(widget.initialFilterType!);
+      _activeTypeFilters.clear(); // 清除所有筛选器
+      _activeTypeFilters.add(widget.initialFilterType!); // 只添加传入的类型
     }
 
     // 可选：首次进入直接打开新增
@@ -92,6 +93,15 @@ class _RecordsPageState extends State<RecordsPage> {
         _showAddHealthRecordSheet(presetType: widget.initialFilterType, presetPetId: _selectedPetIdForHealth);
       });
     }
+  }
+
+  // 根据记录类型自动勾选筛选器
+  void _autoSelectFilterByType(models.HealthRecordType type) {
+    setState(() {
+      // 清除其他筛选器，只保留当前类型
+      _activeTypeFilters.clear();
+      _activeTypeFilters.add(type);
+    });
   }
 
   @override
