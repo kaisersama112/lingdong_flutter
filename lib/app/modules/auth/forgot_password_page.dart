@@ -9,7 +9,8 @@ class ForgotPasswordPage extends StatefulWidget {
   State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProviderStateMixin {
+class _ForgotPasswordPageState extends State<ForgotPasswordPage>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   final _verificationCodeController = TextEditingController();
@@ -36,21 +37,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeInOut,
-    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.3),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _animationController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
 
     _animationController.forward();
   }
@@ -78,9 +75,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppTheme.sunsetGradient,
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.natureGradient),
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,
@@ -92,22 +87,22 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     const SizedBox(height: AppTheme.spacingL),
-                    
+
                     // 标题
                     _buildHeader(),
-                    
+
                     const SizedBox(height: AppTheme.spacingXL),
-                    
+
                     // 步骤指示器
                     _buildStepIndicator(),
-                    
+
                     const SizedBox(height: AppTheme.spacingL),
-                    
+
                     // 表单内容
                     _buildFormContent(),
-                    
+
                     const SizedBox(height: AppTheme.spacingL),
-                    
+
                     // 操作按钮
                     _buildActionButton(),
                   ],
@@ -138,15 +133,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
               ),
             ],
           ),
-          child: const Icon(
-            Icons.lock_reset,
-            size: 30,
-            color: Colors.white,
-          ),
+          child: const Icon(Icons.lock_reset, size: 30, color: Colors.white),
         ),
-        
+
         const SizedBox(height: AppTheme.spacingM),
-        
+
         const Text(
           '重置密码',
           style: TextStyle(
@@ -155,15 +146,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
             color: Colors.white,
           ),
         ),
-        
+
         const SizedBox(height: AppTheme.spacingS),
-        
+
         Text(
           _getStepDescription(),
-          style: const TextStyle(
-            fontSize: 14,
-            color: Colors.white70,
-          ),
+          style: const TextStyle(fontSize: 14, color: Colors.white70),
         ),
       ],
     );
@@ -184,7 +172,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
   Widget _buildStepItem(int step, String label) {
     final isActive = _currentStep >= step;
     final isCurrent = _currentStep == step;
-    
+
     return Expanded(
       child: Column(
         children: [
@@ -192,9 +180,13 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: isActive ? AppTheme.primaryColor : Colors.white.withValues(alpha: 0.3),
+              color: isActive
+                  ? AppTheme.primaryColor
+                  : Colors.white.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
-              border: isCurrent ? Border.all(color: Colors.white, width: 2) : null,
+              border: isCurrent
+                  ? Border.all(color: Colors.white, width: 2)
+                  : null,
             ),
             child: Icon(
               isActive ? Icons.check : Icons.circle,
@@ -219,7 +211,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
   Widget _buildStepLine() {
     return Container(
       height: 2,
-      color: _currentStep > 0 ? AppTheme.primaryColor : Colors.white.withValues(alpha: 0.3),
+      color: _currentStep > 0
+          ? AppTheme.primaryColor
+          : Colors.white.withValues(alpha: 0.3),
     );
   }
 
@@ -285,7 +279,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
                 keyboardType: TextInputType.number,
                 decoration: AppTheme.searchInputDecoration.copyWith(
                   hintText: '请输入验证码',
-                  prefixIcon: const Icon(Icons.security, color: AppTheme.textSecondaryColor),
+                  prefixIcon: const Icon(
+                    Icons.security,
+                    color: AppTheme.textSecondaryColor,
+                  ),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -307,7 +304,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
                   backgroundColor: AppTheme.primaryColor,
                   foregroundColor: Colors.white,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingM),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: AppTheme.spacingM,
+                  ),
                 ),
                 child: Text(_isCountingDown ? '${_countdown}s' : '重新发送'),
               ),
@@ -354,13 +353,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> with TickerProv
       obscureText: _obscureConfirmPassword,
       decoration: AppTheme.searchInputDecoration.copyWith(
         hintText: '请确认新密码',
-        prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.textSecondaryColor),
+        prefixIcon: const Icon(
+          Icons.lock_outline,
+          color: AppTheme.textSecondaryColor,
+        ),
         suffixIcon: IconButton(
           icon: Icon(
             _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
             color: AppTheme.textSecondaryColor,
           ),
-          onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+          onPressed: () => setState(
+            () => _obscureConfirmPassword = !_obscureConfirmPassword,
+          ),
         ),
       ),
       validator: (value) {

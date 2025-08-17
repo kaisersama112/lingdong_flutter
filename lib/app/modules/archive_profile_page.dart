@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_components.dart';
-import '../core/components.dart';
 import '../core/error_handler.dart';
-import '../core/models.dart' as models;
+import '../core/models.dart';
 import '../core/pet_components.dart';
 import 'records_page.dart';
 import 'profile/profile_page.dart';
+import 'profile/settings_page.dart';
 import 'pet_detail_page.dart';
 import 'pet_management_page.dart';
 import 'package:flutter/services.dart';
@@ -21,16 +20,13 @@ class ArchiveProfilePage extends StatefulWidget {
 
 class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   int _selectedPetIndex = 0;
-  
+
   // 简单的用户数据
-  final Map<String, String> _userData = {
-    'name': '张三',
-    'avatar': '👤',
-  };
-  
+  final Map<String, String> _userData = {'name': '张三', 'avatar': '👤'};
+
   // 模拟宠物数据
-  final List<models.Pet> _pets = [
-    models.Pet(
+  final List<Pet> _pets = [
+    Pet(
       id: '1',
       name: '小白',
       type: '狗狗',
@@ -42,7 +38,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
       gender: '公',
       identityCode: 'PET20240315001',
     ),
-    models.Pet(
+    Pet(
       id: '2',
       name: '咪咪',
       type: '猫咪',
@@ -65,7 +61,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           children: [
             // 简化的页面头部 - 只显示标题和用户头像
             _buildSimpleHeader(),
-            
+
             // 内容区域
             Expanded(
               child: Container(
@@ -85,41 +81,46 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                         selectedPetId: _pets[_selectedPetIndex].id,
                         onPetSelected: (petId) {
                           setState(() {
-                            _selectedPetIndex = _pets.indexWhere((p) => p.id == petId);
+                            _selectedPetIndex = _pets.indexWhere(
+                              (p) => p.id == petId,
+                            );
                           });
                         },
                         onAddPet: _addPet,
                       ),
                       const SizedBox(height: AppTheme.spacingM),
-                      
+
                       // 宠物信息头部
                       PetInfoHeader(
                         pet: _pets[_selectedPetIndex],
-                        onCopyIdentity: () => _copyIdentityCode(_pets[_selectedPetIndex].identityCode),
-                        onShowQr: () => _showIdentityQrDialog(_pets[_selectedPetIndex].identityCode),
+                        onCopyIdentity: () => _copyIdentityCode(
+                          _pets[_selectedPetIndex].identityCode,
+                        ),
+                        onShowQr: () => _showIdentityQrDialog(
+                          _pets[_selectedPetIndex].identityCode,
+                        ),
                         onEditPet: _editPet,
                       ),
                       const SizedBox(height: AppTheme.spacingM),
-                      
+
                       // 健康记录快捷入口
                       HealthQuickAccess(
                         pet: _pets[_selectedPetIndex],
-                        onViewRecords: (type) => _navigateToRecords(filterType: type),
-                        onAddRecord: () => _navigateToRecords(openAddSheet: true),
+                        onViewRecords: (type) =>
+                            _navigateToRecords(filterType: type),
+                        onAddRecord: () =>
+                            _navigateToRecords(openAddSheet: true),
                         recordCounts: _getRecordCounts(),
                       ),
                       const SizedBox(height: AppTheme.spacingL),
-                      
+
                       // 快捷操作区域
                       _buildQuickActions(),
                       const SizedBox(height: AppTheme.spacingL),
-                      
+
                       // 宠物详情入口
                       _buildPetDetailEntry(),
                       const SizedBox(height: AppTheme.spacingL),
-                      
-                      // 测试区域 - 显示布局信息
-                      _buildDebugInfo(),
                     ],
                   ),
                 ),
@@ -131,7 +132,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
-  // 简化的页面头部 - 只显示标题和用户头像
+  // 美化的页面头部 - 显示标题、用户头像和设置按钮
   Widget _buildSimpleHeader() {
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -139,31 +140,50 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         vertical: AppTheme.spacingM,
       ),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            AppTheme.primaryColor.withValues(alpha: 0.1),
+            AppTheme.primaryLightColor.withValues(alpha: 0.05),
+          ],
+        ),
+        border: Border(
+          bottom: BorderSide(color: AppTheme.dividerColor, width: 1),
+        ),
       ),
       child: Row(
         children: [
           // 页面标题
           Expanded(
-            child: Text(
-              '宠物档案',
-              style: TextStyle(
-                fontSize: AppTheme.fontSizeXL,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textPrimaryColor,
-              ),
+            child: Row(
+              children: [
+                Icon(Icons.pets, color: AppTheme.primaryColor, size: 28),
+                const SizedBox(width: AppTheme.spacingM),
+                Text(
+                  '宠物档案',
+                  style: TextStyle(
+                    fontSize: AppTheme.fontSizeXL,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimaryColor,
+                  ),
+                ),
+              ],
             ),
           ),
-          
-          // 用户头像按钮
-          _buildUserAvatarButton(),
+
+          // 右侧按钮区域
+          Row(
+            children: [
+              // 用户头像按钮
+              _buildUserAvatarButton(),
+
+              const SizedBox(width: AppTheme.spacingM),
+
+              // 设置按钮
+              _buildSettingsButton(),
+            ],
+          ),
         ],
       ),
     );
@@ -172,7 +192,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   // 快捷操作区域 - 单宠家庭重点功能
   Widget _buildQuickActions() {
     final pet = _pets[_selectedPetIndex];
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
       child: Column(
@@ -307,7 +327,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   // 宠物详情入口 - 单宠家庭重点功能
   Widget _buildPetDetailEntry() {
     final pet = _pets[_selectedPetIndex];
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
       child: Material(
@@ -381,73 +401,36 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
-  // 测试区域 - 显示布局信息
-  Widget _buildDebugInfo() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: BoxDecoration(
-        color: Colors.grey.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.3)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '布局优化测试',
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontSize: AppTheme.fontSizeS,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '宠物数量: ${_pets.length}',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: AppTheme.fontSizeXS,
-            ),
-          ),
-          Text(
-            '当前宠物: ${_pets[_selectedPetIndex].name}',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: AppTheme.fontSizeXS,
-            ),
-          ),
-          Text(
-            '健康记录数量: ${_getRecordCounts().values.reduce((a, b) => a + b)}',
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: AppTheme.fontSizeXS,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildUserAvatarButton() {
     return GestureDetector(
       onTap: _navigateToProfile,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.2),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: AppTheme.primaryColor.withValues(alpha: 0.2),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppTheme.primaryColor,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
                     blurRadius: 4,
                     offset: const Offset(0, 1),
                   ),
@@ -455,27 +438,63 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
               ),
               child: CircleAvatar(
                 radius: 16,
-                backgroundColor: AppTheme.primaryLightColor,
+                backgroundColor: AppTheme.primaryColor,
                 child: Text(
                   _userData['avatar']!,
                   style: const TextStyle(fontSize: 16, color: Colors.white),
                 ),
               ),
             ),
-            const SizedBox(width: 6),
+            const SizedBox(width: 8),
             Text(
               _userData['name']!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: AppTheme.fontSizeS,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppTheme.textPrimaryColor,
               ),
             ),
-            const SizedBox(width: 4),
-            const Icon(
+            const SizedBox(width: 6),
+            Icon(
               Icons.arrow_forward_ios,
-              color: Colors.white,
-              size: 12,
+              color: AppTheme.primaryColor,
+              size: 14,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 设置按钮
+  Widget _buildSettingsButton() {
+    return GestureDetector(
+      onTap: _openSettings,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        decoration: BoxDecoration(
+          color: AppTheme.primaryColor,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: AppTheme.primaryColor.withValues(alpha: 0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.settings, color: Colors.white, size: 18),
+            const SizedBox(width: 8),
+            Text(
+              '设置',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: AppTheme.fontSizeS,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
         ),
@@ -503,16 +522,22 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
+  // 打开设置页面
+  void _openSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsPage()),
+    );
+  }
+
   // 宠物管理方法
   void _addPet() async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const PetManagementPage(),
-      ),
+      MaterialPageRoute(builder: (context) => const PetManagementPage()),
     );
-    
-    if (result != null && result is models.Pet) {
+
+    if (result != null && result is Pet) {
       setState(() {
         _pets.add(result);
         _selectedPetIndex = _pets.length - 1; // 选择新添加的宠物
@@ -527,7 +552,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         builder: (context) => PetManagementPage(pet: _pets[_selectedPetIndex]),
       ),
     );
-    
+
     if (result != null) {
       if (result == 'deleted') {
         // 宠物被删除
@@ -540,7 +565,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
             _selectedPetIndex = _pets.length - 1;
           }
         });
-      } else if (result is models.Pet) {
+      } else if (result is Pet) {
         // 宠物信息被更新
         setState(() {
           _pets[_selectedPetIndex] = result;
@@ -550,7 +575,10 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   }
 
   // 健康记录导航
-  void _navigateToRecords({bool openAddSheet = false, models.HealthRecordType? filterType}) {
+  void _navigateToRecords({
+    bool openAddSheet = false,
+    HealthRecordType? filterType,
+  }) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -564,12 +592,10 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   }
 
   // 查看宠物详情
-  void _viewPetDetail(models.Pet pet) {
+  void _viewPetDetail(Pet pet) {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => PetDetailPage(pet: pet),
-      ),
+      MaterialPageRoute(builder: (_) => PetDetailPage(pet: pet)),
     );
   }
 
@@ -594,9 +620,9 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   void _copyIdentityCode(String code) async {
     await Clipboard.setData(ClipboardData(text: code));
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('已复制身份码')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('已复制身份码')));
     }
   }
 
@@ -612,11 +638,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                QrImageView(
-                  data: code,
-                  size: 200,
-                  version: QrVersions.auto,
-                ),
+                QrImageView(data: code, size: 200, version: QrVersions.auto),
                 const SizedBox(height: 12),
                 SelectableText(
                   code,

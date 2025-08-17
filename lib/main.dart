@@ -20,7 +20,7 @@ void main() async {
 
   // 初始化认证服务，恢复登录状态
   final authService = UserAuthService();
-  
+
   // 延迟初始化，确保Flutter引擎完全启动
   Future.delayed(const Duration(milliseconds: 100), () async {
     try {
@@ -34,13 +34,13 @@ void main() async {
       AppErrorHandler.handleErrorSilently(e);
     }
   });
-  
+
   runApp(MyApp(authService: authService));
 }
 
 class MyApp extends StatelessWidget {
   final UserAuthService authService;
-  
+
   const MyApp({super.key, required this.authService});
 
   @override
@@ -80,7 +80,7 @@ class MyApp extends StatelessWidget {
 
 class AuthWrapper extends StatefulWidget {
   final UserAuthService authService;
-  
+
   const AuthWrapper({super.key, required this.authService});
 
   @override
@@ -99,20 +99,21 @@ class _AuthWrapperState extends State<AuthWrapper> {
   Future<void> _checkAuthState() async {
     // 等待认证服务初始化完成
     await Future.delayed(const Duration(milliseconds: 200));
-    
+
     // 尝试初始化认证服务（如果还没有初始化的话）
     try {
       await widget.authService.initialize();
-      
+
       // 恢复用户状态
-      if (widget.authService.isLoggedIn && widget.authService.currentUser != null) {
+      if (widget.authService.isLoggedIn &&
+          widget.authService.currentUser != null) {
         appState.setUser(widget.authService.currentUser);
       }
     } catch (e) {
       debugPrint('AuthWrapper中初始化认证服务失败: $e');
       AppErrorHandler.handleErrorSilently(e);
     }
-    
+
     if (mounted) {
       setState(() {
         _isInitialized = true;
@@ -127,7 +128,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
       return Scaffold(
         body: Container(
           decoration: const BoxDecoration(
-            gradient: theme.AppTheme.sunsetGradient,
+            gradient: theme.AppTheme.natureGradient,
           ),
           child: const Center(
             child: Column(

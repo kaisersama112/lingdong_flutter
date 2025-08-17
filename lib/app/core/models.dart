@@ -29,12 +29,12 @@ class Pet {
 
 // 健康记录类型
 enum HealthRecordType {
-  vaccination,    // 疫苗
-  deworming,     // 驱虫
-  vetVisit,      // 就诊体检
-  weight,        // 体重
-  medication,    // 用药
-  grooming,      // 美容
+  vaccination, // 疫苗
+  deworming, // 驱虫
+  vetVisit, // 就诊体检
+  weight, // 体重
+  medication, // 用药
+  grooming, // 美容
 }
 
 // 健康记录数据模型
@@ -69,6 +69,8 @@ class UserProfile {
   final DateTime joinDate;
   final String address;
   final String bio;
+  final String level;
+  final int points;
 
   const UserProfile({
     required this.name,
@@ -78,6 +80,8 @@ class UserProfile {
     required this.joinDate,
     required this.address,
     required this.bio,
+    required this.level,
+    required this.points,
   });
 }
 
