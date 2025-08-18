@@ -7,8 +7,6 @@ import '../modules/archive_profile_page.dart';
 import '../modules/auth/login_page.dart';
 import '../theme/app_theme.dart';
 import '../services/user_auth_service.dart';
-import '../modules/auth/guest_upgrade_page.dart';
-import '../modules/tools/tools_hub_page.dart';
 
 class NavigationController extends StatefulWidget {
   const NavigationController({super.key});
@@ -42,31 +40,26 @@ class _NavigationControllerState extends State<NavigationController>
       icon: Icons.home_rounded,
       label: '小窝',
       color: Color(0xFFFF6B6B),
-      meaning: '温暖的小窝，狗狗的避风港',
     ),
     _NavigationItem(
       icon: Icons.explore_rounded,
       label: '冒险',
       color: Color(0xFF4ECDC4),
-      meaning: '探索世界，发现美好',
     ),
     _NavigationItem(
       icon: Icons.add_circle_rounded,
       label: '分享',
       color: Color(0xFF4CAF50),
-      meaning: '分享快乐，传递温暖',
     ),
     _NavigationItem(
       icon: Icons.favorite_rounded,
       label: '伙伴',
       color: Color(0xFF9C27B0),
-      meaning: '爱心伙伴，彼此陪伴',
     ),
     _NavigationItem(
       icon: Icons.pets_rounded,
       label: '成长',
       color: Color(0xFF2196F3),
-      meaning: '成长记录，珍贵回忆',
     ),
   ];
 
@@ -82,7 +75,7 @@ class _NavigationControllerState extends State<NavigationController>
 
   void _initializeAnimations() {
     if (!mounted) return;
-    
+
     setState(() {
       _bounceController = AnimationController(
         duration: const Duration(milliseconds: 400),
@@ -96,7 +89,7 @@ class _NavigationControllerState extends State<NavigationController>
         duration: const Duration(milliseconds: 2000),
         vsync: this,
       );
-      
+
       _bounceAnimation = Tween<double>(begin: 1.0, end: 1.15).animate(
         CurvedAnimation(parent: _bounceController!, curve: Curves.elasticOut),
       );
@@ -106,9 +99,9 @@ class _NavigationControllerState extends State<NavigationController>
       _glowAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
         CurvedAnimation(parent: _glowController!, curve: Curves.easeInOut),
       );
-      
+
       _animationsInitialized = true;
-      
+
       // 启动发光动画循环
       _glowController!.repeat(reverse: true);
     });
@@ -124,11 +117,11 @@ class _NavigationControllerState extends State<NavigationController>
 
   void _onItemTapped(int index) {
     if (index == _currentIndex) return;
-    
+
     setState(() {
       _currentIndex = index;
     });
-    
+
     // 触发动画
     _bounceController?.forward().then((_) {
       _bounceController?.reverse();
@@ -193,23 +186,13 @@ class _NavigationControllerState extends State<NavigationController>
   }
 
   PreferredSizeWidget? _buildGuestAppBar() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return AppBar(
-      backgroundColor: Colors.orange.withValues(alpha: 0.9),
-      elevation: 0,
-      title: Row(
-        children: [
-          const Icon(Icons.person_outline, color: Colors.white, size: 20),
-          const SizedBox(width: 8),
-          Text(
-            '游客模式',
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
+      backgroundColor: AppTheme.secondaryColor.withValues(
+        alpha: isDark ? 0.35 : 0.9,
       ),
+      elevation: 0,
+      title: null,
       actions: [
         TextButton(
           onPressed: _showUpgradeDialog,
@@ -231,11 +214,7 @@ class _NavigationControllerState extends State<NavigationController>
         const SizedBox(width: 8),
         IconButton(
           onPressed: _handleLogout,
-          icon: const Icon(
-            Icons.logout,
-            color: Colors.white,
-            size: 20,
-          ),
+          icon: const Icon(Icons.logout, color: Colors.white, size: 20),
           tooltip: '退出登录',
         ),
         const SizedBox(width: 16),
@@ -269,11 +248,7 @@ class _NavigationControllerState extends State<NavigationController>
     );
   }
 
-  void _navigateToUpgrade() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const GuestUpgradePage()),
-    );
-  }
+  // 已移除未使用的升级跳转方法以减少未使用警告
 
   Widget _buildBottomNavigationBar() {
     if (!_animationsInitialized) {
@@ -283,7 +258,7 @@ class _NavigationControllerState extends State<NavigationController>
     return Container(
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.getSurfaceColor(context),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
@@ -306,7 +281,7 @@ class _NavigationControllerState extends State<NavigationController>
               final index = entry.key;
               final item = entry.value;
               final isSelected = index == _currentIndex;
-              
+
               return _buildNavigationItem(index, item, isSelected);
             }).toList(),
           ),
@@ -319,7 +294,7 @@ class _NavigationControllerState extends State<NavigationController>
     return Container(
       height: 100,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.getSurfaceColor(context),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
@@ -342,7 +317,7 @@ class _NavigationControllerState extends State<NavigationController>
               final index = entry.key;
               final item = entry.value;
               final isSelected = index == _currentIndex;
-              
+
               return _buildSimpleNavigationItem(index, item, isSelected);
             }).toList(),
           ),
@@ -351,13 +326,19 @@ class _NavigationControllerState extends State<NavigationController>
     );
   }
 
-  Widget _buildSimpleNavigationItem(int index, _NavigationItem item, bool isSelected) {
+  Widget _buildSimpleNavigationItem(
+    int index,
+    _NavigationItem item,
+    bool isSelected,
+  ) {
     return GestureDetector(
       onTap: () => _onItemTapped(index),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? item.color.withValues(alpha: 0.1) : Colors.transparent,
+          color: isSelected
+              ? item.color.withValues(alpha: 0.1)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -383,7 +364,11 @@ class _NavigationControllerState extends State<NavigationController>
     );
   }
 
-  Widget _buildNavigationItem(int index, _NavigationItem item, bool isSelected) {
+  Widget _buildNavigationItem(
+    int index,
+    _NavigationItem item,
+    bool isSelected,
+  ) {
     return GestureDetector(
       onTap: () => _onItemTapped(index),
       child: AnimatedContainer(
@@ -391,20 +376,21 @@ class _NavigationControllerState extends State<NavigationController>
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          gradient: isSelected ? LinearGradient(
-            colors: [
-              item.color.withValues(alpha: 0.15),
-              item.color.withValues(alpha: 0.08),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ) : null,
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    item.color.withValues(alpha: 0.15),
+                    item.color.withValues(alpha: 0.08),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              : null,
           color: isSelected ? null : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
-          border: isSelected ? Border.all(
-            color: item.color.withValues(alpha: 0.3),
-            width: 1.5,
-          ) : null,
+          border: isSelected
+              ? Border.all(color: item.color.withValues(alpha: 0.3), width: 1.5)
+              : null,
         ),
         child: Stack(
           alignment: Alignment.center,
@@ -444,7 +430,9 @@ class _NavigationControllerState extends State<NavigationController>
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: item.color.withValues(alpha: 0.06 * _glowAnimation!.value),
+                              color: item.color.withValues(
+                                alpha: 0.06 * _glowAnimation!.value,
+                              ),
                               blurRadius: 15,
                               spreadRadius: 1,
                             ),
@@ -498,7 +486,9 @@ class _NavigationControllerState extends State<NavigationController>
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: item.color.withValues(alpha: 0.5 * _glowAnimation!.value),
+                              color: item.color.withValues(
+                                alpha: 0.5 * _glowAnimation!.value,
+                              ),
                               blurRadius: 4,
                               spreadRadius: 0,
                             ),
@@ -521,13 +511,11 @@ class _NavigationItem {
   final IconData icon;
   final String label;
   final Color color;
-  final String meaning;
-  
+
   const _NavigationItem({
     required IconData icon,
     required String label,
     required Color color,
-    required this.meaning,
   }) : icon = icon,
        label = label,
        color = color;

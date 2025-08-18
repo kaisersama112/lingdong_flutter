@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../theme/app_theme.dart';
 
 class PetNavigationBar extends StatefulWidget {
   final int currentIndex;
@@ -40,7 +39,7 @@ class _PetNavigationBarState extends State<PetNavigationBar>
       duration: const Duration(milliseconds: 400),
       vsync: this,
     );
-    
+
     _pawAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(parent: _pawController!, curve: Curves.easeInOut),
     );
@@ -61,28 +60,28 @@ class _PetNavigationBarState extends State<PetNavigationBar>
 
   void _onItemTapped(int index) {
     if (index == widget.currentIndex) return;
-    
+
     _pawController?.forward().then((_) {
       _pawController?.reverse();
     });
-    
+
     _bounceController?.forward().then((_) {
       _bounceController?.reverse();
     });
-    
+
     widget.onTap(index);
   }
 
   @override
   Widget build(BuildContext context) {
     // 确保动画已初始化
-    if (_pawAnimation == null || _bounceAnimation == null || _rotationAnimation == null) {
+    if (_pawAnimation == null ||
+        _bounceAnimation == null ||
+        _rotationAnimation == null) {
       return Container(
         height: 100,
         color: Colors.white,
-        child: const Center(
-          child: CircularProgressIndicator(),
-        ),
+        child: const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -116,10 +115,10 @@ class _PetNavigationBarState extends State<PetNavigationBar>
                     animation: _pawAnimation!,
                     builder: (context, child) {
                       final delay = index * 0.1;
-                      final opacity = _pawAnimation!.value > delay 
-                          ? (_pawAnimation!.value - delay) * 2 
+                      final opacity = _pawAnimation!.value > delay
+                          ? (_pawAnimation!.value - delay) * 2
                           : 0.0;
-                      
+
                       return Opacity(
                         opacity: opacity.clamp(0.0, 1.0),
                         child: Container(
@@ -145,7 +144,7 @@ class _PetNavigationBarState extends State<PetNavigationBar>
                   final index = entry.key;
                   final item = entry.value;
                   final isSelected = index == widget.currentIndex;
-                  
+
                   return _buildNavigationItem(index, item, isSelected);
                 }).toList(),
               ),
@@ -156,9 +155,15 @@ class _PetNavigationBarState extends State<PetNavigationBar>
     );
   }
 
-  Widget _buildNavigationItem(int index, PetNavigationItem item, bool isSelected) {
+  Widget _buildNavigationItem(
+    int index,
+    PetNavigationItem item,
+    bool isSelected,
+  ) {
     // 确保动画已初始化
-    if (_pawAnimation == null || _bounceAnimation == null || _rotationAnimation == null) {
+    if (_pawAnimation == null ||
+        _bounceAnimation == null ||
+        _rotationAnimation == null) {
       return Container();
     }
 
@@ -169,20 +174,21 @@ class _PetNavigationBarState extends State<PetNavigationBar>
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         decoration: BoxDecoration(
-          gradient: isSelected ? LinearGradient(
-            colors: [
-              item.color.withValues(alpha: 0.1),
-              item.color.withValues(alpha: 0.05),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ) : null,
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    item.color.withValues(alpha: 0.1),
+                    item.color.withValues(alpha: 0.05),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                )
+              : null,
           color: isSelected ? null : Colors.transparent,
           borderRadius: BorderRadius.circular(28),
-          border: isSelected ? Border.all(
-            color: item.color.withValues(alpha: 0.3),
-            width: 1.5,
-          ) : null,
+          border: isSelected
+              ? Border.all(color: item.color.withValues(alpha: 0.3), width: 1.5)
+              : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -245,11 +251,7 @@ class _PetNavigationBarState extends State<PetNavigationBar>
                 children: List.generate(item.pawCount, (pawIndex) {
                   return Container(
                     margin: const EdgeInsets.symmetric(horizontal: 1),
-                    child: Icon(
-                      Icons.pets,
-                      size: 8,
-                      color: item.color,
-                    ),
+                    child: Icon(Icons.pets, size: 8, color: item.color),
                   );
                 }),
               ),
@@ -265,14 +267,12 @@ class PetNavigationItem {
   final IconData icon;
   final String label;
   final Color color;
-  final String meaning;
   final int pawCount;
-  
+
   const PetNavigationItem({
     required IconData icon,
     required String label,
     required Color color,
-    required this.meaning,
     required this.pawCount,
   }) : icon = icon,
        label = label,

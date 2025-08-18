@@ -1,126 +1,122 @@
 import 'package:flutter/material.dart';
 
 class AppTheme {
-  // 主色调 - 温暖的金色系
-  static const Color primaryColor = Color(0xFFFFB74D); // 温暖的金色 - 狗狗的阳光色
-  static const Color primaryLightColor = Color(0xFFFFF8E1); // 浅金色
-  static const Color primaryDarkColor = Color(0xFFFF8F00); // 深金色
+  // 主色调 - 现代化温暖色系
+  static const Color primaryColor = Color(0xFF6366F1); // 现代化靛蓝色
+  static const Color primaryLightColor = Color(0xFFA5B4FC); // 浅靛蓝色
+  static const Color primaryDarkColor = Color(0xFF4338CA); // 深靛蓝色
 
-  // 辅助色 - 温暖的奶油色系
-  static const Color secondaryColor = Color(0xFFFFCC80); // 温暖的奶油色
-  static const Color secondaryLightColor = Color(0xFFFFF3E0); // 浅奶油色
-  static const Color secondaryDarkColor = Color(0xFFFFB74D); // 深奶油色
+  // 辅助色 - 温暖的橙色系
+  static const Color secondaryColor = Color(0xFFF59E0B); // 温暖橙色
+  static const Color secondaryLightColor = Color(0xFFFCD34D); // 浅橙色
+  static const Color secondaryDarkColor = Color(0xFFD97706); // 深橙色
 
-  // 强调色 - 温暖的珊瑚色系
-  static const Color accentColor = Color(0xFFFF8A65); // 温暖的珊瑚色
-  static const Color accentLightColor = Color(0xFFFFE0B2); // 浅珊瑚色
-  static const Color accentDarkColor = Color(0xFFFF5722); // 深珊瑚色
+  // 强调色 - 现代化绿色系
+  static const Color accentColor = Color(0xFF10B981); // 现代化绿色
+  static const Color accentLightColor = Color(0xFF6EE7B7); // 浅绿色
+  static const Color accentDarkColor = Color(0xFF059669); // 深绿色
 
   // 成功色 - 温和的绿色
-  static const Color successColor = Color(0xFF7FB069); // 温和的绿色
-  static const Color successLightColor = Color(0xFFE8F4E3); // 浅绿色
+  static const Color successColor = Color(0xFF10B981); // 现代化绿色
+  static const Color successLightColor = Color(0xFFD1FAE5); // 浅绿色
 
   // 警告色 - 温和的橙色
-  static const Color warningColor = Color(0xFFE6A23C); // 温和的橙色
-  static const Color warningLightColor = Color(0xFFFDF6EC); // 浅橙色
+  static const Color warningColor = Color(0xFFF59E0B); // 现代化橙色
+  static const Color warningLightColor = Color(0xFFFEF3C7); // 浅橙色
 
   // 错误色 - 温和的红色
-  static const Color errorColor = Color(0xFFE85D75); // 温和的红色
-  static const Color errorLightColor = Color(0xFFFEF0F0); // 浅红色
+  static const Color errorColor = Color(0xFFEF4444); // 现代化红色
+  static const Color errorLightColor = Color(0xFFFEE2E2); // 浅红色
 
-  // 中性色 - 现代化的灰色系
-  static const Color backgroundColor = Color(0xFFF8F9FA); // 温暖的浅灰
+  // 中性色 - 现代化灰色系
+  static const Color backgroundColor = Color(0xFFF8FAFC); // 现代化浅灰
   static const Color surfaceColor = Color(0xFFFFFFFF); // 纯白
-  static const Color textPrimaryColor = Color(0xFF2D3748); // 深灰蓝色
-  static const Color textSecondaryColor = Color(0xFF718096); // 中灰色
-  static const Color textLightColor = Color(0xFFA0AEC0); // 浅灰色
+  static const Color textPrimaryColor = Color(0xFF1E293B); // 深灰蓝色
+  static const Color textSecondaryColor = Color(0xFF64748B); // 中灰色
+  static const Color textLightColor = Color(0xFF94A3B8); // 浅灰色
   static const Color dividerColor = Color(0xFFE2E8F0); // 浅蓝灰色
 
   // 深色模式颜色
-  static const Color darkBackgroundColor = Color(0xFF1A202C); // 深色背景
-  static const Color darkSurfaceColor = Color(0xFF2D3748); // 深色表面
-  static const Color darkTextPrimaryColor = Color(0xFFF7FAFC); // 深色模式主文本
-  static const Color darkTextSecondaryColor = Color(0xFFCBD5E0); // 深色模式次要文本
-  static const Color darkTextLightColor = Color(0xFFA0AEC0); // 深色模式浅色文本
-  static const Color darkDividerColor = Color(0xFF4A5568); // 深色模式分割线
+  static const Color darkBackgroundColor = Color(0xFF0F172A); // 深色背景
+  static const Color darkSurfaceColor = Color(0xFF1E293B); // 深色表面
+  static const Color darkTextPrimaryColor = Color(0xFFF8FAFC); // 深色模式主文本
+  static const Color darkTextSecondaryColor = Color(0xFFCBD5E1); // 深色模式次要文本
+  static const Color darkTextLightColor = Color(0xFF94A3B8); // 深色模式浅色文本
+  static const Color darkDividerColor = Color(0xFF334155); // 深色模式分割线
 
-  // 狗狗品种主题色 - 温暖友好的毛色
-  static const List<Color> petColors = [
-    Color(0xFFFFB74D), // 温暖金色 - 金毛
-    Color(0xFFFFCC80), // 温暖奶油色 - 拉布拉多
-    Color(0xFFFFF3E0), // 温暖米色 - 萨摩耶
-    Color(0xFFFF8A65), // 温暖珊瑚色 - 德国牧羊犬
-    Color(0xFFFFE0B2), // 温暖粉色 - 比熊
-    Color(0xFFFFAB91), // 温暖橙色 - 哈士奇
-    Color(0xFFFFCC02), // 温暖黄色 - 边境牧羊犬
-    Color(0xFFFFB3BA), // 温暖粉色 - 泰迪
-  ];
-
-  // 渐变色彩 - 温暖狗狗社区风格
+  // 现代化渐变色彩
   static const LinearGradient primaryGradient = LinearGradient(
-    colors: [Color(0xFFFFB74D), Color(0xFFFF8F00)],
+    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient secondaryGradient = LinearGradient(
-    colors: [Color(0xFFFFCC80), Color(0xFFFFB74D)],
+    colors: [Color(0xFFF59E0B), Color(0xFFF97316)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient accentGradient = LinearGradient(
-    colors: [Color(0xFFFF8A65), Color(0xFFFF5722)],
+    colors: [Color(0xFF10B981), Color(0xFF059669)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient warmGradient = LinearGradient(
-    colors: [Color(0xFFE6A23C), Color(0xFFD69E2E)],
+    colors: [Color(0xFFF59E0B), Color(0xFFD97706)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   // 新增现代化渐变
   static const LinearGradient softGradient = LinearGradient(
-    colors: [Color(0xFFE8F4F8), Color(0xFFF5F0E8)],
+    colors: [Color(0xFFE0E7FF), Color(0xFFFEF3C7)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient natureGradient = LinearGradient(
-    colors: [Color(0xFFFFB74D), Color(0xFFFFCC80)],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
-
-  static const LinearGradient dogGradient = LinearGradient(
-    colors: [Color(0xFFFFB74D), Color(0xFFFF8A65)],
+    colors: [Color(0xFF6366F1), Color(0xFF10B981)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient sunsetGradient = LinearGradient(
-    colors: [Color(0xFFFFCC80), Color(0xFFFFAB91)],
+    colors: [Color(0xFFF59E0B), Color(0xFFEF4444)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
+  static const LinearGradient oceanGradient = LinearGradient(
+    colors: [Color(0xFF0EA5E9), Color(0xFF6366F1)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  // 认证页亮色专用更饱和渐变（保证白色文字有足够对比）
+  static const LinearGradient authLightGradient = LinearGradient(
+    colors: [Color(0xFF6366F1), Color(0xFF8B5CF6), Color(0xFFEC4899)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    stops: [0.0, 0.5, 1.0],
+  );
+
   // 深色模式渐变
   static const LinearGradient darkPrimaryGradient = LinearGradient(
-    colors: [Color(0xFF2E5A6B), Color(0xFF1A3A47)],
+    colors: [Color(0xFF1E40AF), Color(0xFF3730A3)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient darkSecondaryGradient = LinearGradient(
-    colors: [Color(0xFFB8945F), Color(0xFF8B6F47)],
+    colors: [Color(0xFF92400E), Color(0xFF7C2D12)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const LinearGradient darkAccentGradient = LinearGradient(
-    colors: [Color(0xFF6B5B9A), Color(0xFF4A3D6B)],
+    colors: [Color(0xFF047857), Color(0xFF065F46)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
@@ -233,6 +229,14 @@ class AppTheme {
     return brightness == Brightness.dark ? darkAccentGradient : accentGradient;
   }
 
+  // 登录/认证页专用更柔和的背景渐变（亮色使用柔和渐变，暗色使用深色主渐变）
+  static LinearGradient getAuthBackgroundGradient(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark
+        ? darkPrimaryGradient
+        : authLightGradient;
+  }
+
   // 获取当前主题的阴影
   static List<BoxShadow> getCardShadow(BuildContext context) {
     final brightness = Theme.of(context).brightness;
@@ -245,10 +249,10 @@ class AppTheme {
   }
 
   // 圆角 - 更现代化
-  static const double borderRadiusSmall = 8.0; // 减小小圆角
-  static const double borderRadiusMedium = 12.0; // 减小中圆角
-  static const double borderRadiusLarge = 16.0; // 减小大圆角
-  static const double borderRadiusXLarge = 24.0; // 减小超大圆角
+  static const double borderRadiusSmall = 8.0;
+  static const double borderRadiusMedium = 12.0;
+  static const double borderRadiusLarge = 16.0;
+  static const double borderRadiusXLarge = 24.0;
 
   // 间距
   static const double spacingXS = 4.0;
@@ -563,6 +567,140 @@ class AppTheme {
       }),
       checkColor: WidgetStateProperty.all(Colors.white),
       side: const BorderSide(color: dividerColor),
+    ),
+
+    // 滚动条主题（更细、更低对比度）
+    scrollbarTheme: ScrollbarThemeData(
+      thickness: WidgetStateProperty.all(4),
+      radius: const Radius.circular(8),
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.hovered)) {
+          return primaryColor.withValues(alpha: 0.5);
+        }
+        return primaryColor.withValues(alpha: 0.3);
+      }),
+      trackColor: WidgetStateProperty.all(Colors.transparent),
+      trackBorderColor: WidgetStateProperty.all(Colors.transparent),
+    ),
+  );
+
+  // 深色主题配置
+  static ThemeData get darkTheme => ThemeData(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      brightness: Brightness.dark,
+    ),
+    useMaterial3: true,
+    fontFamily: 'PingFang SC',
+
+    // AppBar 主题（透明，文本使用深色模式主文本色）
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: TextStyle(
+        color: darkTextPrimaryColor,
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+      iconTheme: IconThemeData(color: darkTextPrimaryColor),
+    ),
+
+    // 卡片主题
+    cardTheme: CardThemeData(
+      color: darkSurfaceColor,
+      elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(borderRadiusLarge),
+      ),
+    ),
+
+    // 按钮主题
+    elevatedButtonTheme: ElevatedButtonThemeData(style: primaryButtonStyle),
+
+    // 输入框主题
+    inputDecorationTheme: InputDecorationTheme(
+      filled: true,
+      fillColor: darkSurfaceColor,
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadiusMedium),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadiusMedium),
+        borderSide: const BorderSide(color: darkDividerColor),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(borderRadiusMedium),
+        borderSide: const BorderSide(color: primaryColor, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: spacingM,
+        vertical: spacingM,
+      ),
+    ),
+
+    // 底部导航栏主题
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      backgroundColor: darkSurfaceColor,
+      selectedItemColor: primaryLightColor,
+      unselectedItemColor: darkTextSecondaryColor,
+      type: BottomNavigationBarType.fixed,
+      elevation: 8,
+    ),
+
+    // 浮动操作按钮主题
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+      backgroundColor: primaryColor,
+      foregroundColor: Colors.white,
+      elevation: 8,
+    ),
+
+    // 进度指示器主题
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: primaryColor,
+    ),
+
+    // 开关主题
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primaryColor;
+        }
+        return darkTextLightColor;
+      }),
+      trackColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primaryColor.withValues(alpha: 0.3);
+        }
+        return darkTextLightColor.withValues(alpha: 0.3);
+      }),
+    ),
+
+    // 复选框主题
+    checkboxTheme: CheckboxThemeData(
+      fillColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.selected)) {
+          return primaryColor;
+        }
+        return Colors.transparent;
+      }),
+      checkColor: WidgetStateProperty.all(Colors.white),
+      side: const BorderSide(color: darkDividerColor),
+    ),
+
+    // 滚动条主题（更细、更低对比度）
+    scrollbarTheme: ScrollbarThemeData(
+      thickness: WidgetStateProperty.all(4),
+      radius: const Radius.circular(8),
+      thumbColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.hovered)) {
+          return primaryLightColor.withValues(alpha: 0.5);
+        }
+        return primaryLightColor.withValues(alpha: 0.35);
+      }),
+      trackColor: WidgetStateProperty.all(Colors.transparent),
+      trackBorderColor: WidgetStateProperty.all(Colors.transparent),
     ),
   );
 }

@@ -1,8 +1,49 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import '../theme/app_theme.dart';
 import 'models.dart' as models;
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+/// 通用头像渲染组件：支持表情字符与 data URL 图片
+class PetAvatar extends StatelessWidget {
+  final String avatar;
+  final double size;
+  final Color? brokenIconColor;
+
+  const PetAvatar({
+    super.key,
+    required this.avatar,
+    this.size = 24,
+    this.brokenIconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (avatar.startsWith('data:image')) {
+      try {
+        final parts = avatar.split(',');
+        final base64Str = parts.length > 1 ? parts[1] : parts.first;
+        final bytes = base64Decode(base64Str);
+        return ClipOval(
+          child: Image.memory(
+            bytes,
+            width: size,
+            height: size,
+            fit: BoxFit.cover,
+          ),
+        );
+      } catch (_) {
+        return Icon(
+          Icons.broken_image,
+          size: size * 0.9,
+          color: brokenIconColor ?? Colors.grey,
+        );
+      }
+    }
+    return Text(avatar, style: TextStyle(fontSize: size));
+  }
+}
 
 /// 宠物选择器组件 - 单宠家庭优化版本
 class PetSelector extends StatelessWidget {
@@ -64,8 +105,7 @@ class PetSelector extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                if (showAddButton && onAddPet != null)
-                  _buildAddPetButton(),
+                if (showAddButton && onAddPet != null) _buildAddPetButton(),
               ],
             ),
             const SizedBox(height: AppTheme.spacingL),
@@ -191,13 +231,13 @@ class PetSelector extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Text(
-                pet.avatar,
-                style: const TextStyle(fontSize: 24), // 减少头像大小
+              child: PetAvatar(
+                avatar: pet.avatar,
+                size: 24,
+                brokenIconColor: pet.color,
               ),
             ),
             const SizedBox(width: AppTheme.spacingM), // 减少间距
-            
             // 宠物信息
             Expanded(
               child: Column(
@@ -214,11 +254,16 @@ class PetSelector extends StatelessWidget {
                   ),
                   const SizedBox(height: 6), // 减少间距
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), // 减少标签内边距
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ), // 减少标签内边距
                     decoration: BoxDecoration(
                       color: pet.color.withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: pet.color.withValues(alpha: 0.3)),
+                      border: Border.all(
+                        color: pet.color.withValues(alpha: 0.3),
+                      ),
                     ),
                     child: Text(
                       pet.breed,
@@ -232,15 +277,18 @@ class PetSelector extends StatelessWidget {
                   const SizedBox(height: 8), // 减少间距
                   Row(
                     children: [
-                      Flexible( // 添加Flexible包装
+                      Flexible(
+                        // 添加Flexible包装
                         child: _buildInfoChip(
                           icon: Icons.cake,
-                          label: '${pet.birthDate.year}-${pet.birthDate.month.toString().padLeft(2, '0')}',
+                          label:
+                              '${pet.birthDate.year}-${pet.birthDate.month.toString().padLeft(2, '0')}',
                           color: pet.color,
                         ),
                       ),
                       const SizedBox(width: AppTheme.spacingS), // 减少间距
-                      Flexible( // 添加Flexible包装
+                      Flexible(
+                        // 添加Flexible包装
                         child: _buildInfoChip(
                           icon: Icons.monitor_weight,
                           label: '${pet.weight}kg',
@@ -248,7 +296,8 @@ class PetSelector extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: AppTheme.spacingS), // 减少间距
-                      Flexible( // 添加Flexible包装
+                      Flexible(
+                        // 添加Flexible包装
                         child: _buildInfoChip(
                           icon: Icons.wc,
                           label: pet.gender,
@@ -260,7 +309,7 @@ class PetSelector extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             // 操作按钮
             Column(
               mainAxisSize: MainAxisSize.min, // 添加这个属性
@@ -281,11 +330,17 @@ class PetSelector extends StatelessWidget {
                   ),
                   tooltip: '编辑宠物信息',
                   padding: EdgeInsets.zero, // 减少按钮内边距
-                  constraints: const BoxConstraints(minWidth: 32, minHeight: 32), // 减少按钮大小
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ), // 减少按钮大小
                 ),
                 const SizedBox(height: 4), // 减少间距
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // 减少标签内边距
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ), // 减少标签内边距
                   decoration: BoxDecoration(
                     color: pet.color,
                     borderRadius: BorderRadius.circular(10),
@@ -318,7 +373,7 @@ class PetSelector extends StatelessWidget {
             fontSize: AppTheme.fontSizeS,
           ),
         ),
-        const SizedBox(height: AppTheme.spacingM),
+        const SizedBox(height: AppTheme.spacingS),
         SizedBox(
           height: 100,
           child: ListView.builder(
@@ -327,15 +382,19 @@ class PetSelector extends StatelessWidget {
             itemBuilder: (context, index) {
               final pet = pets[index];
               final isSelected = pet.id == selectedPetId;
-              
+
               return GestureDetector(
                 onTap: () => onPetSelected(pet.id),
                 child: Container(
                   width: 80,
                   margin: const EdgeInsets.only(right: AppTheme.spacingM),
                   decoration: BoxDecoration(
-                    color: isSelected ? pet.color.withValues(alpha: 0.1) : AppTheme.backgroundColor,
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+                    color: isSelected
+                        ? pet.color.withValues(alpha: 0.1)
+                        : AppTheme.backgroundColor,
+                    borderRadius: BorderRadius.circular(
+                      AppTheme.borderRadiusMedium,
+                    ),
                     border: Border.all(
                       color: isSelected ? pet.color : AppTheme.dividerColor,
                       width: isSelected ? 2 : 1,
@@ -344,9 +403,10 @@ class PetSelector extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        pet.avatar,
-                        style: const TextStyle(fontSize: 24),
+                      PetAvatar(
+                        avatar: pet.avatar,
+                        size: 24,
+                        brokenIconColor: pet.color,
                       ),
                       const SizedBox(height: 4),
                       Text(
@@ -354,7 +414,9 @@ class PetSelector extends StatelessWidget {
                         style: TextStyle(
                           fontSize: AppTheme.fontSizeS,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? pet.color : AppTheme.textPrimaryColor,
+                          color: isSelected
+                              ? pet.color
+                              : AppTheme.textPrimaryColor,
                         ),
                       ),
                     ],
@@ -383,13 +445,10 @@ class PetSelector extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            icon,
-            size: 14,
-            color: color,
-          ),
+          Icon(icon, size: 14, color: color),
           const SizedBox(width: 4),
-          Flexible( // 添加Flexible包装
+          Flexible(
+            // 添加Flexible包装
             child: Text(
               label,
               style: TextStyle(
@@ -436,7 +495,10 @@ class IdentityCodeBar extends StatelessWidget {
           Expanded(
             child: SelectableText(
               identityCode,
-              style: const TextStyle(fontWeight: FontWeight.w700, letterSpacing: 0.5),
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
           if (showCopyButton)
@@ -446,9 +508,9 @@ class IdentityCodeBar extends StatelessWidget {
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: identityCode));
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('已复制身份码')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(const SnackBar(content: Text('已复制身份码')));
                 }
               },
             ),
@@ -474,11 +536,7 @@ class IdentityCodeBar extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                QrImageView(
-                  data: code,
-                  size: 200,
-                  version: QrVersions.auto,
-                ),
+                QrImageView(data: code, size: 200, version: QrVersions.auto),
                 const SizedBox(height: 12),
                 SelectableText(
                   code,
@@ -518,7 +576,7 @@ class PetInfoHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
+      margin: EdgeInsets.zero,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -559,13 +617,14 @@ class PetInfoHeader extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Text(
-                    pet.avatar,
-                    style: const TextStyle(fontSize: 36),
+                  child: PetAvatar(
+                    avatar: pet.avatar,
+                    size: 36,
+                    brokenIconColor: pet.color,
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingL),
-                
+
                 // 宠物基本信息
                 Expanded(
                   child: Column(
@@ -604,9 +663,9 @@ class PetInfoHeader extends StatelessWidget {
                 ),
               ],
             ),
-            
+
             const SizedBox(height: AppTheme.spacingL),
-            
+
             // 身份码区域
             _buildIdentitySection(),
           ],
@@ -635,31 +694,22 @@ class PetInfoHeader extends StatelessWidget {
   }
 
   Widget _buildBasicInfoRow() {
-    return Row(
+    return Wrap(
+      spacing: AppTheme.spacingL,
+      runSpacing: AppTheme.spacingS,
       children: [
-        Flexible( // 添加Flexible包装
-          child: _buildInfoItem(
-            icon: Icons.cake,
-            label: '生日',
-            value: '${pet.birthDate.year}-${pet.birthDate.month.toString().padLeft(2, '0')}-${pet.birthDate.day.toString().padLeft(2, '0')}',
-          ),
+        _buildInfoItem(
+          icon: Icons.cake,
+          label: '生日',
+          value:
+              '${pet.birthDate.year}-${pet.birthDate.month.toString().padLeft(2, '0')}-${pet.birthDate.day.toString().padLeft(2, '0')}',
         ),
-        const SizedBox(width: AppTheme.spacingL),
-        Flexible( // 添加Flexible包装
-          child: _buildInfoItem(
-            icon: Icons.monitor_weight,
-            label: '体重',
-            value: '${pet.weight}kg',
-          ),
+        _buildInfoItem(
+          icon: Icons.monitor_weight,
+          label: '体重',
+          value: '${pet.weight}kg',
         ),
-        const SizedBox(width: AppTheme.spacingL),
-        Flexible( // 添加Flexible包装
-          child: _buildInfoItem(
-            icon: Icons.wc,
-            label: '性别',
-            value: pet.gender,
-          ),
-        ),
+        _buildInfoItem(icon: Icons.wc, label: '性别', value: pet.gender),
       ],
     );
   }
@@ -672,40 +722,28 @@ class PetInfoHeader extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(
-          icon,
-          size: 16,
-          color: AppTheme.textSecondaryColor,
-        ),
+        Icon(icon, size: 16, color: AppTheme.textSecondaryColor),
         const SizedBox(width: 6),
-        Flexible( // 添加Flexible包装
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min, // 添加这个属性
-            children: [
-              Flexible( // 添加Flexible包装
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: AppTheme.textSecondaryColor.withValues(alpha: 0.7),
-                    fontSize: AppTheme.fontSizeXS,
-                  ),
-                  overflow: TextOverflow.ellipsis, // 添加文本溢出处理
-                ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: AppTheme.textSecondaryColor.withValues(alpha: 0.7),
+                fontSize: AppTheme.fontSizeXS,
               ),
-              Flexible( // 添加Flexible包装
-                child: Text(
-                  value,
-                  style: const TextStyle(
-                    color: AppTheme.textPrimaryColor,
-                    fontSize: AppTheme.fontSizeS,
-                    fontWeight: FontWeight.w600,
-                  ),
-                  overflow: TextOverflow.ellipsis, // 添加文本溢出处理
-                ),
+            ),
+            Text(
+              value,
+              style: const TextStyle(
+                color: AppTheme.textPrimaryColor,
+                fontSize: AppTheme.fontSizeS,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ],
     );
@@ -736,11 +774,7 @@ class PetInfoHeader extends StatelessWidget {
                   color: pet.color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  Icons.qr_code_2,
-                  size: 16,
-                  color: pet.color,
-                ),
+                child: Icon(Icons.qr_code_2, size: 16, color: pet.color),
               ),
               const SizedBox(width: 8),
               const Text(
@@ -752,7 +786,8 @@ class PetInfoHeader extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Flexible( // 添加Flexible包装
+              Flexible(
+                // 添加Flexible包装
                 child: Text(
                   pet.identityCode,
                   style: TextStyle(
@@ -850,9 +885,9 @@ class HealthQuickAccess extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
+      margin: EdgeInsets.zero,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.getSurfaceColor(context),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         boxShadow: [
           BoxShadow(
@@ -891,18 +926,17 @@ class HealthQuickAccess extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                if (onAddRecord != null)
-                  _buildAddRecordButton(),
+                if (onAddRecord != null) _buildAddRecordButton(),
               ],
             ),
             const SizedBox(height: AppTheme.spacingL),
-            
+
             // 健康状态概览
-            _buildHealthOverview(),
+            _buildHealthOverview(context),
             const SizedBox(height: AppTheme.spacingL),
-            
+
             // 快捷功能入口
-            _buildQuickAccessGrid(),
+            _buildQuickAccessGrid(context),
           ],
         ),
       ),
@@ -956,7 +990,7 @@ class HealthQuickAccess extends StatelessWidget {
   }
 
   // 健康状态概览 - 单宠家庭重点展示
-  Widget _buildHealthOverview() {
+  Widget _buildHealthOverview(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(AppTheme.spacingS), // 减少内边距
       decoration: BoxDecoration(
@@ -983,7 +1017,8 @@ class HealthQuickAccess extends StatelessWidget {
                 size: 16, // 减少图标大小
               ),
               const SizedBox(width: 6), // 减少间距
-              Flexible( // 添加Flexible包装
+              Flexible(
+                // 添加Flexible包装
                 child: Text(
                   '${pet.name}的健康状态',
                   style: TextStyle(
@@ -1001,6 +1036,7 @@ class HealthQuickAccess extends StatelessWidget {
             children: [
               Expanded(
                 child: _buildHealthStatusCard(
+                  context,
                   icon: Icons.vaccines,
                   label: '疫苗',
                   status: '已完成',
@@ -1011,6 +1047,7 @@ class HealthQuickAccess extends StatelessWidget {
               const SizedBox(width: AppTheme.spacingS), // 减少间距
               Expanded(
                 child: _buildHealthStatusCard(
+                  context,
                   icon: Icons.monitor_weight,
                   label: '体重',
                   status: '正常',
@@ -1021,6 +1058,7 @@ class HealthQuickAccess extends StatelessWidget {
               const SizedBox(width: AppTheme.spacingS), // 减少间距
               Expanded(
                 child: _buildHealthStatusCard(
+                  context,
                   icon: Icons.medical_services,
                   label: '体检',
                   status: '建议',
@@ -1035,7 +1073,8 @@ class HealthQuickAccess extends StatelessWidget {
     );
   }
 
-  Widget _buildHealthStatusCard({
+  Widget _buildHealthStatusCard(
+    BuildContext context, {
     required IconData icon,
     required String label,
     required String status,
@@ -1043,52 +1082,52 @@ class HealthQuickAccess extends StatelessWidget {
     required int count,
   }) {
     return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingS), // 减少内边距
+      padding: const EdgeInsets.all(AppTheme.spacingXS),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+        color: AppTheme.getSurfaceColor(context),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
         border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
-        mainAxisSize: MainAxisSize.min, // 添加这个属性
-        crossAxisAlignment: CrossAxisAlignment.center, // 居中对齐
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(icon, color: color, size: 20), // 减少图标大小
-          const SizedBox(height: 6), // 减少间距
-          Flexible( // 添加Flexible包装
+          Icon(icon, color: color, size: 14),
+          const SizedBox(height: 4),
+          Flexible(
             child: Text(
               label,
               style: TextStyle(
                 color: AppTheme.textSecondaryColor,
                 fontSize: AppTheme.fontSizeXS,
               ),
-              textAlign: TextAlign.center, // 居中对齐
-              overflow: TextOverflow.ellipsis, // 添加文本溢出处理
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 2), // 减少间距
-          Flexible( // 添加Flexible包装
+          const SizedBox(height: 2),
+          Flexible(
             child: Text(
               status,
               style: TextStyle(
                 color: color,
-                fontSize: AppTheme.fontSizeXS, // 减少字体大小
+                fontSize: AppTheme.fontSizeXS,
                 fontWeight: FontWeight.w600,
               ),
-              textAlign: TextAlign.center, // 居中对齐
-              overflow: TextOverflow.ellipsis, // 添加文本溢出处理
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
           if (count > 0)
-            Flexible( // 添加Flexible包装
+            Flexible(
               child: Text(
                 '${count}条记录',
                 style: TextStyle(
                   color: color.withValues(alpha: 0.7),
                   fontSize: AppTheme.fontSizeXS,
                 ),
-                textAlign: TextAlign.center, // 居中对齐
-                overflow: TextOverflow.ellipsis, // 添加文本溢出处理
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
         ],
@@ -1096,7 +1135,7 @@ class HealthQuickAccess extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickAccessGrid() {
+  Widget _buildQuickAccessGrid(BuildContext context) {
     final quickActions = [
       QuickAction(
         icon: Icons.vaccines,
@@ -1130,7 +1169,7 @@ class HealthQuickAccess extends StatelessWidget {
         icon: Icons.bug_report,
         label: '驱虫记录',
         color: AppTheme.secondaryColor,
-        count: recordCounts?['  '] ?? 0,
+        count: recordCounts?['deworming'] ?? 0,
         onTap: () => onViewRecords?.call(models.HealthRecordType.deworming),
       ),
       QuickAction(
@@ -1157,8 +1196,8 @@ class HealthQuickAccess extends StatelessWidget {
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: MediaQuery.of(context).size.width < 300 ? 1 : 2,
             crossAxisSpacing: AppTheme.spacingM,
             mainAxisSpacing: AppTheme.spacingM,
             childAspectRatio: 2.5,
@@ -1180,7 +1219,7 @@ class HealthQuickAccess extends StatelessWidget {
         onTap: action.onTap,
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         child: Container(
-          padding: const EdgeInsets.all(AppTheme.spacingM),
+          padding: const EdgeInsets.all(AppTheme.spacingS),
           decoration: BoxDecoration(
             color: action.color.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
@@ -1189,45 +1228,39 @@ class HealthQuickAccess extends StatelessWidget {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   color: action.color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Icon(
-                  action.icon,
-                  color: action.color,
-                  size: 20,
-                ),
+                child: Icon(action.icon, color: action.color, size: 16),
               ),
-              const SizedBox(width: AppTheme.spacingM),
-              Expanded( // 确保Expanded包装
+              const SizedBox(width: AppTheme.spacingS),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min, // 添加这个属性
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Flexible( // 添加Flexible包装
-                      child: Text(
-                        action.label,
-                        style: TextStyle(
-                          color: action.color,
-                          fontWeight: FontWeight.w600,
-                          fontSize: AppTheme.fontSizeS,
-                        ),
-                        overflow: TextOverflow.ellipsis, // 添加文本溢出处理
+                    Text(
+                      action.label,
+                      style: TextStyle(
+                        color: action.color,
+                        fontWeight: FontWeight.w600,
+                        fontSize: AppTheme.fontSizeXS,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     if (action.count > 0)
-                      Flexible( // 添加Flexible包装
-                        child: Text(
-                          '${action.count} 条记录',
-                          style: TextStyle(
-                            color: action.color.withValues(alpha: 0.7),
-                            fontSize: AppTheme.fontSizeXS,
-                          ),
-                          overflow: TextOverflow.ellipsis, // 添加文本溢出处理
+                      Text(
+                        '${action.count} 条记录',
+                        style: TextStyle(
+                          color: action.color.withValues(alpha: 0.7),
+                          fontSize: AppTheme.fontSizeXS,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                   ],
                 ),

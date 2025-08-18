@@ -50,7 +50,11 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return MaterialApp(
           title: '灵东宠物',
-          theme: _buildTheme(appState.currentTheme),
+          theme: theme.AppTheme.lightTheme,
+          darkTheme: theme.AppTheme.darkTheme,
+          themeMode: appState.currentTheme == AppTheme.dark
+              ? ThemeMode.dark
+              : ThemeMode.light,
           home: AuthWrapper(authService: authService),
           debugShowCheckedModeBanner: false,
           onGenerateRoute: AppRouter.onGenerateRoute,
@@ -66,16 +70,7 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  ThemeData _buildTheme(AppTheme themeType) {
-    switch (themeType) {
-      case AppTheme.light:
-        return theme.AppTheme.lightTheme;
-      case AppTheme.dark:
-        return theme.AppTheme.lightTheme; // 暂时使用lightTheme，后续可以添加darkTheme
-      default:
-        return theme.AppTheme.lightTheme;
-    }
-  }
+  // 主题已在 MaterialApp 中通过 theme/darkTheme/themeMode 配置
 }
 
 class AuthWrapper extends StatefulWidget {

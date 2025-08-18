@@ -23,12 +23,12 @@ class UserAuthService {
   Future<void> initialize() async {
     try {
       // 检查是否在测试环境中或插件未初始化
-      if (!WidgetsBinding.instance.isRootWidgetAttached || 
+      if (!WidgetsBinding.instance.isRootWidgetAttached ||
           !WidgetsBinding.instance.platformDispatcher.views.isNotEmpty) {
         debugPrint('在测试环境或插件未初始化时跳过数据库初始化');
         return;
       }
-      
+
       // 从数据库恢复当前用户
       _currentUser = await _dbService.getCurrentUser();
 
@@ -91,10 +91,7 @@ class UserAuthService {
   }
 
   /// 用户登录
-  Future<User> login({
-    required String phone,
-    required String password,
-  }) async {
+  Future<User> login({required String phone, required String password}) async {
     // 模拟网络延迟
     await Future.delayed(const Duration(milliseconds: 600));
 
@@ -112,7 +109,9 @@ class UserAuthService {
 
     // 检查用户状态
     if (user.status != UserStatus.active) {
-      throw AuthException('账号已被${user.status == UserStatus.banned ? '封禁' : '禁用'}');
+      throw AuthException(
+        '账号已被${user.status == UserStatus.banned ? '封禁' : '禁用'}',
+      );
     }
 
     // 更新最后登录时间
@@ -148,7 +147,9 @@ class UserAuthService {
 
     // 检查用户状态
     if (user.status != UserStatus.active) {
-      throw AuthException('账号已被${user.status == UserStatus.banned ? '封禁' : '禁用'}');
+      throw AuthException(
+        '账号已被${user.status == UserStatus.banned ? '封禁' : '禁用'}',
+      );
     }
 
     // 更新最后登录时间
@@ -163,6 +164,66 @@ class UserAuthService {
     return updatedUser!;
   }
 
+  /// 一键登录/注册（手机号 + 验证码）
+  /// - 若手机号已注册：校验验证码后直接登录
+  /// - 若手机号未注册：自动注册一个账号并登录
+  Future<User> loginOrRegisterWithVerificationCode({
+    required String phone,
+    required String verificationCode,
+  }) async {
+    // 模拟网络延迟
+    await Future.delayed(const Duration(milliseconds: 700));
+
+    // 验证手机号格式
+    if (!_isValidPhone(phone)) {
+      throw AuthException('手机号格式不正确');
+    }
+
+    // 简化的验证码校验逻辑（真实环境应校验服务端下发验证码）
+    if (verificationCode != '123456') {
+      throw AuthException('验证码错误');
+    }
+
+    // 查找是否已存在用户
+    final existingUser = await _dbService.getUserByPhone(phone);
+    final now = DateTime.now();
+
+    if (existingUser != null) {
+      if (existingUser.status != UserStatus.active) {
+        throw AuthException(
+          '账号已被${existingUser.status == UserStatus.banned ? '封禁' : '禁用'}',
+        );
+      }
+
+      // 已注册：更新登录时间并设为当前用户
+      await _dbService.updateLastLoginTime(existingUser.userId);
+      await _dbService.setCurrentUser(existingUser.userId);
+      final updatedUser = await _dbService.getUser(existingUser.userId);
+      _currentUser = updatedUser;
+      debugPrint('一键登录成功（已注册用户）: ${updatedUser?.nickname}');
+      return updatedUser!;
+    }
+
+    // 未注册：自动注册并登录
+    final userId = _generateUserId();
+    final newUser = User(
+      userId: userId,
+      phone: phone,
+      nickname: '用户${userId.substring(0, 6)}',
+      registerTime: now,
+      lastLoginTime: now,
+      status: UserStatus.active,
+      role: UserRole.user,
+    );
+
+    await _dbService.saveUser(newUser);
+    await _dbService.setCurrentUser(userId);
+    _currentUser = newUser;
+
+    debugPrint('一键注册并登录成功（新用户）: ${newUser.nickname}');
+    return newUser;
+  }
+
   /// 游客模式登录
   Future<User> guestLogin() async {
     // 模拟网络延迟
@@ -170,13 +231,15 @@ class UserAuthService {
 
     // 检查是否已有游客账号
     final allUsers = await _dbService.getAllUsers();
-    User? guestUser = allUsers.where((user) => user.userId.startsWith('guest_')).firstOrNull;
+    User? guestUser = allUsers
+        .where((user) => user.userId.startsWith('guest_'))
+        .firstOrNull;
 
     if (guestUser == null) {
       // 创建新的游客账号
       final guestId = 'guest_${_generateUserId()}';
       final now = DateTime.now();
-      
+
       guestUser = User(
         userId: guestId,
         phone: '', // 游客没有手机号
@@ -275,16 +338,18 @@ class UserAuthService {
 
     // 模拟第三方登录验证
     final socialUserId = '${platform}_${token.substring(0, 8)}';
-    
+
     // 查找是否已有绑定账号
     final allUsers = await _dbService.getAllUsers();
-    User? existingUser = allUsers.where((user) => user.userId.startsWith('${platform}_')).firstOrNull;
+    User? existingUser = allUsers
+        .where((user) => user.userId.startsWith('${platform}_'))
+        .firstOrNull;
 
     if (existingUser != null) {
       // 已有绑定账号，直接登录
       await _dbService.updateLastLoginTime(existingUser.userId);
       await _dbService.setCurrentUser(existingUser.userId);
-      
+
       final updatedUser = await _dbService.getUser(existingUser.userId);
       _currentUser = updatedUser;
       return updatedUser!;
@@ -292,7 +357,7 @@ class UserAuthService {
       // 新用户，自动注册
       final userId = _generateUserId();
       final now = DateTime.now();
-      
+
       final user = User(
         userId: userId,
         phone: '', // 第三方登录可能没有手机号
@@ -376,10 +441,10 @@ class UserAuthService {
     await Future.delayed(const Duration(milliseconds: 200));
 
     _currentUser = null;
-    
+
     // 清除当前用户
     await _dbService.clearCurrentUser();
-    
+
     debugPrint('用户登出成功');
   }
 
@@ -387,7 +452,7 @@ class UserAuthService {
   Future<void> clearAllData() async {
     await _dbService.clearAllData();
     _currentUser = null;
-    
+
     debugPrint('所有数据已清除');
   }
 
@@ -434,7 +499,9 @@ class UserAuthService {
     await Future.delayed(const Duration(milliseconds: 300));
 
     // 验证旧密码
-    final storedPassword = await _dbService.getUserPassword(_currentUser!.userId);
+    final storedPassword = await _dbService.getUserPassword(
+      _currentUser!.userId,
+    );
     if (storedPassword != oldPassword) {
       throw AuthException('原密码错误');
     }
@@ -490,7 +557,10 @@ class UserAuthService {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     final random = Random();
     return String.fromCharCodes(
-      Iterable.generate(12, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
+      Iterable.generate(
+        12,
+        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+      ),
     );
   }
 
@@ -521,7 +591,7 @@ class AuthException implements Exception {
 
 /// 验证码类型
 enum VerificationCodeType {
-  register,      // 注册
+  register, // 注册
   resetPassword, // 重置密码
-  login,         // 登录
+  login, // 登录
 }

@@ -65,17 +65,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('忘记密码'),
         backgroundColor: Colors.transparent,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Container(
-        decoration: const BoxDecoration(gradient: AppTheme.natureGradient),
+        decoration: BoxDecoration(
+          gradient: AppTheme.getAuthBackgroundGradient(context),
+        ),
         child: SafeArea(
           child: FadeTransition(
             opacity: _fadeAnimation,

@@ -22,21 +22,21 @@ class ToolsHubPage extends StatelessWidget {
         icon: Icons.event_available,
         title: '智能提醒',
         subtitle: '疫苗/驱虫/体检/洗护/寄养/美容预约',
-        color: AppTheme.petColors[0], // 橙色
+        color: AppTheme.secondaryColor, // 橙色
         builder: (_) => const RemindersPage(),
       ),
       _ToolItem(
         icon: Icons.sos,
         title: '紧急寻宠',
         subtitle: '一键发布寻宠卡片·同城辐射提醒',
-        color: AppTheme.petColors[1], // 薄荷绿
+        color: AppTheme.accentColor, // 薄荷绿
         builder: (_) => const LostPetPage(),
       ),
       _ToolItem(
         icon: Icons.fitness_center,
         title: '喂养计算器',
         subtitle: '按体重与年龄给出每日克数与运动量',
-        color: AppTheme.petColors[2], // 粉色
+        color: AppTheme.primaryColor, // 粉色
         builder: (_) => const FeedingCalculatorPage(),
       ),
     ];
@@ -48,10 +48,7 @@ class ToolsHubPage extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFFFFF8F5),
-              Color(0xFFFEFEFE),
-            ],
+            colors: [Color(0xFFFFF8F5), Color(0xFFFEFEFE)],
             stops: [0.0, 0.6],
           ),
         ),
@@ -90,22 +87,12 @@ class ToolsHubPage extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [
-                Color(0xFFFFF8F5),
-                Color(0xFFFEFEFE),
-              ],
+              colors: [Color(0xFFFFF8F5), Color(0xFFFEFEFE)],
             ),
           ),
         ),
       ),
-      title: const Text(
-        '实用工具',
-        style: TextStyle(
-          color: AppTheme.textPrimaryColor,
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-        ),
-      ),
+      title: null,
       centerTitle: true,
     );
   }
@@ -122,11 +109,7 @@ class ToolsHubPage extends StatelessWidget {
               gradient: AppTheme.primaryGradient,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: const Icon(
-              Icons.psychology,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: const Icon(Icons.psychology, color: Colors.white, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -182,9 +165,9 @@ class ToolsHubPage extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(builder: tool.builder),
-          ),
+          onTap: () => Navigator.of(
+            context,
+          ).push(MaterialPageRoute(builder: tool.builder)),
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -195,10 +178,7 @@ class ToolsHubPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        tool.color,
-                        tool.color.withValues(alpha: 0.8),
-                      ],
+                      colors: [tool.color, tool.color.withValues(alpha: 0.8)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -211,11 +191,7 @@ class ToolsHubPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Icon(
-                    tool.icon,
-                    color: Colors.white,
-                    size: 28,
-                  ),
+                  child: Icon(tool.icon, color: Colors.white, size: 28),
                 ),
                 const SizedBox(height: 16),
                 // 标题
@@ -275,7 +251,7 @@ class _ToolItem {
   final String subtitle;
   final Color color;
   final WidgetBuilder builder;
-  
+
   const _ToolItem({
     required this.icon,
     required this.title,

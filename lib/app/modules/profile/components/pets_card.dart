@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../theme/app_theme.dart';
 import '../../../core/components.dart';
 import '../../../core/models.dart';
+import '../../../core/pet_components.dart';
 
 class PetsCard extends StatelessWidget {
   final List<Pet> pets;
@@ -64,7 +65,11 @@ class PetsCard extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(pet.avatar, style: const TextStyle(fontSize: 24)),
+                      PetAvatar(
+                        avatar: pet.avatar,
+                        size: 24,
+                        brokenIconColor: pet.color,
+                      ),
                       const SizedBox(height: 4),
                       Text(
                         pet.name,

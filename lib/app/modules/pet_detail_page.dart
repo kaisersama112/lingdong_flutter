@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_components.dart';
 import '../core/models.dart' as models;
 import '../core/pet_components.dart';
 import 'pet_management_page.dart';
@@ -10,17 +9,16 @@ import 'package:qr_flutter/qr_flutter.dart';
 class PetDetailPage extends StatefulWidget {
   final models.Pet pet;
 
-  const PetDetailPage({
-    super.key,
-    required this.pet,
-  });
+  const PetDetailPage({super.key, required this.pet});
 
   @override
   State<PetDetailPage> createState() => _PetDetailPageState();
 }
 
-class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateMixin {
+class _PetDetailPageState extends State<PetDetailPage>
+    with TickerProviderStateMixin {
   late TabController _tabController;
+  // ignore: unused_field
   int _selectedTabIndex = 0;
 
   @override
@@ -48,7 +46,7 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
         slivers: [
           // 自定义应用栏
           _buildSliverAppBar(),
-          
+
           // 标签页内容
           SliverToBoxAdapter(
             child: Column(
@@ -56,16 +54,18 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
                 // 宠物信息头部
                 PetInfoHeader(
                   pet: widget.pet,
-                  onCopyIdentity: () => _copyIdentityCode(widget.pet.identityCode),
-                  onShowQr: () => _showIdentityQrDialog(widget.pet.identityCode),
+                  onCopyIdentity: () =>
+                      _copyIdentityCode(widget.pet.identityCode),
+                  onShowQr: () =>
+                      _showIdentityQrDialog(widget.pet.identityCode),
                   onEditPet: _editPet,
                 ),
                 const SizedBox(height: AppTheme.spacingL),
-                
+
                 // 标签页导航
                 _buildTabBar(),
                 const SizedBox(height: AppTheme.spacingM),
-                
+
                 // 标签页内容
                 _buildTabContent(),
               ],
@@ -121,7 +121,7 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
                   ),
                 ),
               ),
-              
+
               // 宠物头像和名称
               Center(
                 child: Column(
@@ -140,9 +140,10 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
                           ),
                         ],
                       ),
-                      child: Text(
-                        widget.pet.avatar,
-                        style: const TextStyle(fontSize: 48),
+                      child: PetAvatar(
+                        avatar: widget.pet.avatar,
+                        size: 48,
+                        brokenIconColor: widget.pet.color,
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -199,7 +200,10 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
               color: Colors.white.withValues(alpha: 0.9),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.more_vert, color: AppTheme.textPrimaryColor),
+            child: const Icon(
+              Icons.more_vert,
+              color: AppTheme.textPrimaryColor,
+            ),
           ),
           onPressed: _showMoreOptions,
         ),
@@ -273,7 +277,10 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
             children: [
               _buildInfoRow('品种', widget.pet.breed),
               _buildInfoRow('性别', widget.pet.gender),
-              _buildInfoRow('生日', '${widget.pet.birthDate.year}-${widget.pet.birthDate.month.toString().padLeft(2, '0')}-${widget.pet.birthDate.day.toString().padLeft(2, '0')}'),
+              _buildInfoRow(
+                '生日',
+                '${widget.pet.birthDate.year}-${widget.pet.birthDate.month.toString().padLeft(2, '0')}-${widget.pet.birthDate.day.toString().padLeft(2, '0')}',
+              ),
               _buildInfoRow('年龄', _calculateAge(widget.pet.birthDate)),
               _buildInfoRow('体重', '${widget.pet.weight}kg'),
               _buildInfoRow('身份码', widget.pet.identityCode),
@@ -329,7 +336,11 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
             title: '成长里程碑',
             icon: Icons.trending_up,
             children: [
-              _buildMilestoneItem('2024-01-15', '体重达到4.2kg', Icons.monitor_weight),
+              _buildMilestoneItem(
+                '2024-01-15',
+                '体重达到4.2kg',
+                Icons.monitor_weight,
+              ),
               _buildMilestoneItem('2024-01-10', '完成年度疫苗', Icons.vaccines),
               _buildMilestoneItem('2024-01-05', '第一次洗澡', Icons.shower),
             ],
@@ -359,13 +370,19 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
                 height: 200,
                 decoration: BoxDecoration(
                   color: widget.pet.color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.borderRadiusMedium,
+                  ),
                 ),
                 child: const Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.photo_library_outlined, size: 48, color: Colors.grey),
+                      Icon(
+                        Icons.photo_library_outlined,
+                        size: 48,
+                        color: Colors.grey,
+                      ),
                       SizedBox(height: 8),
                       Text('暂无照片', style: TextStyle(color: Colors.grey)),
                     ],
@@ -466,7 +483,11 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildHealthStatusItem(String label, String status, Color statusColor) {
+  Widget _buildHealthStatusItem(
+    String label,
+    String status,
+    Color statusColor,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(
@@ -590,7 +611,12 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
     );
   }
 
-  Widget _buildActionButton(String label, IconData icon, Color color, VoidCallback onTap) {
+  Widget _buildActionButton(
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -644,7 +670,7 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
         builder: (context) => PetManagementPage(pet: widget.pet),
       ),
     );
-    
+
     if (result != null && result is models.Pet) {
       // 宠物信息被更新，可以刷新页面或返回上一页
       Navigator.pop(context, result);
@@ -663,31 +689,31 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
 
   void _viewAllRecords() {
     // TODO: 导航到健康记录页面
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('查看全部记录功能开发中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('查看全部记录功能开发中...')));
   }
 
   void _addMilestone() {
     // TODO: 实现添加里程碑
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('添加里程碑功能开发中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('添加里程碑功能开发中...')));
   }
 
   void _addPhoto() {
     // TODO: 实现添加照片
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('添加照片功能开发中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('添加照片功能开发中...')));
   }
 
   void _copyIdentityCode(String code) async {
     await Clipboard.setData(ClipboardData(text: code));
     if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('已复制身份码')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('已复制身份码')));
     }
   }
 
@@ -702,11 +728,7 @@ class _PetDetailPageState extends State<PetDetailPage> with TickerProviderStateM
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                QrImageView(
-                  data: code,
-                  size: 200,
-                  version: QrVersions.auto,
-                ),
+                QrImageView(data: code, size: 200, version: QrVersions.auto),
                 const SizedBox(height: 12),
                 SelectableText(
                   code,

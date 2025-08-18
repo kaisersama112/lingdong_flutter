@@ -4,6 +4,7 @@ import '../core/error_handler.dart';
 import '../core/models.dart';
 import '../core/pet_components.dart';
 import 'records_page.dart';
+import 'records/add_health_record_sheet.dart';
 import 'profile/profile_page.dart';
 import 'profile/settings_page.dart';
 import 'pet_detail_page.dart';
@@ -55,7 +56,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppTheme.backgroundColor,
+      backgroundColor: AppTheme.getBackgroundColor(context),
       body: SafeArea(
         child: Column(
           children: [
@@ -65,9 +66,9 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
             // 内容区域
             Expanded(
               child: Container(
-                decoration: const BoxDecoration(
-                  color: AppTheme.backgroundColor,
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: AppTheme.getBackgroundColor(context),
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(AppTheme.borderRadiusLarge),
                     topRight: Radius.circular(AppTheme.borderRadiusLarge),
                   ),
@@ -75,19 +76,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // 宠物选择器
-                      PetSelector(
-                        pets: _pets,
-                        selectedPetId: _pets[_selectedPetIndex].id,
-                        onPetSelected: (petId) {
-                          setState(() {
-                            _selectedPetIndex = _pets.indexWhere(
-                              (p) => p.id == petId,
-                            );
-                          });
-                        },
-                        onAddPet: _addPet,
-                      ),
+                      // 顶部已包含宠物切换，不再在内容区重复选择器
                       const SizedBox(height: AppTheme.spacingM),
 
                       // 宠物信息头部
@@ -149,41 +138,21 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           ],
         ),
         border: Border(
-          bottom: BorderSide(color: AppTheme.dividerColor, width: 1),
+          bottom: BorderSide(
+            color: AppTheme.getDividerColor(context),
+            width: 1,
+          ),
         ),
       ),
       child: Row(
         children: [
-          // 页面标题
-          Expanded(
-            child: Row(
-              children: [
-                Icon(Icons.pets, color: AppTheme.primaryColor, size: 28),
-                const SizedBox(width: AppTheme.spacingM),
-                Text(
-                  '宠物档案',
-                  style: TextStyle(
-                    fontSize: AppTheme.fontSizeXL,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimaryColor,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // 右侧按钮区域
-          Row(
-            children: [
-              // 用户头像按钮
-              _buildUserAvatarButton(),
-
-              const SizedBox(width: AppTheme.spacingM),
-
-              // 设置按钮
-              _buildSettingsButton(),
-            ],
-          ),
+          _buildUserAvatarButton(),
+          const SizedBox(width: AppTheme.spacingM),
+          Expanded(child: _buildPetSwitcher()),
+          const SizedBox(width: AppTheme.spacingS),
+          _buildAddPetButton(),
+          const SizedBox(width: AppTheme.spacingS),
+          _buildSettingsButton(),
         ],
       ),
     );
@@ -194,14 +163,14 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     final pet = _pets[_selectedPetIndex];
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
+      margin: EdgeInsets.zero,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '快捷操作',
             style: TextStyle(
-              color: AppTheme.textSecondaryColor,
+              color: AppTheme.getTextSecondaryColor(context),
               fontSize: AppTheme.fontSizeS,
               fontWeight: FontWeight.w500,
             ),
@@ -235,11 +204,11 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
             children: [
               Expanded(
                 child: _buildQuickActionCard(
-                  icon: Icons.share,
-                  label: '分享档案',
-                  subtitle: '分享${pet.name}的信息',
+                  icon: Icons.add_circle,
+                  label: '新增记录',
+                  subtitle: '直接添加一条健康记录',
                   color: pet.color,
-                  onTap: () => _sharePetProfile(),
+                  onTap: () => _quickAddHealthRecord(),
                 ),
               ),
               const SizedBox(width: AppTheme.spacingM),
@@ -259,6 +228,58 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
+  // 顶部新增宠物按钮
+  Widget _buildAddPetButton() {
+    return Tooltip(
+      message: '新增宠物',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: () async {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const PetManagementPage(),
+              ),
+            );
+            if (result != null && result is Pet) {
+              setState(() {
+                _pets.add(result);
+                _selectedPetIndex = _pets.length - 1;
+              });
+            }
+          },
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: AppTheme.getSurfaceColor(context),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: AppTheme.getDividerColor(context),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.add,
+              size: 20,
+              color: AppTheme.getTextPrimaryColor(context),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildQuickActionCard({
     required IconData icon,
     required String label,
@@ -274,7 +295,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         child: Container(
           padding: const EdgeInsets.all(AppTheme.spacingS), // 减少内边距
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppTheme.getSurfaceColor(context),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
             border: Border.all(color: color.withValues(alpha: 0.2)),
             boxShadow: [
@@ -310,7 +331,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
               Text(
                 subtitle,
                 style: TextStyle(
-                  color: AppTheme.textSecondaryColor,
+                  color: AppTheme.getTextSecondaryColor(context),
                   fontSize: AppTheme.fontSizeXS,
                 ),
                 textAlign: TextAlign.center,
@@ -329,7 +350,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     final pet = _pets[_selectedPetIndex];
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
+      margin: EdgeInsets.zero,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -358,9 +379,10 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
                     color: pet.color.withValues(alpha: 0.15),
                     shape: BoxShape.circle,
                   ),
-                  child: Text(
-                    pet.avatar,
-                    style: const TextStyle(fontSize: 24), // 减少头像大小
+                  child: PetAvatar(
+                    avatar: pet.avatar,
+                    size: 24,
+                    brokenIconColor: pet.color,
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingM), // 减少间距
@@ -405,9 +427,10 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     return GestureDetector(
       onTap: _navigateToProfile,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.getSurfaceColor(context),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: AppTheme.primaryColor.withValues(alpha: 0.2),
@@ -425,33 +448,36 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
+              width: 28,
+              height: 28,
               decoration: BoxDecoration(
                 color: AppTheme.primaryColor,
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                    color: AppTheme.primaryColor.withValues(alpha: 0.25),
                     blurRadius: 4,
                     offset: const Offset(0, 1),
                   ),
                 ],
               ),
-              child: CircleAvatar(
-                radius: 16,
-                backgroundColor: AppTheme.primaryColor,
-                child: Text(
-                  _userData['avatar']!,
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                ),
+              alignment: Alignment.center,
+              child: Text(
+                _userData['avatar']!,
+                style: const TextStyle(fontSize: 16, color: Colors.white),
               ),
             ),
             const SizedBox(width: 8),
-            Text(
-              _userData['name']!,
-              style: TextStyle(
-                fontSize: AppTheme.fontSizeS,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.textPrimaryColor,
+            Flexible(
+              child: Text(
+                _userData['name']!,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: AppTheme.fontSizeS,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.getTextPrimaryColor(context),
+                ),
               ),
             ),
             const SizedBox(width: 6),
@@ -468,35 +494,30 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
 
   // 设置按钮
   Widget _buildSettingsButton() {
-    return GestureDetector(
-      onTap: _openSettings,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        decoration: BoxDecoration(
-          color: AppTheme.primaryColor,
+    return Tooltip(
+      message: '设置',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _openSettings,
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [
-            BoxShadow(
-              color: AppTheme.primaryColor.withValues(alpha: 0.3),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              color: AppTheme.primaryColor,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.settings, color: Colors.white, size: 18),
-            const SizedBox(width: 8),
-            Text(
-              '设置',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: AppTheme.fontSizeS,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
+            alignment: Alignment.center,
+            child: const Icon(Icons.settings, color: Colors.white, size: 18),
+          ),
         ),
       ),
     );
@@ -530,19 +551,75 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
-  // 宠物管理方法
-  void _addPet() async {
-    final result = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const PetManagementPage()),
-    );
+  // 顶部已有宠物切换器，新增宠物入口移至其他页面
+  // 原 _addPet 方法已移除
 
-    if (result != null && result is Pet) {
-      setState(() {
-        _pets.add(result);
-        _selectedPetIndex = _pets.length - 1; // 选择新添加的宠物
-      });
-    }
+  // 顶部宠物切换器（下拉样式）
+  Widget _buildPetSwitcher() {
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: AppTheme.getSurfaceColor(context),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.getDividerColor(context), width: 1),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isDense: true,
+          isExpanded: true,
+          value: _pets[_selectedPetIndex].id,
+          icon: const Icon(Icons.keyboard_arrow_down_rounded, size: 18),
+          selectedItemBuilder: (context) => _pets
+              .map(
+                (p) => Align(
+                  alignment: Alignment.centerLeft,
+                  child: PetAvatar(
+                    avatar: p.avatar,
+                    size: 16,
+                    brokenIconColor: p.color,
+                  ),
+                ),
+              )
+              .toList(),
+          items: _pets
+              .map(
+                (p) => DropdownMenuItem<String>(
+                  value: p.id,
+                  child: Row(
+                    children: [
+                      PetAvatar(
+                        avatar: p.avatar,
+                        size: 16,
+                        brokenIconColor: p.color,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          p.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppTheme.getTextPrimaryColor(context),
+                            fontSize: AppTheme.fontSizeM,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() {
+              _selectedPetIndex = _pets.indexWhere((p) => p.id == value);
+            });
+          },
+        ),
+      ),
+    );
   }
 
   void _editPet() async {
@@ -608,8 +685,18 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     AppErrorHandler.handleError(context, '成长轨迹功能开发中...');
   }
 
-  void _sharePetProfile() {
-    AppErrorHandler.handleError(context, '分享功能开发中...');
+  Future<void> _quickAddHealthRecord() async {
+    final pet = _pets[_selectedPetIndex];
+    final rec = await showAddHealthRecordSheet(
+      context,
+      pets: _pets,
+      presetPetId: pet.id,
+    );
+    if (rec == null) return;
+    if (!mounted) return;
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('已创建健康记录')));
   }
 
   void _printPetProfile() {

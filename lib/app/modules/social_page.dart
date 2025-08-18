@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../core/error_handler.dart';
 import '../core/optimized_list.dart';
-import '../core/components/layout/page_header.dart';
 import '../core/components/forms/search_field.dart';
 import '../core/components/forms/category_selector.dart';
 import '../core/components/layout/loading_widget.dart';
@@ -144,7 +143,7 @@ class _SocialPageState extends State<SocialPage> {
 
   Future<void> _loadData() async {
     if (!mounted) return;
-    
+
     setState(() {
       _isLoading = true;
     });
@@ -152,7 +151,7 @@ class _SocialPageState extends State<SocialPage> {
     try {
       // 模拟网络请求延迟
       await Future.delayed(const Duration(milliseconds: 800));
-      
+
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -171,8 +170,10 @@ class _SocialPageState extends State<SocialPage> {
   // 获取过滤后的场所列表
   List<Place> get _filteredPlaces {
     return _places.where((place) {
-      final matchesCategory = _selectedCategory == '全部' || place.category == _selectedCategory;
-      final matchesSearch = _searchQuery.isEmpty || 
+      final matchesCategory =
+          _selectedCategory == '全部' || place.category == _selectedCategory;
+      final matchesSearch =
+          _searchQuery.isEmpty ||
           place.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           place.address.toLowerCase().contains(_searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
@@ -186,35 +187,8 @@ class _SocialPageState extends State<SocialPage> {
       body: SafeArea(
         child: Column(
           children: [
-            // 使用新的页面头部组件
-            PageHeader(
-              title: '探索周边',
-              subtitle: '发现宠物友好的好去处',
-              icon: Icons.location_on,
-              backgroundColor: AppTheme.secondaryColor,
-              actions: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.my_location,
-                      color: Colors.white,
-                      size: 20,
-                    ),
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('定位功能开发中...')),
-                      );
-                    },
-                    tooltip: '定位',
-                  ),
-                ),
-              ],
-            ),
-            
+            // 顶部标题与说明移除
+
             // 使用新的搜索组件
             SearchField(
               controller: _searchController,
@@ -225,7 +199,7 @@ class _SocialPageState extends State<SocialPage> {
                 });
               },
             ),
-            
+
             // 使用新的分类选择器组件
             CategorySelector(
               categories: _categories,
@@ -237,7 +211,7 @@ class _SocialPageState extends State<SocialPage> {
               },
               activeColor: AppTheme.secondaryColor,
             ),
-            
+
             // 内容区域
             Expanded(
               child: Container(
@@ -264,9 +238,7 @@ class _SocialPageState extends State<SocialPage> {
 
     if (_filteredPlaces.isEmpty) {
       return EmptyState(
-        message: _searchQuery.isEmpty 
-            ? '暂无周边场所信息'
-            : '没有找到相关场所',
+        message: _searchQuery.isEmpty ? '暂无周边场所信息' : '没有找到相关场所',
         icon: Icons.location_off,
         actionButton: ElevatedButton(
           onPressed: _loadData,
@@ -277,10 +249,8 @@ class _SocialPageState extends State<SocialPage> {
 
     return OptimizedListView<Place>(
       items: _filteredPlaces,
-      itemBuilder: (context, place, index) => PlaceListItem(
-        place: place,
-        onTap: () => _showPlaceDetail(place),
-      ),
+      itemBuilder: (context, place, index) =>
+          PlaceListItem(place: place, onTap: () => _showPlaceDetail(place)),
       padding: const EdgeInsets.all(AppTheme.spacingM),
       separator: const SizedBox(height: AppTheme.spacingM),
     );
@@ -311,4 +281,3 @@ class _SocialPageState extends State<SocialPage> {
 }
 
 // 使用组件中定义的Place类
-

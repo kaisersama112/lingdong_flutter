@@ -4,14 +4,13 @@ import '../core/models.dart' as models;
 import '../core/error_handler.dart';
 import '../services/pet_service.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:convert';
 
 class PetManagementPage extends StatefulWidget {
   final models.Pet? pet; // 如果是编辑模式，传入宠物信息
 
-  const PetManagementPage({
-    super.key,
-    this.pet,
-  });
+  const PetManagementPage({super.key, this.pet});
 
   @override
   State<PetManagementPage> createState() => _PetManagementPageState();
@@ -27,9 +26,12 @@ class _PetManagementPageState extends State<PetManagementPage> {
   // 表单数据
   String _selectedType = '狗狗';
   String _selectedGender = '公';
-  DateTime _selectedBirthDate = DateTime.now().subtract(const Duration(days: 365));
+  DateTime _selectedBirthDate = DateTime.now().subtract(
+    const Duration(days: 365),
+  );
   Color _selectedColor = AppTheme.primaryColor;
   String _selectedAvatar = '🐕';
+  String? _avatarDataUrl; // 当为图片上传时，使用 dataURL 存储
 
   // 宠物服务
   final PetService _petService = PetService();
@@ -63,7 +65,12 @@ class _PetManagementPageState extends State<PetManagementPage> {
       _selectedGender = widget.pet!.gender;
       _selectedBirthDate = widget.pet!.birthDate;
       _selectedColor = widget.pet!.color;
-      _selectedAvatar = widget.pet!.avatar;
+      if (widget.pet!.avatar.startsWith('data:image')) {
+        _avatarDataUrl = widget.pet!.avatar;
+        _selectedAvatar = '🐕';
+      } else {
+        _selectedAvatar = widget.pet!.avatar;
+      }
     }
   }
 
@@ -79,7 +86,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
   @override
   Widget build(BuildContext context) {
     final isEditMode = widget.pet != null;
-    
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       appBar: AppBar(
@@ -106,15 +113,15 @@ class _PetManagementPageState extends State<PetManagementPage> {
               // 宠物头像选择
               _buildAvatarSection(),
               const SizedBox(height: AppTheme.spacingL),
-              
+
               // 基本信息
               _buildBasicInfoSection(),
               const SizedBox(height: AppTheme.spacingL),
-              
+
               // 详细信息
               _buildDetailInfoSection(),
               const SizedBox(height: AppTheme.spacingL),
-              
+
               // 保存按钮
               _buildSaveButton(),
             ],
@@ -150,7 +157,45 @@ class _PetManagementPageState extends State<PetManagementPage> {
             ),
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
+          // 头像预览 + 操作按钮
+          Row(
+            children: [
+              _buildAvatarPreview(),
+              const SizedBox(width: AppTheme.spacingM),
+              Expanded(
+                child: Wrap(
+                  spacing: AppTheme.spacingS,
+                  runSpacing: AppTheme.spacingS,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _isLoading ? null : _pickAvatarImage,
+                      icon: const Icon(Icons.photo_library_outlined),
+                      label: const Text('上传图片'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    if (_avatarDataUrl != null)
+                      OutlinedButton.icon(
+                        onPressed: _isLoading
+                            ? null
+                            : () {
+                                setState(() {
+                                  _avatarDataUrl = null;
+                                });
+                              },
+                        icon: const Icon(Icons.emoji_emotions_outlined),
+                        label: const Text('改用表情'),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingM),
+
           // 宠物类型选择
           DropdownButtonFormField<String>(
             value: _selectedType,
@@ -159,10 +204,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
               border: OutlineInputBorder(),
             ),
             items: _typeAvatars.keys.map((type) {
-              return DropdownMenuItem(
-                value: type,
-                child: Text(type),
-              );
+              return DropdownMenuItem(value: type, child: Text(type));
             }).toList(),
             onChanged: (value) {
               setState(() {
@@ -172,50 +214,94 @@ class _PetManagementPageState extends State<PetManagementPage> {
             },
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 头像选择网格
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              crossAxisSpacing: AppTheme.spacingM,
-              mainAxisSpacing: AppTheme.spacingM,
-              childAspectRatio: 1,
+          if (_avatarDataUrl == null)
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+                crossAxisSpacing: AppTheme.spacingM,
+                mainAxisSpacing: AppTheme.spacingM,
+                childAspectRatio: 1,
+              ),
+              itemCount: _typeAvatars[_selectedType]!.length,
+              itemBuilder: (context, index) {
+                final avatar = _typeAvatars[_selectedType]![index];
+                final isSelected = avatar == _selectedAvatar;
+
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedAvatar = avatar;
+                    });
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? _selectedColor.withValues(alpha: 0.1)
+                          : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(
+                        AppTheme.borderRadiusMedium,
+                      ),
+                      border: Border.all(
+                        color: isSelected ? _selectedColor : Colors.grey[300]!,
+                        width: isSelected ? 2 : 1,
+                      ),
+                    ),
+                    child: Center(
+                      child: Text(avatar, style: const TextStyle(fontSize: 32)),
+                    ),
+                  ),
+                );
+              },
             ),
-            itemCount: _typeAvatars[_selectedType]!.length,
-            itemBuilder: (context, index) {
-              final avatar = _typeAvatars[_selectedType]![index];
-              final isSelected = avatar == _selectedAvatar;
-              
-              return GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _selectedAvatar = avatar;
-                  });
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: isSelected ? _selectedColor.withValues(alpha: 0.1) : Colors.grey[100],
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-                    border: Border.all(
-                      color: isSelected ? _selectedColor : Colors.grey[300]!,
-                      width: isSelected ? 2 : 1,
-                    ),
-                  ),
-                  child: Center(
-                    child: Text(
-                      avatar,
-                      style: TextStyle(fontSize: 32),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
         ],
       ),
     );
+  }
+
+  Widget _buildAvatarPreview() {
+    final double size = 64;
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: _selectedColor.withValues(alpha: 0.15),
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: _selectedColor.withValues(alpha: 0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: ClipOval(
+        child: _avatarDataUrl != null
+            ? _buildImageFromDataUrl(_avatarDataUrl!, size)
+            : Center(
+                child: Text(
+                  _selectedAvatar,
+                  style: const TextStyle(fontSize: 32),
+                ),
+              ),
+      ),
+    );
+  }
+
+  Widget _buildImageFromDataUrl(String dataUrl, double size) {
+    try {
+      final parts = dataUrl.split(',');
+      final base64Str = parts.length > 1 ? parts[1] : parts.first;
+      final bytes = base64Decode(base64Str);
+      return Image.memory(bytes, width: size, height: size, fit: BoxFit.cover);
+    } catch (_) {
+      return Center(
+        child: Icon(Icons.broken_image, color: _selectedColor, size: 28),
+      );
+    }
   }
 
   Widget _buildBasicInfoSection() {
@@ -244,7 +330,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             ),
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 宠物名称
           TextFormField(
             controller: _nameController,
@@ -262,7 +348,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             },
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 品种
           TextFormField(
             controller: _breedController,
@@ -274,7 +360,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             ),
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 性别选择
           DropdownButtonFormField<String>(
             value: _selectedGender,
@@ -324,7 +410,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             ),
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 出生日期
           InkWell(
             onTap: _selectBirthDate,
@@ -344,7 +430,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             ),
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 体重
           TextFormField(
             controller: _weightController,
@@ -366,7 +452,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             },
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 主题色选择
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -410,7 +496,11 @@ class _PetManagementPageState extends State<PetManagementPage> {
                         ],
                       ),
                       child: isSelected
-                          ? const Icon(Icons.check, color: Colors.white, size: 20)
+                          ? const Icon(
+                              Icons.check,
+                              color: Colors.white,
+                              size: 20,
+                            )
                           : null,
                     ),
                   );
@@ -419,7 +509,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             ],
           ),
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 描述
           TextFormField(
             controller: _descriptionController,
@@ -438,7 +528,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
 
   Widget _buildSaveButton() {
     final isEditMode = widget.pet != null;
-    
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
@@ -491,7 +581,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
         );
       },
     );
-    
+
     if (picked != null) {
       setState(() {
         _selectedBirthDate = picked;
@@ -511,15 +601,16 @@ class _PetManagementPageState extends State<PetManagementPage> {
     try {
       // 模拟保存过程
       await Future.delayed(const Duration(seconds: 1));
-      
+
       // 创建宠物对象
       final pet = models.Pet(
         id: widget.pet?.id ?? _petService.generatePetId(),
         name: _nameController.text.trim(),
         type: _selectedType,
         breed: _breedController.text.trim(),
-        avatar: _selectedAvatar,
-        identityCode: widget.pet?.identityCode ?? _petService.generateIdentityCode(),
+        avatar: _avatarDataUrl ?? _selectedAvatar,
+        identityCode:
+            widget.pet?.identityCode ?? _petService.generateIdentityCode(),
         color: _selectedColor,
         birthDate: _selectedBirthDate,
         weight: double.tryParse(_weightController.text) ?? 0.0,
@@ -536,7 +627,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             backgroundColor: AppTheme.successColor,
           ),
         );
-        
+
         Navigator.pop(context, pet);
       }
     } catch (e) {
@@ -552,7 +643,33 @@ class _PetManagementPageState extends State<PetManagementPage> {
     }
   }
 
+  Future<void> _pickAvatarImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? picked = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 800,
+        imageQuality: 85,
+      );
+      if (picked == null) return;
 
+      final bytes = await picked.readAsBytes();
+      // 简单根据文件名推断 mime
+      final name = picked.name.toLowerCase();
+      String mime = 'image/jpeg';
+      if (name.endsWith('.png')) mime = 'image/png';
+      if (name.endsWith('.webp')) mime = 'image/webp';
+
+      final dataUrl = 'data:$mime;base64,${base64Encode(bytes)}';
+      setState(() {
+        _avatarDataUrl = dataUrl;
+      });
+    } catch (e) {
+      if (mounted) {
+        AppErrorHandler.handleError(context, '选择图片失败：$e');
+      }
+    }
+  }
 
   Future<void> _showDeleteDialog() async {
     final confirmed = await showDialog<bool>(
@@ -590,7 +707,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
     try {
       // 模拟删除过程
       await Future.delayed(const Duration(seconds: 1));
-      
+
       // 从数据库删除宠物
       await _petService.deletePet(widget.pet!.id);
 
@@ -601,7 +718,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
             backgroundColor: AppTheme.successColor,
           ),
         );
-        
+
         Navigator.pop(context, 'deleted');
       }
     } catch (e) {
@@ -616,4 +733,44 @@ class _PetManagementPageState extends State<PetManagementPage> {
       }
     }
   }
+}
+
+/// 以底部弹窗方式打开宠物编辑器
+Future<models.Pet?> showPetEditorModal(
+  BuildContext context, {
+  models.Pet? pet,
+}) {
+  return showModalBottomSheet<models.Pet>(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.transparent,
+    builder: (ctx) {
+      return Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(ctx).viewInsets.bottom),
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(AppTheme.borderRadiusLarge),
+              topRight: Radius.circular(AppTheme.borderRadiusLarge),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 12,
+                offset: Offset(0, -4),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            top: false,
+            child: SizedBox(
+              height: MediaQuery.of(ctx).size.height * 0.9,
+              child: PetManagementPage(pet: pet),
+            ),
+          ),
+        ),
+      );
+    },
+  );
 }

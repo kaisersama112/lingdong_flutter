@@ -9,6 +9,7 @@ export 'layout/empty_state.dart';
 export 'layout/pet_navigation_bar.dart';
 export 'lists/place_list_item.dart';
 export 'modals/place_detail_modal.dart';
+export 'auth_components.dart';
 
 // 重新导出所有组件类
 export 'layout/page_header.dart' show PageHeader;
@@ -16,6 +17,8 @@ export 'forms/search_field.dart' show SearchField;
 export 'forms/category_selector.dart' show CategorySelector;
 export 'layout/loading_widget.dart' show LoadingWidget;
 export 'layout/empty_state.dart' show EmptyState;
-export 'layout/pet_navigation_bar.dart' show PetNavigationBar, PetNavigationItem;
+export 'layout/pet_navigation_bar.dart'
+    show PetNavigationBar, PetNavigationItem;
 export 'lists/place_list_item.dart' show PlaceListItem, Place;
 export 'modals/place_detail_modal.dart' show PlaceDetailModal;
+export 'auth_components.dart' show AuthComponents;
