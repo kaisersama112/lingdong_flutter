@@ -65,6 +65,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBody: true,
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -84,31 +86,39 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
             opacity: _fadeAnimation,
             child: SlideTransition(
               position: _slideAnimation,
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppTheme.spacingL),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const SizedBox(height: AppTheme.spacingL),
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  padding: const EdgeInsets.all(AppTheme.spacingL),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: AppTheme.spacingL),
 
-                    // 标题
-                    _buildHeader(),
+                        // 标题
+                        _buildHeader(),
 
-                    const SizedBox(height: AppTheme.spacingXL),
+                        const SizedBox(height: AppTheme.spacingL),
 
-                    // 步骤指示器
-                    _buildStepIndicator(),
+                        // 步骤指示器
+                        _buildStepIndicator(),
 
-                    const SizedBox(height: AppTheme.spacingL),
+                        const SizedBox(height: AppTheme.spacingM),
 
-                    // 表单内容
-                    _buildFormContent(),
+                        // 表单内容
+                        _buildFormContent(),
 
-                    const SizedBox(height: AppTheme.spacingL),
+                        const SizedBox(height: AppTheme.spacingM),
 
-                    // 操作按钮
-                    _buildActionButton(),
-                  ],
+                        // 操作按钮
+                        _buildActionButton(),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -123,38 +133,31 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
       children: [
         // 图标
         Container(
-          width: 60,
-          height: 60,
+          width: 48,
+          height: 48,
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
+            color: Colors.white.withValues(alpha: 0.15),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.1),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
           ),
-          child: const Icon(Icons.lock_reset, size: 30, color: Colors.white),
+          child: const Icon(Icons.lock_reset, size: 24, color: Colors.white),
         ),
 
-        const SizedBox(height: AppTheme.spacingM),
+        const SizedBox(height: AppTheme.spacingS),
 
         const Text(
           '重置密码',
           style: TextStyle(
-            fontSize: 24,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
 
-        const SizedBox(height: AppTheme.spacingS),
+        const SizedBox(height: AppTheme.spacingXS),
 
         Text(
           _getStepDescription(),
-          style: const TextStyle(fontSize: 14, color: Colors.white70),
+          style: const TextStyle(fontSize: 13, color: Colors.white70),
         ),
       ],
     );
@@ -180,29 +183,29 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
       child: Column(
         children: [
           Container(
-            width: 32,
-            height: 32,
+            width: 28,
+            height: 28,
             decoration: BoxDecoration(
               color: isActive
-                  ? AppTheme.primaryColor
+                  ? const Color(0xFF34D399)
                   : Colors.white.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(16),
               border: isCurrent
-                  ? Border.all(color: Colors.white, width: 2)
+                  ? Border.all(color: Colors.white, width: 1.5)
                   : null,
             ),
             child: Icon(
               isActive ? Icons.check : Icons.circle,
               color: Colors.white,
-              size: 16,
+              size: 14,
             ),
           ),
-          const SizedBox(height: AppTheme.spacingS),
+          const SizedBox(height: AppTheme.spacingXS),
           Text(
             label,
             style: TextStyle(
               color: isActive ? Colors.white : Colors.white70,
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: isCurrent ? FontWeight.w600 : FontWeight.normal,
             ),
           ),
@@ -215,15 +218,29 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
     return Container(
       height: 2,
       color: _currentStep > 0
-          ? AppTheme.primaryColor
+          ? const Color(0xFF34D399)
           : Colors.white.withValues(alpha: 0.3),
     );
   }
 
   Widget _buildFormContent() {
     return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingL),
-      decoration: AppTheme.glassmorphismDecoration,
+      padding: const EdgeInsets.all(AppTheme.spacingM),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.1),
+            blurRadius: 30,
+            offset: const Offset(0, 15),
+          ),
+        ],
+      ),
       child: Form(
         key: _formKey,
         child: Column(
@@ -234,7 +251,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
               _buildVerificationCodeInput(),
             ] else if (_currentStep == 2) ...[
               _buildNewPasswordInput(),
-              const SizedBox(height: AppTheme.spacingM),
+              const SizedBox(height: AppTheme.spacingS),
               _buildConfirmPasswordInput(),
             ],
           ],
@@ -247,9 +264,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
     return TextFormField(
       controller: _phoneController,
       keyboardType: TextInputType.phone,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      cursorColor: Colors.white,
       decoration: AppTheme.searchInputDecoration.copyWith(
+        filled: false,
         hintText: '请输入手机号',
-        prefixIcon: const Icon(Icons.phone, color: AppTheme.textSecondaryColor),
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+        prefixIcon: const Icon(Icons.phone, color: Colors.white),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -268,24 +293,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
       children: [
         Text(
           '验证码已发送至 ${_phoneController.text}',
-          style: const TextStyle(
-            color: AppTheme.textSecondaryColor,
-            fontSize: 14,
-          ),
+          style: const TextStyle(color: Colors.white, fontSize: 13),
         ),
-        const SizedBox(height: AppTheme.spacingM),
+        const SizedBox(height: AppTheme.spacingS),
         Row(
           children: [
             Expanded(
               child: TextFormField(
                 controller: _verificationCodeController,
                 keyboardType: TextInputType.number,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                cursorColor: Colors.white,
                 decoration: AppTheme.searchInputDecoration.copyWith(
+                  filled: false,
                   hintText: '请输入验证码',
-                  prefixIcon: const Icon(
-                    Icons.security,
-                    color: AppTheme.textSecondaryColor,
-                  ),
+                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+                  prefixIcon: const Icon(Icons.security, color: Colors.white),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -298,20 +325,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
                 },
               ),
             ),
-            const SizedBox(width: AppTheme.spacingM),
+            const SizedBox(width: AppTheme.spacingS),
             SizedBox(
-              width: 120,
+              width: 100,
               child: ElevatedButton(
                 onPressed: _isCountingDown ? null : _sendVerificationCode,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.primaryColor,
+                  backgroundColor: const Color(0xFF0EA5E9),
                   foregroundColor: Colors.white,
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(
-                    vertical: AppTheme.spacingM,
+                    vertical: AppTheme.spacingS,
                   ),
                 ),
-                child: Text(_isCountingDown ? '${_countdown}s' : '重新发送'),
+                child: Text(
+                  _isCountingDown ? '${_countdown}s' : '重新发送',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
           ],
@@ -324,13 +357,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
     return TextFormField(
       controller: _newPasswordController,
       obscureText: _obscurePassword,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      cursorColor: Colors.white,
       decoration: AppTheme.searchInputDecoration.copyWith(
+        filled: false,
         hintText: '请输入新密码',
-        prefixIcon: const Icon(Icons.lock, color: AppTheme.textSecondaryColor),
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+        prefixIcon: const Icon(Icons.lock, color: Colors.white),
         suffixIcon: IconButton(
           icon: Icon(
             _obscurePassword ? Icons.visibility : Icons.visibility_off,
-            color: AppTheme.textSecondaryColor,
+            color: Colors.white,
           ),
           onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
         ),
@@ -354,16 +395,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
     return TextFormField(
       controller: _confirmPasswordController,
       obscureText: _obscureConfirmPassword,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      cursorColor: Colors.white,
       decoration: AppTheme.searchInputDecoration.copyWith(
+        filled: false,
         hintText: '请确认新密码',
-        prefixIcon: const Icon(
-          Icons.lock_outline,
-          color: AppTheme.textSecondaryColor,
-        ),
+        hintStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+        prefixIcon: const Icon(Icons.lock_outline, color: Colors.white),
         suffixIcon: IconButton(
           icon: Icon(
             _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
-            color: AppTheme.textSecondaryColor,
+            color: Colors.white,
           ),
           onPressed: () => setState(
             () => _obscureConfirmPassword = !_obscureConfirmPassword,
@@ -383,22 +429,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
   }
 
   Widget _buildActionButton() {
-    return SizedBox(
-      height: 50,
+    return Container(
+      height: 46,
+      decoration: BoxDecoration(
+        gradient: AppTheme.oceanGradient,
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+        boxShadow: [
+          BoxShadow(
+            color: AppTheme.secondaryColor.withValues(alpha: 0.35),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       child: ElevatedButton(
         onPressed: _isLoading ? null : _handleAction,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppTheme.primaryColor,
+          backgroundColor: Colors.transparent,
           foregroundColor: Colors.white,
           elevation: 0,
+          shadowColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
           ),
         ),
         child: _isLoading
             ? const SizedBox(
-                width: 20,
-                height: 20,
+                width: 18,
+                height: 18,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -407,8 +465,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage>
             : Text(
                 _getActionButtonText(),
                 style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.5,
                 ),
               ),
       ),

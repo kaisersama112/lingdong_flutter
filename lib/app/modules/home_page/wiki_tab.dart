@@ -15,7 +15,7 @@ class _WikiTabState extends State<WikiTab> {
   String _selectedSize = '全部';
   String _search = '';
   int _selectedTabIndex = 0;
- 
+
   @override
   Widget build(BuildContext context) {
     final List<DogBreed> filtered = dogBreeds.where((b) {
@@ -33,9 +33,7 @@ class _WikiTabState extends State<WikiTab> {
         _buildSearchAndFilters(),
         const SizedBox(height: AppTheme.spacingM),
         _buildTabBar(),
-        Expanded(
-          child: _buildTabContent(filtered),
-        ),
+        Expanded(child: _buildTabContent(filtered)),
       ],
     );
   }
@@ -61,11 +59,15 @@ class _WikiTabState extends State<WikiTab> {
               itemBuilder: (_, i) {
                 final s = sizes[i];
                 final selected = s == _selectedSize;
-                final color = selected ? Colors.white : AppTheme.textPrimaryColor;
+                final color = selected
+                    ? Colors.white
+                    : AppTheme.textPrimaryColor;
                 return GestureDetector(
                   onTap: () => setState(() => _selectedSize = s),
                   child: Container(
-                    margin: EdgeInsets.only(right: i == sizes.length - 1 ? 0 : AppTheme.spacingS),
+                    margin: EdgeInsets.only(
+                      right: i == sizes.length - 1 ? 0 : AppTheme.spacingS,
+                    ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppTheme.spacingM,
                       vertical: AppTheme.spacingS,
@@ -84,7 +86,9 @@ class _WikiTabState extends State<WikiTab> {
                       children: [
                         if (s != '全部')
                           Padding(
-                            padding: const EdgeInsets.only(right: AppTheme.spacingXS),
+                            padding: const EdgeInsets.only(
+                              right: AppTheme.spacingXS,
+                            ),
                             child: Icon(Icons.pets, size: 14, color: color),
                           ),
                         Text(
@@ -127,13 +131,15 @@ class _WikiTabState extends State<WikiTab> {
           final index = entry.key;
           final tab = entry.value;
           final isSelected = _selectedTabIndex == index;
-          
+
           return Expanded(
             child: GestureDetector(
               onTap: () => setState(() => _selectedTabIndex = index),
               child: Container(
                 decoration: BoxDecoration(
-                  color: isSelected ? AppTheme.primaryColor : Colors.transparent,
+                  color: isSelected
+                      ? AppTheme.primaryColor
+                      : Colors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -142,15 +148,21 @@ class _WikiTabState extends State<WikiTab> {
                     Icon(
                       tab['icon'] as IconData,
                       size: 20,
-                      color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
+                      color: isSelected
+                          ? Colors.white
+                          : AppTheme.textSecondaryColor,
                     ),
                     const SizedBox(height: 2),
                     Text(
                       tab['label'] as String,
                       style: TextStyle(
                         fontSize: 12,
-                        color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                        color: isSelected
+                            ? Colors.white
+                            : AppTheme.textSecondaryColor,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.normal,
                       ),
                     ),
                   ],
@@ -266,10 +278,9 @@ class _WikiTabState extends State<WikiTab> {
 
   Widget _breedCard(DogBreed breed) {
     return InkWell(
-      onTap: () => Navigator.of(context).pushNamed(
-        AppRouter.breedDetailRoute,
-        arguments: breed,
-      ),
+      onTap: () => Navigator.of(
+        context,
+      ).pushNamed(AppRouter.breedDetailRoute, arguments: breed),
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: AppTheme.cardDecoration,
@@ -289,7 +300,7 @@ class _WikiTabState extends State<WikiTab> {
                   decoration: BoxDecoration(
                     color: BreedTagStyle.colorForSize(
                       breed.size,
-                    ).withValues(alpha:0.15),
+                    ).withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
@@ -306,7 +317,10 @@ class _WikiTabState extends State<WikiTab> {
             const SizedBox(height: 8),
             Text(
               breed.name,
-              style: AppTheme.subheadingStyle.copyWith(fontSize: 16),
+              style: AppTheme.subheadingStyle.copyWith(
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
+              ),
             ),
             const SizedBox(height: 4),
             Text(
@@ -356,7 +370,9 @@ class _WikiTabState extends State<WikiTab> {
           Container(
             height: 120,
             decoration: BoxDecoration(
-              color: TrainingUtils.courseTypeColor(course.type).withValues(alpha: 0.1),
+              color: TrainingUtils.courseTypeColor(
+                course.type,
+              ).withValues(alpha: 0.1),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(12),
                 topRight: Radius.circular(12),
@@ -403,35 +419,40 @@ class _WikiTabState extends State<WikiTab> {
               children: [
                 Text(
                   course.title,
-                  style: AppTheme.subheadingStyle,
+                  style: AppTheme.subheadingStyle.copyWith(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w700,
+                  ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: AppTheme.spacingS),
                 Text(
                   course.description,
-                  style: AppTheme.bodyStyle,
+                  style: AppTheme.bodyStyle.copyWith(height: 1.4),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 const SizedBox(height: AppTheme.spacingM),
                 Row(
                   children: [
-                    Icon(Icons.person, size: 16, color: AppTheme.textSecondaryColor),
-                    const SizedBox(width: 4),
-                    Text(
-                      course.instructor,
-                      style: AppTheme.captionStyle,
+                    Icon(
+                      Icons.person,
+                      size: 16,
+                      color: AppTheme.textSecondaryColor,
                     ),
+                    const SizedBox(width: 4),
+                    Text(course.instructor, style: AppTheme.captionStyle),
                     const Spacer(),
                     Icon(Icons.star, size: 16, color: Colors.amber[600]),
                     const SizedBox(width: 4),
-                    Text(
-                      '${course.rating}',
-                      style: AppTheme.captionStyle,
-                    ),
+                    Text('${course.rating}', style: AppTheme.captionStyle),
                     const SizedBox(width: AppTheme.spacingM),
-                    Icon(Icons.people, size: 16, color: AppTheme.textSecondaryColor),
+                    Icon(
+                      Icons.people,
+                      size: 16,
+                      color: AppTheme.textSecondaryColor,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       '${course.studentCount}',
@@ -442,14 +463,19 @@ class _WikiTabState extends State<WikiTab> {
                 const SizedBox(height: AppTheme.spacingS),
                 Row(
                   children: [
-                    Icon(Icons.access_time, size: 16, color: AppTheme.textSecondaryColor),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${course.duration}分钟',
-                      style: AppTheme.captionStyle,
+                    Icon(
+                      Icons.access_time,
+                      size: 16,
+                      color: AppTheme.textSecondaryColor,
                     ),
+                    const SizedBox(width: 4),
+                    Text('${course.duration}分钟', style: AppTheme.captionStyle),
                     const SizedBox(width: AppTheme.spacingM),
-                    Icon(Icons.pets, size: 16, color: AppTheme.textSecondaryColor),
+                    Icon(
+                      Icons.pets,
+                      size: 16,
+                      color: AppTheme.textSecondaryColor,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       TrainingUtils.ageStageLabel(course.targetAge),
@@ -464,11 +490,17 @@ class _WikiTabState extends State<WikiTab> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: TrainingUtils.courseTypeColor(course.type),
+                        backgroundColor: TrainingUtils.courseTypeColor(
+                          course.type,
+                        ),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                           horizontal: AppTheme.spacingM,
                           vertical: AppTheme.spacingS,
+                        ),
+                        minimumSize: const Size(0, 36),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                       child: const Text('开始学习'),
@@ -512,15 +544,15 @@ class _WikiTabState extends State<WikiTab> {
                   children: [
                     Text(
                       guide.title,
-                      style: AppTheme.subheadingStyle,
+                      style: AppTheme.subheadingStyle.copyWith(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      '作者: ${guide.author}',
-                      style: AppTheme.captionStyle,
-                    ),
+                    Text('作者: ${guide.author}', style: AppTheme.captionStyle),
                   ],
                 ),
               ),
@@ -529,7 +561,7 @@ class _WikiTabState extends State<WikiTab> {
           const SizedBox(height: AppTheme.spacingM),
           Text(
             guide.content,
-            style: AppTheme.bodyStyle,
+            style: AppTheme.bodyStyle.copyWith(height: 1.4),
             maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
@@ -537,10 +569,7 @@ class _WikiTabState extends State<WikiTab> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppTheme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -555,30 +584,41 @@ class _WikiTabState extends State<WikiTab> {
                 ),
               ),
               const SizedBox(width: AppTheme.spacingS),
-              ...guide.tags.take(2).map((tag) => Container(
-                margin: const EdgeInsets.only(right: AppTheme.spacingS),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.grey[100],
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Text(
-                  tag,
-                  style: AppTheme.captionStyle,
-                ),
-              )),
+              ...guide.tags
+                  .take(2)
+                  .map(
+                    (tag) => Container(
+                      margin: const EdgeInsets.only(right: AppTheme.spacingS),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(tag, style: AppTheme.captionStyle),
+                    ),
+                  ),
               const Spacer(),
-              TextButton(
+              OutlinedButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed(
                     AppRouter.behaviorGuideDetailRoute,
                     arguments: guide,
                   );
                 },
-                child: const Text('查看详情'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(0, 36),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text(
+                  '查看详情',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           ),
@@ -603,11 +643,7 @@ class _WikiTabState extends State<WikiTab> {
                   color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
-                  Icons.groups,
-                  color: Colors.green,
-                  size: 20,
-                ),
+                child: const Icon(Icons.groups, color: Colors.green, size: 20),
               ),
               const SizedBox(width: AppTheme.spacingM),
               Expanded(
@@ -623,14 +659,22 @@ class _WikiTabState extends State<WikiTab> {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(Icons.trending_up, size: 14, color: Colors.green[600]),
+                        Icon(
+                          Icons.trending_up,
+                          size: 14,
+                          color: Colors.green[600],
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '难度 ${activity.difficulty}/5',
                           style: AppTheme.captionStyle,
                         ),
                         const SizedBox(width: AppTheme.spacingM),
-                        Icon(Icons.access_time, size: 14, color: AppTheme.textSecondaryColor),
+                        Icon(
+                          Icons.access_time,
+                          size: 14,
+                          color: AppTheme.textSecondaryColor,
+                        ),
                         const SizedBox(width: 4),
                         Text(
                           '${activity.duration}分钟',
@@ -654,10 +698,7 @@ class _WikiTabState extends State<WikiTab> {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 4,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -672,23 +713,31 @@ class _WikiTabState extends State<WikiTab> {
                 ),
               ),
               const Spacer(),
-              TextButton(
+              OutlinedButton(
                 onPressed: () {
                   Navigator.of(context).pushNamed(
                     AppRouter.socialActivityDetailRoute,
                     arguments: activity,
                   );
                 },
-                child: const Text('参与活动'),
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size(0, 36),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: const Text(
+                  '参与活动',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
               ),
             ],
           ),
           const SizedBox(height: AppTheme.spacingS),
           Text(
             '益处: ${activity.benefits.join(', ')}',
-            style: AppTheme.captionStyle.copyWith(
-              color: Colors.green[600],
-            ),
+            style: AppTheme.captionStyle.copyWith(color: Colors.green[600]),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),

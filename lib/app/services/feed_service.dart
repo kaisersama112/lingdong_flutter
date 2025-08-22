@@ -33,23 +33,27 @@ class FeedService {
     final db = await _dbService.database;
     final rows = await db.query(
       'post_comments',
-      where: 'post_id = ?'
-      , whereArgs: [postId], orderBy: 'created_at DESC');
+      where: 'post_id = ?',
+      whereArgs: [postId],
+      orderBy: 'created_at DESC',
+    );
     return rows
-        .map((r) => FeedComment(
-              id: r['id'] as String,
-              postId: r['post_id'] as String,
-              userId: r['user_id'] as String,
-              content: r['content'] as String,
-              createdAt: DateTime.parse(r['created_at'] as String),
-            ))
+        .map(
+          (r) => FeedComment(
+            id: r['id'] as String,
+            postId: r['post_id'] as String,
+            userId: r['user_id'] as String,
+            content: r['content'] as String,
+            createdAt: DateTime.parse(r['created_at'] as String),
+          ),
+        )
         .toList();
   }
 
   Future<PostStats> getPostStats(String postId) async {
     final db = await _dbService.database;
     final currentUser = UserAuthService().currentUser;
-    
+
     final statsRows = await db.query(
       'post_stats',
       where: 'post_id = ?',
@@ -117,7 +121,11 @@ class FeedService {
         });
         await _incrementStat(txn, postId, 'likes', 1);
       } else {
-        await txn.delete('post_likes', where: 'post_id = ? AND user_id = ?', whereArgs: [postId, currentUser.userId]);
+        await txn.delete(
+          'post_likes',
+          where: 'post_id = ? AND user_id = ?',
+          whereArgs: [postId, currentUser.userId],
+        );
         await _incrementStat(txn, postId, 'likes', -1);
       }
       return await _readStatsAfter(txn, postId, currentUser.userId);
@@ -146,7 +154,11 @@ class FeedService {
         });
         await _incrementStat(txn, postId, 'favorites', 1);
       } else {
-        await txn.delete('post_favorites', where: 'post_id = ? AND user_id = ?', whereArgs: [postId, currentUser.userId]);
+        await txn.delete(
+          'post_favorites',
+          where: 'post_id = ? AND user_id = ?',
+          whereArgs: [postId, currentUser.userId],
+        );
         await _incrementStat(txn, postId, 'favorites', -1);
       }
       return await _readStatsAfter(txn, postId, currentUser.userId);
@@ -183,7 +195,12 @@ class FeedService {
     });
   }
 
-  Future<void> _incrementStat(Transaction txn, String postId, String field, int delta) async {
+  Future<void> _incrementStat(
+    Transaction txn,
+    String postId,
+    String field,
+    int delta,
+  ) async {
     // 确保存在一条 post_stats 记录
     await txn.insert('post_stats', {
       'post_id': postId,
@@ -194,19 +211,41 @@ class FeedService {
     }, conflictAlgorithm: ConflictAlgorithm.ignore);
 
     // 更新对应计数
-    await txn.rawUpdate('UPDATE post_stats SET $field = MAX(0, $field + ?) WHERE post_id = ?', [delta, postId]);
+    await txn.rawUpdate(
+      'UPDATE post_stats SET $field = MAX(0, $field + ?) WHERE post_id = ?',
+      [delta, postId],
+    );
   }
 
-  Future<PostStats> _readStatsAfter(Transaction txn, String postId, String userId) async {
-    final statsRows = await txn.query('post_stats', where: 'post_id = ?', whereArgs: [postId], limit: 1);
+  Future<PostStats> _readStatsAfter(
+    Transaction txn,
+    String postId,
+    String userId,
+  ) async {
+    final statsRows = await txn.query(
+      'post_stats',
+      where: 'post_id = ?',
+      whereArgs: [postId],
+      limit: 1,
+    );
     final row = statsRows.isNotEmpty ? statsRows.first : <String, Object?>{};
     final likes = row['likes'] as int? ?? 0;
     final favorites = row['favorites'] as int? ?? 0;
     final comments = row['comments'] as int? ?? 0;
     final shares = row['shares'] as int? ?? 0;
 
-    final liked = (await txn.query('post_likes', where: 'post_id = ? AND user_id = ?', whereArgs: [postId, userId], limit: 1)).isNotEmpty;
-    final favorited = (await txn.query('post_favorites', where: 'post_id = ? AND user_id = ?', whereArgs: [postId, userId], limit: 1)).isNotEmpty;
+    final liked = (await txn.query(
+      'post_likes',
+      where: 'post_id = ? AND user_id = ?',
+      whereArgs: [postId, userId],
+      limit: 1,
+    )).isNotEmpty;
+    final favorited = (await txn.query(
+      'post_favorites',
+      where: 'post_id = ? AND user_id = ?',
+      whereArgs: [postId, userId],
+      limit: 1,
+    )).isNotEmpty;
 
     return PostStats(
       likes: likes,
@@ -222,7 +261,10 @@ class FeedService {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
     final random = Random();
     return String.fromCharCodes(
-      Iterable.generate(16, (_) => chars.codeUnitAt(random.nextInt(chars.length))),
+      Iterable.generate(
+        16,
+        (_) => chars.codeUnitAt(random.nextInt(chars.length)),
+      ),
     );
   }
 }
@@ -242,5 +284,3 @@ class FeedComment {
     required this.createdAt,
   });
 }
-
-

@@ -22,47 +22,31 @@ class _RecommendTabState extends State<RecommendTab> {
       title: '周末和Ta去公园',
       subtitle: '附近遛狗路线推荐',
       emoji: '🐕',
-      gradient: LinearGradient(
-        colors: [Color(0xFF4ECDC4), Color(0xFF26D0CE)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+      gradient: AppTheme.accentGradient,
     ),
     _HeroCard(
       title: '宠物健康小测',
       subtitle: '3分钟评估健康状况',
       emoji: '🏥',
-      gradient: LinearGradient(
-        colors: [Color(0xFFFF6B35), Color(0xFFFF8A65)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+      gradient: AppTheme.warmGradient,
     ),
     _HeroCard(
       title: '萌宠摄影挑战',
       subtitle: '参与话题赢好礼',
       emoji: '📸',
-      gradient: LinearGradient(
-        colors: [Color(0xFFFF9FF3), Color(0xFFAB47BC)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+      gradient: AppTheme.primaryGradient,
     ),
   ];
 
   final List<String> _petCategories = ['全部', '医疗', '美容', '训练', '救助'];
   String _selectedPetCategory = '全部';
-  
+
   final List<_QuickAction> _quickActions = const [
     _QuickAction(
       icon: Icons.park,
       label: '附近公园',
       color: AppTheme.successColor,
-      gradient: LinearGradient(
-        colors: [Color(0xFF66BB6A), Color(0xFF4CAF50)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+      gradient: AppTheme.accentGradient,
     ),
     _QuickAction(
       icon: Icons.local_hospital,
@@ -146,23 +130,37 @@ class _RecommendTabState extends State<RecommendTab> {
           ),
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 180,
-          child: Listener(
-            onPointerDown: (_) => setState(() => _userInteractingCarousel = true),
-            onPointerUp: (_) => setState(() => _userInteractingCarousel = false),
-            onPointerCancel: (_) => setState(() => _userInteractingCarousel = false),
-            child: PageView.builder(
-              controller: _heroController,
-              onPageChanged: (index) {
-                setState(() => _currentHeroIndex = index % _heroCards.length);
-              },
-              itemBuilder: (context, index) {
-                final card = _heroCards[index % _heroCards.length];
-                return _buildHeroCard(card, index);
-              },
-            ),
-          ),
+        LayoutBuilder(
+          builder: (context, constraints) {
+            final double width = constraints.maxWidth == double.infinity
+                ? MediaQuery.of(context).size.width
+                : constraints.maxWidth;
+            final double computed = width * 0.42; // 约 2.38:1 的视觉比例
+            final double bannerHeight = computed.clamp(160.0, 200.0);
+            return SizedBox(
+              height: bannerHeight,
+              child: Listener(
+                onPointerDown: (_) =>
+                    setState(() => _userInteractingCarousel = true),
+                onPointerUp: (_) =>
+                    setState(() => _userInteractingCarousel = false),
+                onPointerCancel: (_) =>
+                    setState(() => _userInteractingCarousel = false),
+                child: PageView.builder(
+                  controller: _heroController,
+                  onPageChanged: (index) {
+                    setState(
+                      () => _currentHeroIndex = index % _heroCards.length,
+                    );
+                  },
+                  itemBuilder: (context, index) {
+                    final card = _heroCards[index % _heroCards.length];
+                    return _buildHeroCard(card, index);
+                  },
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(height: 16),
         _buildPageIndicator(),
@@ -202,7 +200,7 @@ class _RecommendTabState extends State<RecommendTab> {
             );
           },
           child: Padding(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
             child: Row(
               children: [
                 Expanded(
@@ -213,7 +211,7 @@ class _RecommendTabState extends State<RecommendTab> {
                       Text(
                         card.title,
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: 22,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -236,10 +234,7 @@ class _RecommendTabState extends State<RecommendTab> {
                     color: Colors.white.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: Text(
-                    card.emoji,
-                    style: const TextStyle(fontSize: 32),
-                  ),
+                  child: Text(card.emoji, style: const TextStyle(fontSize: 32)),
                 ),
               ],
             ),
@@ -259,8 +254,8 @@ class _RecommendTabState extends State<RecommendTab> {
           width: index == _currentHeroIndex ? 24 : 8,
           height: 8,
           decoration: BoxDecoration(
-            color: index == _currentHeroIndex 
-                ? AppTheme.primaryColor 
+            color: index == _currentHeroIndex
+                ? AppTheme.primaryColor
                 : AppTheme.textLightColor,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -290,7 +285,7 @@ class _RecommendTabState extends State<RecommendTab> {
             itemBuilder: (context, index) {
               final category = _petCategories[index];
               final isSelected = category == _selectedPetCategory;
-              
+
               return Container(
                 margin: const EdgeInsets.only(right: 12),
                 child: Material(
@@ -302,28 +297,41 @@ class _RecommendTabState extends State<RecommendTab> {
                     },
                     child: AnimatedContainer(
                       duration: AppTheme.shortAnimation,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       decoration: BoxDecoration(
                         gradient: isSelected ? AppTheme.primaryGradient : null,
                         color: isSelected ? null : Colors.white,
                         borderRadius: BorderRadius.circular(20),
-                        border: isSelected ? null : Border.all(
-                          color: AppTheme.dividerColor,
-                          width: 1,
-                        ),
-                        boxShadow: isSelected ? [
-                          BoxShadow(
-                            color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ] : null,
+                        border: isSelected
+                            ? null
+                            : Border.all(
+                                color: AppTheme.dividerColor,
+                                width: 1,
+                              ),
+                        boxShadow: isSelected
+                            ? [
+                                BoxShadow(
+                                  color: AppTheme.primaryColor.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ]
+                            : null,
                       ),
                       child: Text(
                         category,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
-                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                          color: isSelected
+                              ? Colors.white
+                              : AppTheme.textSecondaryColor,
+                          fontWeight: isSelected
+                              ? FontWeight.w600
+                              : FontWeight.w500,
                           fontSize: 14,
                         ),
                       ),
@@ -383,7 +391,6 @@ class _RecommendTabState extends State<RecommendTab> {
           child: Padding(
             padding: const EdgeInsets.all(10), // 原始值：16
             child: Column(
-              
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
@@ -399,11 +406,7 @@ class _RecommendTabState extends State<RecommendTab> {
                       ),
                     ],
                   ),
-                  child: Icon(
-                    action.icon,
-                    color: Colors.white,
-                    size: 24,
-                  ),
+                  child: Icon(action.icon, color: Colors.white, size: 24),
                 ),
                 const SizedBox(height: 12),
                 Text(
@@ -526,110 +529,119 @@ class _RecommendTabState extends State<RecommendTab> {
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
         onTap: onTap,
         child: Container(
-      decoration: AppTheme.cardDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+          decoration: AppTheme.cardDecoration,
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    gradient: AppTheme.primaryGradient,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Icon(
-                    Icons.pets,
-                    color: Colors.white,
-                    size: 20,
+                Row(
+                  children: [
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        gradient: AppTheme.primaryGradient,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.pets,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            author,
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.textPrimaryColor,
+                            ),
+                          ),
+                          Text(
+                            '2小时前',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppTheme.textLightColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.more_horiz),
+                      onPressed: () {},
+                      color: AppTheme.textSecondaryColor,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.textPrimaryColor,
                   ),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        author,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimaryColor,
-                        ),
-                      ),
-                      Text(
-                        '2小时前',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: AppTheme.textLightColor,
-                        ),
-                      ),
-                    ],
+                const SizedBox(height: 8),
+                Text(
+                  content,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppTheme.textSecondaryColor,
+                    height: 1.4,
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.more_horiz),
-                  onPressed: () {},
-                  color: AppTheme.textSecondaryColor,
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    _buildActionButton(Icons.favorite_border, '$likes'),
+                    const SizedBox(width: 12),
+                    _buildActionButton(Icons.chat_bubble_outline, '$comments'),
+                    const SizedBox(width: 12),
+                    _buildActionButton(Icons.share, '分享'),
+                  ],
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textPrimaryColor,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              content,
-              style: const TextStyle(
-                fontSize: 14,
-                color: AppTheme.textSecondaryColor,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                _buildActionButton(Icons.favorite_border, '$likes'),
-                const SizedBox(width: 16),
-                _buildActionButton(Icons.chat_bubble_outline, '$comments'),
-                const SizedBox(width: 16),
-                _buildActionButton(Icons.share, '分享'),
-              ],
-            ),
-          ],
+          ),
         ),
-      ),
-    ),
       ),
     );
   }
 
   Widget _buildActionButton(IconData icon, String label) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      height: 32,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        gradient: LinearGradient(
+          colors: [Colors.white, Colors.white],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: AppTheme.dividerColor),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
-        ],
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon, size: 16, color: AppTheme.textSecondaryColor),
           const SizedBox(width: 6),
-          Text(label, style: const TextStyle(fontSize: 12, color: AppTheme.textSecondaryColor, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              color: AppTheme.textSecondaryColor,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );
@@ -663,6 +675,3 @@ class _QuickAction {
     required this.gradient,
   });
 }
-
-
-

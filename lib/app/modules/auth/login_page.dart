@@ -20,6 +20,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   final _verificationCodeController = TextEditingController();
   final _authService = UserAuthService();
 
+  // 统一使用 AppTheme 的色板与渐变
+
   bool _isLoading = false;
   bool _obscurePassword = true;
   bool _rememberPassword = false;
@@ -88,6 +90,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
+      extendBody: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: AppTheme.getAuthBackgroundGradient(context),
@@ -100,41 +104,44 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               opacity: _fadeAnimation,
               child: SlideTransition(
                 position: _slideAnimation,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppTheme.spacingL),
-                  child: Center(
+                child: LayoutBuilder(
+                  builder: (context, constraints) => SingleChildScrollView(
+                    padding: const EdgeInsets.all(AppTheme.spacingM),
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 480),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: AppTheme.spacingXL),
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 480),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const SizedBox(height: AppTheme.spacingL),
 
-                          // Logo和标题
-                          _buildHeader(),
+                              // Logo和标题
+                              _buildHeader(),
 
-                          const SizedBox(height: AppTheme.spacingXL),
+                              const SizedBox(height: AppTheme.spacingM),
 
-                          // 登录方式切换 + 表单
-                          _buildLoginForm(),
+                              // 登录方式切换 + 表单
+                              _buildLoginForm(),
 
-                          const SizedBox(height: AppTheme.spacingM),
+                              const SizedBox(height: AppTheme.spacingS),
 
-                          // 登录按钮
-                          _buildLoginButton(),
+                              // 登录按钮
+                              _buildLoginButton(),
 
-                          const SizedBox(height: AppTheme.spacingM),
+                              const SizedBox(height: AppTheme.spacingS),
 
-                          // 游客模式按钮
-                          _buildGuestModeButton(),
+                              // 第三方登录
+                              _buildSocialLogin(),
 
-                          const SizedBox(height: AppTheme.spacingM),
-
-                          // 第三方登录
-                          _buildSocialLogin(),
-
-                          const SizedBox(height: AppTheme.spacingL),
-                        ],
+                              const SizedBox(height: AppTheme.spacingL),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -212,16 +219,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       child: Column(
         children: [
           // Logo
-          AuthComponents.modernLogo(icon: Icons.pets),
+          AuthComponents.modernLogo(icon: Icons.pets, size: 56, iconSize: 28),
 
-          const SizedBox(height: AppTheme.spacingL),
+          const SizedBox(height: AppTheme.spacingM),
 
           // 标题
-          AuthComponents.modernTitle(text: '欢迎回到灵宠'),
+          AuthComponents.modernTitle(text: '欢迎回到灵宠', fontSize: 24),
 
-          const SizedBox(height: AppTheme.spacingS),
+          const SizedBox(height: AppTheme.spacingXS),
 
-          AuthComponents.modernSubtitle(text: '与你的宠物伙伴一起分享美好时光'),
+          AuthComponents.modernSubtitle(text: '与你的宠物伙伴一起分享美好时光', fontSize: 13),
         ],
       ),
     );
@@ -229,7 +236,10 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   Widget _buildLoginForm() {
     return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingXL),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingL,
+        vertical: AppTheme.spacingM,
+      ),
       decoration: BoxDecoration(
         color: Colors.white.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusXLarge),
@@ -252,12 +262,12 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             // 登录方式切换（密码 / 验证码）
             _buildLoginMethodToggle(),
 
-            const SizedBox(height: AppTheme.spacingL),
+            const SizedBox(height: AppTheme.spacingM),
 
             // 手机号输入
             _buildPhoneInput(),
 
-            const SizedBox(height: AppTheme.spacingM),
+            const SizedBox(height: AppTheme.spacingS),
 
             // 密码/验证码输入（带切换动画）
             AnimatedSwitcher(
@@ -267,7 +277,8 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               child: _buildPasswordInput(),
             ),
 
-            const SizedBox(height: AppTheme.spacingM),
+            const SizedBox(height: AppTheme.spacingS),
+            const SizedBox(height: AppTheme.spacingS),
 
             // 记住密码
             _buildRememberPassword(),
@@ -278,128 +289,31 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   }
 
   Widget _buildLoginMethodToggle() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingS),
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.08),
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.15),
-          width: 1,
+    return ToggleButtons(
+      isSelected: [_loginMethod == 0, _loginMethod == 1],
+      onPressed: (index) => _onToggleLoginMethod(index),
+      borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+      selectedColor: Colors.white,
+      color: Colors.white.withValues(alpha: 0.9),
+      fillColor: AppTheme.accentColor.withValues(alpha: 0.22),
+      borderColor: Colors.white.withValues(alpha: 0.28),
+      selectedBorderColor: Colors.white.withValues(alpha: 0.5),
+      children: const [
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: AppTheme.spacingS,
+            horizontal: AppTheme.spacingM,
+          ),
+          child: Text('密码登录'),
         ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _onToggleLoginMethod(0),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppTheme.spacingM,
-                  horizontal: AppTheme.spacingS,
-                ),
-                decoration: BoxDecoration(
-                  color: _loginMethod == 0
-                      ? Colors.white.withValues(alpha: 0.95)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(
-                    AppTheme.borderRadiusMedium,
-                  ),
-                  boxShadow: _loginMethod == 0
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      _loginMethod == 0 ? Icons.lock : Icons.lock_outline,
-                      color: _loginMethod == 0
-                          ? AppTheme.primaryColor
-                          : Colors.white.withValues(alpha: 0.6),
-                      size: 20,
-                    ),
-                    const SizedBox(height: AppTheme.spacingXS),
-                    Text(
-                      '密码登录',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: _loginMethod == 0
-                            ? AppTheme.primaryColor
-                            : Colors.white.withValues(alpha: 0.8),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+        Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: AppTheme.spacingS,
+            horizontal: AppTheme.spacingM,
           ),
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _onToggleLoginMethod(1),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppTheme.spacingM,
-                  horizontal: AppTheme.spacingS,
-                ),
-                decoration: BoxDecoration(
-                  color: _loginMethod == 1
-                      ? Colors.white.withValues(alpha: 0.95)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(
-                    AppTheme.borderRadiusMedium,
-                  ),
-                  boxShadow: _loginMethod == 1
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.1),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ]
-                      : null,
-                ),
-                child: Column(
-                  children: [
-                    Icon(
-                      _loginMethod == 1
-                          ? Icons.security
-                          : Icons.security_outlined,
-                      color: _loginMethod == 1
-                          ? AppTheme.primaryColor
-                          : Colors.white.withValues(alpha: 0.8),
-                      size: 20,
-                    ),
-                    const SizedBox(height: AppTheme.spacingXS),
-                    Text(
-                      '验证码登录',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: _loginMethod == 1
-                            ? AppTheme.primaryColor
-                            : Colors.white.withValues(alpha: 0.8),
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+          child: Text('验证码登录'),
+        ),
+      ],
     );
   }
 
@@ -437,24 +351,21 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             keyboardType: TextInputType.phone,
             textInputAction: TextInputAction.next,
             style: const TextStyle(
-              color: AppTheme.textPrimaryColor,
+              color: Colors.white,
               fontSize: 16,
               fontWeight: FontWeight.w500,
             ),
             decoration: InputDecoration(
+              filled: false,
               hintText: '请输入手机号码',
               hintStyle: TextStyle(
-                color: AppTheme.textSecondaryColor,
+                color: Colors.white.withOpacity(0.9),
                 fontSize: 15,
                 fontWeight: FontWeight.w400,
               ),
               prefixIcon: Container(
                 margin: const EdgeInsets.only(right: AppTheme.spacingS),
-                child: Icon(
-                  Icons.phone_rounded,
-                  color: AppTheme.textSecondaryColor,
-                  size: 22,
-                ),
+                child: Icon(Icons.phone_rounded, color: Colors.white, size: 22),
               ),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(
@@ -462,6 +373,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 vertical: AppTheme.spacingM,
               ),
             ),
+            cursorColor: Colors.white,
             onFieldSubmitted: (_) => FocusScope.of(context).nextFocus(),
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -516,14 +428,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 obscureText: _obscurePassword,
                 textInputAction: TextInputAction.done,
                 style: const TextStyle(
-                  color: AppTheme.textPrimaryColor,
+                  color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
                 decoration: InputDecoration(
+                  filled: false,
                   hintText: '请输入登录密码',
                   hintStyle: TextStyle(
-                    color: AppTheme.textSecondaryColor,
+                    color: Colors.white.withOpacity(0.9),
                     fontSize: 15,
                     fontWeight: FontWeight.w400,
                   ),
@@ -531,7 +444,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     margin: const EdgeInsets.only(right: AppTheme.spacingS),
                     child: Icon(
                       Icons.lock_rounded,
-                      color: AppTheme.textSecondaryColor,
+                      color: Colors.white,
                       size: 22,
                     ),
                   ),
@@ -542,7 +455,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                         _obscurePassword
                             ? Icons.visibility_rounded
                             : Icons.visibility_off_rounded,
-                        color: AppTheme.textSecondaryColor,
+                        color: Colors.white,
                         size: 22,
                       ),
                       onPressed: () =>
@@ -555,6 +468,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     vertical: AppTheme.spacingM,
                   ),
                 ),
+                cursorColor: Colors.white,
                 onFieldSubmitted: (_) {
                   if (!_isLoading &&
                       _formKey.currentState?.validate() == true) {
@@ -617,14 +531,15 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                       keyboardType: TextInputType.number,
                       textInputAction: TextInputAction.done,
                       style: const TextStyle(
-                        color: AppTheme.textPrimaryColor,
+                        color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                       decoration: InputDecoration(
+                        filled: false,
                         hintText: '请输入验证码',
                         hintStyle: TextStyle(
-                          color: AppTheme.textSecondaryColor,
+                          color: Colors.white.withOpacity(0.9),
                           fontSize: 15,
                           fontWeight: FontWeight.w400,
                         ),
@@ -633,10 +548,16 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                             right: AppTheme.spacingS,
                           ),
                           child: Icon(
-                            Icons.security_rounded,
-                            color: AppTheme.textSecondaryColor,
+                            Icons.verified_user_rounded,
+                            color: Colors.white,
                             size: 22,
                           ),
+                        ),
+                        suffixIcon: Container(
+                          margin: const EdgeInsets.only(
+                            right: AppTheme.spacingS,
+                          ),
+                          child: const SizedBox.shrink(),
                         ),
                         border: InputBorder.none,
                         contentPadding: const EdgeInsets.symmetric(
@@ -644,6 +565,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                           vertical: AppTheme.spacingM,
                         ),
                       ),
+                      cursorColor: Colors.white,
                       onFieldSubmitted: (_) {
                         if (!_isLoading &&
                             _formKey.currentState?.validate() == true) {
@@ -663,47 +585,35 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                   ),
                 ),
                 const SizedBox(width: AppTheme.spacingM),
-                Container(
+                SizedBox(
                   width: 120,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF10B981), Color(0xFF059669)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(
-                      AppTheme.borderRadiusMedium,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF10B981).withValues(alpha: 0.3),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: ElevatedButton(
+                  height: 44,
+                  child: OutlinedButton(
                     onPressed:
                         (_isLoading || _codeCountdown > 0 || !_isPhoneValid)
                         ? null
                         : _sendVerificationCode,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
+                    style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
-                      elevation: 0,
-                      shadowColor: Colors.transparent,
+                      side: BorderSide(
+                        color: Colors.white.withValues(alpha: 0.9),
+                        width: 1.2,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
                           AppTheme.borderRadiusMedium,
                         ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 0,
+                        horizontal: AppTheme.spacingM,
                       ),
                     ),
                     child: Text(
                       _codeCountdown > 0 ? '${_codeCountdown}s后重试' : '获取验证码',
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 13,
                       ),
                     ),
                   ),
@@ -722,88 +632,55 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         // 记住密码选项 - 更大更易点击
         GestureDetector(
           onTap: () => setState(() => _rememberPassword = !_rememberPassword),
-          child: Container(
-            padding: const EdgeInsets.all(AppTheme.spacingS),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.2),
-                width: 1,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 160),
+                curve: Curves.easeInOut,
+                width: 18,
+                height: 18,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.borderRadiusSmall,
+                  ),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    width: 1.6,
+                  ),
+                ),
+                child: _rememberPassword
+                    ? const Icon(Icons.check, color: Colors.white, size: 14)
+                    : null,
               ),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: _rememberPassword
-                        ? AppTheme.primaryColor
-                        : Colors.transparent,
-                    borderRadius: BorderRadius.circular(
-                      AppTheme.borderRadiusSmall,
-                    ),
-                    border: Border.all(
-                      color: _rememberPassword
-                          ? AppTheme.primaryColor
-                          : Colors.white.withValues(alpha: 0.4),
-                      width: 2,
-                    ),
-                  ),
-                  child: _rememberPassword
-                      ? const Icon(Icons.check, color: Colors.white, size: 16)
-                      : const SizedBox(width: 16, height: 16),
+              const SizedBox(width: AppTheme.spacingS),
+              const Text(
+                '记住密码',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
                 ),
-                const SizedBox(width: AppTheme.spacingS),
-                Text(
-                  '记住密码',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.9),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
         const Spacer(),
-        // 忘记密码按钮 - 更明显的提示
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.2),
-              width: 1,
-            ),
+        // 忘记密码按钮 - 简洁文本链接
+        TextButton(
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ForgotPasswordPage()),
           ),
-          child: TextButton.icon(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const ForgotPasswordPage(),
-              ),
-            ),
-            icon: Icon(
-              Icons.help_outline_rounded,
-              color: AppTheme.primaryColor,
-              size: 18,
-            ),
-            label: Text(
-              '忘记密码？',
-              style: TextStyle(
-                color: AppTheme.primaryColor,
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-              ),
-            ),
-            style: TextButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppTheme.spacingM,
-                vertical: AppTheme.spacingS,
-              ),
+          child: const Text(
+            '忘记密码？',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              decoration: TextDecoration.underline,
+              decorationColor: Colors.white,
             ),
           ),
         ),
@@ -813,17 +690,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   Widget _buildLoginButton() {
     return Container(
-      height: 56,
+      height: 52,
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF6366F1), Color(0xFF8B5CF6)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        gradient: AppTheme.oceanGradient,
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+            color: AppTheme.secondaryColor.withValues(alpha: 0.35),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
@@ -852,7 +725,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             : const Text(
                 '登录',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1,
                 ),
@@ -861,68 +734,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  // 提示卡片已内联至登录区域，移除此未使用方法
-
-  Widget _buildGuestModeButton() {
-    return Container(
-      height: 56,
-      decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.25),
-          width: 1.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: ElevatedButton(
-        onPressed: _isLoading ? null : _handleGuestLogin,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.transparent,
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
-          ),
-        ),
-        child: _isLoading
-            ? const SizedBox(
-                width: 24,
-                height: 24,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.5,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.person_outline_rounded,
-                    size: 20,
-                    color: Colors.white.withValues(alpha: 0.9),
-                  ),
-                  const SizedBox(width: AppTheme.spacingS),
-                  const Text(
-                    '游客模式登录',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
-      ),
-    );
-  }
+  // 已将游客登录移至第三方登录区域
 
   Widget _buildSocialLogin() {
     return Column(
@@ -949,7 +761,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         const SizedBox(height: AppTheme.spacingL),
 
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _buildSocialButton(
               icon: Icons.wechat,
@@ -960,14 +772,14 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             _buildSocialButton(
               icon: Icons.phone_android,
               label: '手机登录',
-              color: AppTheme.primaryColor,
+              color: AppTheme.accentColor,
               onTap: () => setState(() => _loginMethod = 1),
             ),
             _buildSocialButton(
-              icon: Icons.email,
-              label: '邮箱登录',
+              icon: Icons.person_outline,
+              label: '游客登录',
               color: AppTheme.secondaryColor,
-              onTap: () => _handleSocialLogin('email'),
+              onTap: _isLoading ? () {} : _handleGuestLogin,
             ),
           ],
         ),
@@ -1077,7 +889,7 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       await _authService.socialLogin(
         platform: platform,
         token: 'mock_token_${DateTime.now().millisecondsSinceEpoch}',
-        nickname: '${platform}用户',
+        username: '${platform}用户',
       );
 
       if (mounted) {

@@ -1,6 +1,7 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
+import 'package:lingdong_server/lingdong_server.dart' as server;
 import '../model/user.dart';
 import 'database_service.dart';
 
@@ -12,6 +13,8 @@ class UserAuthService {
 
   final DatabaseService _dbService = DatabaseService();
   User? _currentUser;
+  Dio? _dio;
+  server.AuthApi? _authApi;
 
   /// 获取当前登录用户
   User? get currentUser => _currentUser;
@@ -32,11 +35,25 @@ class UserAuthService {
       // 从数据库恢复当前用户
       _currentUser = await _dbService.getCurrentUser();
 
-      debugPrint('认证服务初始化完成，当前用户: ${_currentUser?.nickname ?? "未登录"}');
+      debugPrint('认证服务初始化完成，当前用户: ${_currentUser?.username ?? "未登录"}');
+      _initializeApiClient();
     } catch (e) {
       debugPrint('初始化认证服务失败: $e');
       // 静默处理错误，不影响应用正常使用
     }
+  }
+
+  void _initializeApiClient() {
+    if (_dio != null && _authApi != null) return;
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: 'http://172.16.4.114:7009',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 10),
+      ),
+    );
+    _authApi = server.AuthApi(_dio!, server.standardSerializers);
   }
 
   /// 用户注册
@@ -44,7 +61,7 @@ class UserAuthService {
     required String phone,
     required String password,
     String? email,
-    required String nickname,
+    required String username,
   }) async {
     // 模拟网络延迟
     await Future.delayed(const Duration(milliseconds: 800));
@@ -73,7 +90,7 @@ class UserAuthService {
       userId: userId,
       phone: phone,
       email: email,
-      nickname: nickname,
+      username: username,
       registerTime: now,
       lastLoginTime: now,
     );
@@ -86,44 +103,35 @@ class UserAuthService {
     // 设置当前用户
     _currentUser = user;
 
-    debugPrint('用户注册成功: ${user.nickname}');
+    debugPrint('用户注册成功: ${user.username}');
     return user;
   }
 
   /// 用户登录
   Future<User> login({required String phone, required String password}) async {
-    // 模拟网络延迟
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    // 查找用户
-    final user = await _dbService.getUserByPhone(phone);
-    if (user == null) {
-      throw AuthException('用户不存在');
-    }
-
-    // 验证密码
-    final storedPassword = await _dbService.getUserPassword(user.userId);
-    if (storedPassword != password) {
-      throw AuthException('密码错误');
-    }
-
-    // 检查用户状态
-    if (user.status != UserStatus.active) {
-      throw AuthException(
-        '账号已被${user.status == UserStatus.banned ? '封禁' : '禁用'}',
+    _initializeApiClient();
+    try {
+      final req = server.PhoneLoginRequest(
+        (b) => b
+          ..phone = phone
+          ..password = password,
       );
+      final resp = await _authApi!.phonePasswordLoginApiAuthPhoneLoginPost(
+        phoneLoginRequest: req,
+      );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) {
+        throw AuthException(resp.data?.msg ?? '登录失败($code)');
+      }
+      final local = await _ensureLocalUser(phone: phone);
+      await _dbService.updateLastLoginTime(local.userId);
+      await _dbService.setCurrentUser(local.userId);
+      final updatedUser = await _dbService.getUser(local.userId);
+      _currentUser = updatedUser;
+      return updatedUser!;
+    } on DioException catch (e) {
+      throw AuthException(e.message ?? '网络错误');
     }
-
-    // 更新最后登录时间
-    await _dbService.updateLastLoginTime(user.userId);
-    await _dbService.setCurrentUser(user.userId);
-
-    // 获取更新后的用户信息
-    final updatedUser = await _dbService.getUser(user.userId);
-    _currentUser = updatedUser;
-
-    debugPrint('用户登录成功: ${user.nickname}');
-    return updatedUser!;
   }
 
   /// 验证码登录
@@ -131,37 +139,10 @@ class UserAuthService {
     required String phone,
     required String verificationCode,
   }) async {
-    // 模拟网络延迟
-    await Future.delayed(const Duration(milliseconds: 600));
-
-    // 查找用户
-    final user = await _dbService.getUserByPhone(phone);
-    if (user == null) {
-      throw AuthException('用户不存在');
-    }
-
-    // 验证验证码（这里简化处理，实际应该验证发送的验证码）
-    if (verificationCode != '123456') {
-      throw AuthException('验证码错误');
-    }
-
-    // 检查用户状态
-    if (user.status != UserStatus.active) {
-      throw AuthException(
-        '账号已被${user.status == UserStatus.banned ? '封禁' : '禁用'}',
-      );
-    }
-
-    // 更新最后登录时间
-    await _dbService.updateLastLoginTime(user.userId);
-    await _dbService.setCurrentUser(user.userId);
-
-    // 获取更新后的用户信息
-    final updatedUser = await _dbService.getUser(user.userId);
-    _currentUser = updatedUser;
-
-    debugPrint('验证码登录成功: ${user.nickname}');
-    return updatedUser!;
+    return await loginOrRegisterWithVerificationCode(
+      phone: phone,
+      verificationCode: verificationCode,
+    );
   }
 
   /// 一键登录/注册（手机号 + 验证码）
@@ -171,57 +152,29 @@ class UserAuthService {
     required String phone,
     required String verificationCode,
   }) async {
-    // 模拟网络延迟
-    await Future.delayed(const Duration(milliseconds: 700));
-
-    // 验证手机号格式
-    if (!_isValidPhone(phone)) {
-      throw AuthException('手机号格式不正确');
-    }
-
-    // 简化的验证码校验逻辑（真实环境应校验服务端下发验证码）
-    if (verificationCode != '123456') {
-      throw AuthException('验证码错误');
-    }
-
-    // 查找是否已存在用户
-    final existingUser = await _dbService.getUserByPhone(phone);
-    final now = DateTime.now();
-
-    if (existingUser != null) {
-      if (existingUser.status != UserStatus.active) {
-        throw AuthException(
-          '账号已被${existingUser.status == UserStatus.banned ? '封禁' : '禁用'}',
-        );
+    _initializeApiClient();
+    try {
+      final req = server.PhoneCodeLoginRequest(
+        (b) => b
+          ..phone = phone
+          ..code = verificationCode,
+      );
+      final resp = await _authApi!.phoneCodeLoginApiAuthPhoneCodeLoginPost(
+        phoneCodeLoginRequest: req,
+      );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) {
+        throw AuthException(resp.data?.msg ?? '登录失败($code)');
       }
-
-      // 已注册：更新登录时间并设为当前用户
-      await _dbService.updateLastLoginTime(existingUser.userId);
-      await _dbService.setCurrentUser(existingUser.userId);
-      final updatedUser = await _dbService.getUser(existingUser.userId);
+      final local = await _ensureLocalUser(phone: phone);
+      await _dbService.updateLastLoginTime(local.userId);
+      await _dbService.setCurrentUser(local.userId);
+      final updatedUser = await _dbService.getUser(local.userId);
       _currentUser = updatedUser;
-      debugPrint('一键登录成功（已注册用户）: ${updatedUser?.nickname}');
       return updatedUser!;
+    } on DioException catch (e) {
+      throw AuthException(e.message ?? '网络错误');
     }
-
-    // 未注册：自动注册并登录
-    final userId = _generateUserId();
-    final newUser = User(
-      userId: userId,
-      phone: phone,
-      nickname: '用户${userId.substring(0, 6)}',
-      registerTime: now,
-      lastLoginTime: now,
-      status: UserStatus.active,
-      role: UserRole.user,
-    );
-
-    await _dbService.saveUser(newUser);
-    await _dbService.setCurrentUser(userId);
-    _currentUser = newUser;
-
-    debugPrint('一键注册并登录成功（新用户）: ${newUser.nickname}');
-    return newUser;
   }
 
   /// 游客模式登录
@@ -243,7 +196,7 @@ class UserAuthService {
       guestUser = User(
         userId: guestId,
         phone: '', // 游客没有手机号
-        nickname: '游客${guestId.substring(6, 10)}',
+        username: '游客${guestId.substring(6, 10)}',
         registerTime: now,
         lastLoginTime: now,
         status: UserStatus.active,
@@ -260,7 +213,7 @@ class UserAuthService {
     await _dbService.setCurrentUser(guestUser!.userId);
     _currentUser = guestUser;
 
-    debugPrint('游客模式登录成功: ${guestUser.nickname}');
+    debugPrint('游客模式登录成功: ${guestUser.username}');
     return guestUser;
   }
 
@@ -272,7 +225,7 @@ class UserAuthService {
     required String phone,
     required String password,
     String? email,
-    String? nickname,
+    String? username,
   }) async {
     if (_currentUser == null || !isGuestUser) {
       throw AuthException('只有游客用户才能升级');
@@ -300,7 +253,7 @@ class UserAuthService {
       userId: newUserId,
       phone: phone,
       email: email,
-      nickname: nickname ?? _currentUser!.nickname,
+      username: username ?? _currentUser!.username,
       avatar: _currentUser!.avatar,
       registerTime: now,
       lastLoginTime: now,
@@ -322,7 +275,7 @@ class UserAuthService {
     await _dbService.setCurrentUser(newUserId);
     _currentUser = newUser;
 
-    debugPrint('游客升级成功: ${newUser.nickname}');
+    debugPrint('游客升级成功: ${newUser.username}');
     return newUser;
   }
 
@@ -330,14 +283,13 @@ class UserAuthService {
   Future<User> socialLogin({
     required String platform,
     required String token,
-    String? nickname,
+    String? username,
     String? avatar,
   }) async {
     // 模拟网络延迟
     await Future.delayed(const Duration(milliseconds: 1000));
 
     // 模拟第三方登录验证
-    final socialUserId = '${platform}_${token.substring(0, 8)}';
 
     // 查找是否已有绑定账号
     final allUsers = await _dbService.getAllUsers();
@@ -361,7 +313,7 @@ class UserAuthService {
       final user = User(
         userId: userId,
         phone: '', // 第三方登录可能没有手机号
-        nickname: nickname ?? '用户${userId.substring(0, 6)}',
+        username: username ?? '用户${userId.substring(0, 6)}',
         avatar: avatar,
         registerTime: now,
         lastLoginTime: now,
@@ -371,7 +323,7 @@ class UserAuthService {
       await _dbService.setCurrentUser(userId);
       _currentUser = user;
 
-      debugPrint('第三方登录成功: ${user.nickname}');
+      debugPrint('第三方登录成功: ${user.username}');
       return user;
     }
   }
@@ -382,30 +334,29 @@ class UserAuthService {
     required String newPassword,
     required String verificationCode,
   }) async {
-    // 模拟网络延迟
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    // 查找用户
-    final user = await _dbService.getUserByPhone(phone);
-    if (user == null) {
-      throw AuthException('用户不存在');
-    }
-
-    // 验证验证码（这里简化处理）
-    if (verificationCode != '123456') {
-      throw AuthException('验证码错误');
-    }
-
-    // 验证新密码强度
+    _initializeApiClient();
     if (newPassword.length < 6) {
       throw AuthException('密码长度不能少于6位');
     }
-
-    // 更新密码
-    await _dbService.savePassword(user.userId, newPassword);
-
-    debugPrint('密码重置成功');
-    return true;
+    try {
+      final req = server.SetPasswordByCodeRequest(
+        (b) => b
+          ..phone = phone
+          ..code = verificationCode
+          ..newPassword = newPassword,
+      );
+      final resp = await _authApi!
+          .setPasswordByCodeApiAuthSetPasswordByCodePost(
+            setPasswordByCodeRequest: req,
+          );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) {
+        throw AuthException(resp.data?.msg ?? '重置密码失败($code)');
+      }
+      return true;
+    } on DioException catch (e) {
+      throw AuthException(e.message ?? '网络错误');
+    }
   }
 
   /// 用户验证
@@ -458,7 +409,7 @@ class UserAuthService {
 
   /// 更新用户信息
   Future<User> updateUserProfile({
-    String? nickname,
+    String? username,
     String? avatar,
     String? email,
     PrivacySettings? privacySettings,
@@ -472,7 +423,7 @@ class UserAuthService {
     await Future.delayed(const Duration(milliseconds: 400));
 
     final updatedUser = _currentUser!.copyWith(
-      nickname: nickname,
+      username: username,
       avatar: avatar,
       email: email,
       privacySettings: privacySettings,
@@ -523,33 +474,41 @@ class UserAuthService {
     required String phone,
     required VerificationCodeType type,
   }) async {
-    // 模拟网络延迟
-    await Future.delayed(const Duration(milliseconds: 1000));
-
-    // 验证手机号格式
+    _initializeApiClient();
     if (!_isValidPhone(phone)) {
       throw AuthException('手机号格式不正确');
     }
-
-    // 根据类型进行验证
-    switch (type) {
-      case VerificationCodeType.register:
-        if (await _dbService.isPhoneRegistered(phone)) {
-          throw AuthException('手机号已被注册');
-        }
-        break;
-      case VerificationCodeType.resetPassword:
-        if (!await _dbService.isPhoneRegistered(phone)) {
-          throw AuthException('用户不存在');
-        }
-        break;
-      case VerificationCodeType.login:
-        // 登录验证码不需要特殊验证
-        break;
+    try {
+      final req = server.SendCodeRequest((b) => b..phone = phone);
+      final resp = await _authApi!.sendLoginCodeApiAuthSendCodePost(
+        sendCodeRequest: req,
+      );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) {
+        throw AuthException(resp.data?.msg ?? '发送验证码失败($code)');
+      }
+      return true;
+    } on DioException catch (e) {
+      throw AuthException(e.message ?? '网络错误');
     }
+  }
 
-    debugPrint('验证码发送成功: $phone');
-    return true;
+  Future<User> _ensureLocalUser({required String phone}) async {
+    final existing = await _dbService.getUserByPhone(phone);
+    if (existing != null) return existing;
+    final userId = _generateUserId();
+    final now = DateTime.now();
+    final user = User(
+      userId: userId,
+      phone: phone,
+      username: '用户${userId.substring(0, 6)}',
+      registerTime: now,
+      lastLoginTime: now,
+      status: UserStatus.active,
+      role: UserRole.user,
+    );
+    await _dbService.saveUser(user);
+    return user;
   }
 
   /// 生成用户ID

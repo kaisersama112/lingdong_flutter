@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_components.dart';
 
 class PublishPage extends StatefulWidget {
   final VoidCallback? onClose;
@@ -18,7 +17,7 @@ class _PublishPageState extends State<PublishPage>
   String _selectedCategory = '社群动态';
   final List<String> _selectedImages = [];
   bool _isPublic = true;
-  
+
   // AI特效相关状态
   String _selectedFilter = '原图';
   String _selectedEffect = '无特效';
@@ -92,22 +91,18 @@ class _PublishPageState extends State<PublishPage>
           children: [
             // 简洁的页面头部
             _buildSimpleHeader(),
-            
+
             // 简洁的标签栏
             _buildSimpleTabBar(),
-            
+
             // 标签页内容
             Expanded(
               child: TabBarView(
                 controller: _tabController,
-                children: [
-                  _buildTextTab(),
-                  _buildImageTab(),
-                  _buildVideoTab(),
-                ],
+                children: [_buildTextTab(), _buildImageTab(), _buildVideoTab()],
               ),
             ),
-            
+
             // 底部操作栏 - 发布按钮放在这里更符合用户习惯
             _buildBottomBar(),
           ],
@@ -189,16 +184,12 @@ class _PublishPageState extends State<PublishPage>
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
-              icon: const Icon(
-                Icons.psychology,
-                color: Colors.white,
-                size: 20,
-              ),
+              icon: const Icon(Icons.psychology, color: Colors.white, size: 20),
               onPressed: () {
                 // AI助手功能
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('AI助手功能开发中...')),
-                );
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('AI助手功能开发中...')));
               },
               tooltip: 'AI助手',
             ),
@@ -226,8 +217,6 @@ class _PublishPageState extends State<PublishPage>
       ),
     );
   }
-
-
 
   Widget _buildTextTab() {
     return SingleChildScrollView(
@@ -307,24 +296,33 @@ class _PublishPageState extends State<PublishPage>
               onTap: () => setState(() => _selectedCategory = category),
               child: AnimatedContainer(
                 duration: AppTheme.shortAnimation,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   gradient: isSelected ? AppTheme.primaryGradient : null,
                   color: isSelected ? null : Colors.white,
                   borderRadius: BorderRadius.circular(20),
-                  border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
-                  boxShadow: isSelected ? [
-                    BoxShadow(
-                      color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ] : null,
+                  border: isSelected
+                      ? null
+                      : Border.all(color: AppTheme.dividerColor),
+                  boxShadow: isSelected
+                      ? [
+                          BoxShadow(
+                            color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ]
+                      : null,
                 ),
                 child: Text(
                   category,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : AppTheme.textSecondaryColor,
+                    color: isSelected
+                        ? Colors.white
+                        : AppTheme.textSecondaryColor,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                   ),
                 ),
@@ -380,7 +378,11 @@ class _PublishPageState extends State<PublishPage>
                   gradient: AppTheme.secondaryGradient,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.psychology, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.psychology,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               const Text(
@@ -432,7 +434,10 @@ class _PublishPageState extends State<PublishPage>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.dividerColor, style: BorderStyle.solid),
+        border: Border.all(
+          color: AppTheme.dividerColor,
+          style: BorderStyle.solid,
+        ),
       ),
       child: _selectedImages.isEmpty
           ? _buildUploadPlaceholder()
@@ -465,10 +470,7 @@ class _PublishPageState extends State<PublishPage>
           const SizedBox(height: 4),
           Text(
             '支持AI智能美化',
-            style: TextStyle(
-              fontSize: 12,
-              color: AppTheme.textSecondaryColor,
-            ),
+            style: TextStyle(fontSize: 12, color: AppTheme.textSecondaryColor),
           ),
         ],
       ),
@@ -498,7 +500,10 @@ class _PublishPageState extends State<PublishPage>
       decoration: BoxDecoration(
         color: AppTheme.primaryLightColor,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: AppTheme.primaryColor, style: BorderStyle.solid),
+        border: Border.all(
+          color: AppTheme.primaryColor,
+          style: BorderStyle.solid,
+        ),
       ),
       child: const Icon(Icons.add, color: AppTheme.primaryColor, size: 24),
     );
@@ -509,7 +514,12 @@ class _PublishPageState extends State<PublishPage>
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
-          child: Image.asset(imagePath, fit: BoxFit.cover, width: double.infinity, height: double.infinity),
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+          ),
         ),
         Positioned(
           top: 4,
@@ -557,16 +567,21 @@ class _PublishPageState extends State<PublishPage>
                   mainAxisSize: MainAxisSize.min, // 添加这行
                   children: [
                     GestureDetector(
-                      onTap: () => setState(() => _selectedFilter = filter['name']),
+                      onTap: () =>
+                          setState(() => _selectedFilter = filter['name']),
                       child: AnimatedContainer(
                         duration: AppTheme.shortAnimation,
                         width: 60,
                         height: 60,
                         decoration: BoxDecoration(
-                          gradient: isSelected ? AppTheme.primaryGradient : null,
+                          gradient: isSelected
+                              ? AppTheme.primaryGradient
+                              : null,
                           color: isSelected ? null : Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                          border: isSelected
+                              ? null
+                              : Border.all(color: AppTheme.dividerColor),
                         ),
                         child: Center(
                           child: Text(
@@ -581,8 +596,12 @@ class _PublishPageState extends State<PublishPage>
                       filter['name'],
                       style: TextStyle(
                         fontSize: 11, // 稍微减小字体从12到11
-                        color: isSelected ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                        color: isSelected
+                            ? AppTheme.primaryColor
+                            : AppTheme.textSecondaryColor,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
                       ),
                     ),
                   ],
@@ -630,14 +649,13 @@ class _PublishPageState extends State<PublishPage>
                   gradient: isSelected ? AppTheme.primaryGradient : null,
                   color: isSelected ? null : Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                  border: isSelected
+                      ? null
+                      : Border.all(color: AppTheme.dividerColor),
                 ),
                 child: Row(
                   children: [
-                    Text(
-                      effect['icon'],
-                      style: const TextStyle(fontSize: 20),
-                    ),
+                    Text(effect['icon'], style: const TextStyle(fontSize: 20)),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Column(
@@ -649,14 +667,18 @@ class _PublishPageState extends State<PublishPage>
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
-                              color: isSelected ? Colors.white : AppTheme.textPrimaryColor,
+                              color: isSelected
+                                  ? Colors.white
+                                  : AppTheme.textPrimaryColor,
                             ),
                           ),
                           Text(
                             effect['description'],
                             style: TextStyle(
                               fontSize: 12,
-                              color: isSelected ? Colors.white70 : AppTheme.textSecondaryColor,
+                              color: isSelected
+                                  ? Colors.white70
+                                  : AppTheme.textSecondaryColor,
                             ),
                           ),
                         ],
@@ -699,7 +721,8 @@ class _PublishPageState extends State<PublishPage>
                   mainAxisSize: MainAxisSize.min, // 添加这行
                   children: [
                     GestureDetector(
-                      onTap: () => setState(() => _selectedSticker = sticker['name']),
+                      onTap: () =>
+                          setState(() => _selectedSticker = sticker['name']),
                       child: AnimatedContainer(
                         duration: AppTheme.shortAnimation,
                         width: 60,
@@ -708,7 +731,9 @@ class _PublishPageState extends State<PublishPage>
                           gradient: isSelected ? AppTheme.warmGradient : null,
                           color: isSelected ? null : Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: isSelected ? null : Border.all(color: AppTheme.dividerColor),
+                          border: isSelected
+                              ? null
+                              : Border.all(color: AppTheme.dividerColor),
                         ),
                         child: Center(
                           child: Text(
@@ -723,8 +748,12 @@ class _PublishPageState extends State<PublishPage>
                       sticker['name'],
                       style: TextStyle(
                         fontSize: 11, // 稍微减小字体从12到11
-                        color: isSelected ? AppTheme.warningColor : AppTheme.textSecondaryColor,
-                        fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                        color: isSelected
+                            ? AppTheme.warningColor
+                            : AppTheme.textSecondaryColor,
+                        fontWeight: isSelected
+                            ? FontWeight.w600
+                            : FontWeight.w500,
                       ),
                     ),
                   ],
@@ -752,7 +781,11 @@ class _PublishPageState extends State<PublishPage>
                   gradient: AppTheme.secondaryGradient,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               const Text(
@@ -784,11 +817,14 @@ class _PublishPageState extends State<PublishPage>
           else
             ElevatedButton.icon(
               onPressed: _performAIAnalysis,
-              icon: _isAIAnalyzing 
+              icon: _isAIAnalyzing
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : const Icon(Icons.psychology, size: 16),
               label: Text(_isAIAnalyzing ? '分析中...' : '开始AI分析'),
@@ -808,7 +844,10 @@ class _PublishPageState extends State<PublishPage>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppTheme.dividerColor, style: BorderStyle.solid),
+        border: Border.all(
+          color: AppTheme.dividerColor,
+          style: BorderStyle.solid,
+        ),
       ),
       child: Center(
         child: Column(
@@ -915,10 +954,7 @@ class _PublishPageState extends State<PublishPage>
           const Expanded(
             child: Text(
               '公开可见',
-              style: TextStyle(
-                fontSize: 16,
-                color: AppTheme.textPrimaryColor,
-              ),
+              style: TextStyle(fontSize: 16, color: AppTheme.textPrimaryColor),
             ),
           ),
           Switch(
@@ -972,7 +1008,7 @@ class _PublishPageState extends State<PublishPage>
       '温馨': '今天和我的小宝贝一起度过了美好的时光，看着它开心的样子，我的心里也充满了温暖。感谢有你的陪伴，让我的生活更加精彩！',
       '幽默': '我家的小家伙今天又做了一件让人哭笑不得的事情，真是个活宝！有时候我在想，到底是我在养宠物，还是宠物在逗我玩呢？😂',
     };
-    
+
     setState(() {
       _contentController.text = contents[style] ?? '';
     });
@@ -987,7 +1023,8 @@ class _PublishPageState extends State<PublishPage>
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _isAIAnalyzing = false;
-        _aiAnalysisResult = 'AI分析结果：\n• 宠物情绪：开心 😊\n• 健康状况：良好\n• 建议：继续保持当前的护理方式';
+        _aiAnalysisResult =
+            'AI分析结果：\n• 宠物情绪：开心 😊\n• 健康状况：良好\n• 建议：继续保持当前的护理方式';
       });
     });
   }
@@ -1006,7 +1043,7 @@ class _PublishPageState extends State<PublishPage>
         backgroundColor: AppTheme.successColor,
       ),
     );
-    
+
     if (widget.onClose != null) {
       widget.onClose!();
     } else if (Navigator.of(context).canPop()) {

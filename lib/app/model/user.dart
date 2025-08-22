@@ -1,10 +1,9 @@
-
 /// 用户基础信息模型
 class User {
   final String userId;
   final String phone;
   final String? email;
-  final String nickname;
+  final String username;
   final String? avatar;
   final DateTime registerTime;
   final DateTime lastLoginTime;
@@ -18,7 +17,7 @@ class User {
     required this.userId,
     required this.phone,
     this.email,
-    required this.nickname,
+    required this.username,
     this.avatar,
     required this.registerTime,
     required this.lastLoginTime,
@@ -34,7 +33,7 @@ class User {
       userId: json['userId'] as String,
       phone: json['phone'] as String,
       email: json['email'] as String?,
-      nickname: json['nickname'] as String,
+      username: json['username'] as String,
       avatar: json['avatar'] as String?,
       registerTime: DateTime.parse(json['registerTime'] as String),
       lastLoginTime: DateTime.parse(json['lastLoginTime'] as String),
@@ -57,7 +56,7 @@ class User {
       'userId': userId,
       'phone': phone,
       'email': email,
-      'nickname': nickname,
+      'username': username,
       'avatar': avatar,
       'registerTime': registerTime.toIso8601String(),
       'lastLoginTime': lastLoginTime.toIso8601String(),
@@ -73,7 +72,7 @@ class User {
     String? userId,
     String? phone,
     String? email,
-    String? nickname,
+    String? username,
     String? avatar,
     DateTime? registerTime,
     DateTime? lastLoginTime,
@@ -87,7 +86,7 @@ class User {
       userId: userId ?? this.userId,
       phone: phone ?? this.phone,
       email: email ?? this.email,
-      nickname: nickname ?? this.nickname,
+      username: username ?? this.username,
       avatar: avatar ?? this.avatar,
       registerTime: registerTime ?? this.registerTime,
       lastLoginTime: lastLoginTime ?? this.lastLoginTime,
@@ -102,29 +101,29 @@ class User {
 
 /// 用户状态枚举
 enum UserStatus {
-  active,    // 正常
-  inactive,  // 未激活
-  banned,    // 封禁
-  deleted,   // 已删除
+  active, // 正常
+  inactive, // 未激活
+  banned, // 封禁
+  deleted, // 已删除
 }
 
 /// 用户角色枚举
 enum UserRole {
-  user,      // 普通用户
-  vip,       // VIP用户
+  user, // 普通用户
+  vip, // VIP用户
   moderator, // 版主
-  admin,     // 管理员
+  admin, // 管理员
 }
 
 /// 隐私设置模型
 class PrivacySettings {
-  final bool profileVisible;      // 个人资料可见性
-  final bool petInfoVisible;      // 宠物信息可见性
-  final bool locationVisible;     // 位置信息可见性
-  final bool allowFollow;         // 允许关注
-  final bool allowMessage;        // 允许私信
-  final bool allowComment;        // 允许评论
-  final bool showOnlineStatus;    // 显示在线状态
+  final bool profileVisible; // 个人资料可见性
+  final bool petInfoVisible; // 宠物信息可见性
+  final bool locationVisible; // 位置信息可见性
+  final bool allowFollow; // 允许关注
+  final bool allowMessage; // 允许私信
+  final bool allowComment; // 允许评论
+  final bool showOnlineStatus; // 显示在线状态
 
   const PrivacySettings({
     this.profileVisible = true,
@@ -183,13 +182,13 @@ class PrivacySettings {
 
 /// 用户偏好设置模型
 class UserPreferences {
-  final String language;          // 语言设置
-  final String theme;             // 主题设置
-  final bool pushNotification;    // 推送通知
-  final bool emailNotification;   // 邮件通知
-  final bool smsNotification;     // 短信通知
-  final List<String> interests;   // 兴趣标签
-  final String timezone;          // 时区设置
+  final String language; // 语言设置
+  final String theme; // 主题设置
+  final bool pushNotification; // 推送通知
+  final bool emailNotification; // 邮件通知
+  final bool smsNotification; // 短信通知
+  final List<String> interests; // 兴趣标签
+  final String timezone; // 时区设置
 
   const UserPreferences({
     this.language = 'zh_CN',
@@ -296,9 +295,11 @@ class Pet {
       photos: List<String>.from(json['photos'] ?? []),
       description: json['description'] as String?,
       healthRecord: HealthRecord.fromJson(json['healthRecord'] ?? {}),
-      events: (json['events'] as List<dynamic>?)
-          ?.map((e) => Event.fromJson(e as Map<String, dynamic>))
-          .toList() ?? [],
+      events:
+          (json['events'] as List<dynamic>?)
+              ?.map((e) => Event.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
       createTime: DateTime.parse(json['createTime'] as String),
       updateTime: DateTime.parse(json['updateTime'] as String),
     );
@@ -468,11 +469,11 @@ class Event {
 
 /// 事件类型枚举
 enum EventType {
-  vaccination,    // 疫苗接种
-  grooming,       // 美容
-  training,       // 训练
-  medical,        // 医疗
-  birthday,       // 生日
-  adoption,       // 领养
-  other,          // 其他
+  vaccination, // 疫苗接种
+  grooming, // 美容
+  training, // 训练
+  medical, // 医疗
+  birthday, // 生日
+  adoption, // 领养
+  other, // 其他
 }

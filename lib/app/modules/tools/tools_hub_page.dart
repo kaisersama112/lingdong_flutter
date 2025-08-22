@@ -44,14 +44,7 @@ class ToolsHubPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFFFF8F5), Color(0xFFFEFEFE)],
-            stops: [0.0, 0.6],
-          ),
-        ),
+        decoration: const BoxDecoration(gradient: AppTheme.softGradient),
         child: CustomScrollView(
           slivers: [
             _buildSliverAppBar(),
@@ -83,13 +76,7 @@ class ToolsHubPage extends StatelessWidget {
       elevation: 0,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFFFFF8F5), Color(0xFFFEFEFE)],
-            ),
-          ),
+          decoration: const BoxDecoration(gradient: AppTheme.softGradient),
         ),
       ),
       title: null,
@@ -178,7 +165,7 @@ class ToolsHubPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [tool.color, tool.color.withValues(alpha: 0.8)],
+                      colors: [tool.color, Colors.white.withValues(alpha: 0.0)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),

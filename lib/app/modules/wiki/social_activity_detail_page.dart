@@ -5,10 +5,7 @@ import 'breed_models.dart';
 class SocialActivityDetailPage extends StatelessWidget {
   final SocialActivity activity;
 
-  const SocialActivityDetailPage({
-    super.key,
-    required this.activity,
-  });
+  const SocialActivityDetailPage({super.key, required this.activity});
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +43,7 @@ class SocialActivityDetailPage extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.green.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.green.withValues(alpha: 0.2),
-        ),
+        border: Border.all(color: Colors.green.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,21 +56,14 @@ class SocialActivityDetailPage extends StatelessWidget {
                   color: Colors.green.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Icon(
-                  Icons.groups,
-                  color: Colors.green,
-                  size: 20,
-                ),
+                child: const Icon(Icons.groups, color: Colors.green, size: 20),
               ),
               const SizedBox(width: AppTheme.spacingM),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      activity.title,
-                      style: AppTheme.headingStyle,
-                    ),
+                    Text(activity.title, style: AppTheme.headingStyle),
                     const SizedBox(height: 4),
                     Text(
                       activity.description,
@@ -150,19 +138,13 @@ class SocialActivityDetailPage extends StatelessWidget {
             children: [
               Icon(Icons.description, color: Colors.green),
               const SizedBox(width: AppTheme.spacingS),
-              Text(
-                '活动描述',
-                style: AppTheme.subheadingStyle,
-              ),
+              Text('活动描述', style: AppTheme.subheadingStyle),
             ],
           ),
           const SizedBox(height: AppTheme.spacingM),
           Text(
             activity.description,
-            style: AppTheme.bodyStyle.copyWith(
-              height: 1.6,
-              fontSize: 16,
-            ),
+            style: AppTheme.bodyStyle.copyWith(height: 1.6, fontSize: 16),
           ),
         ],
       ),
@@ -184,33 +166,23 @@ class SocialActivityDetailPage extends StatelessWidget {
             children: [
               Icon(Icons.thumb_up, color: Colors.green),
               const SizedBox(width: AppTheme.spacingS),
-              Text(
-                '活动益处',
-                style: AppTheme.subheadingStyle,
-              ),
+              Text('活动益处', style: AppTheme.subheadingStyle),
             ],
           ),
           const SizedBox(height: AppTheme.spacingM),
-          ...activity.benefits.map((benefit) => Padding(
-            padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 20,
-                ),
-                const SizedBox(width: AppTheme.spacingS),
-                Expanded(
-                  child: Text(
-                    benefit,
-                    style: AppTheme.bodyStyle,
-                  ),
-                ),
-              ],
+          ...activity.benefits.map(
+            (benefit) => Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.check_circle, color: Colors.green, size: 20),
+                  const SizedBox(width: AppTheme.spacingS),
+                  Expanded(child: Text(benefit, style: AppTheme.bodyStyle)),
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );
@@ -231,33 +203,23 @@ class SocialActivityDetailPage extends StatelessWidget {
             children: [
               Icon(Icons.checklist, color: Colors.orange),
               const SizedBox(width: AppTheme.spacingS),
-              Text(
-                '参与要求',
-                style: AppTheme.subheadingStyle,
-              ),
+              Text('参与要求', style: AppTheme.subheadingStyle),
             ],
           ),
           const SizedBox(height: AppTheme.spacingM),
-          ...activity.requirements.map((requirement) => Padding(
-            padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(
-                  Icons.info,
-                  color: Colors.orange,
-                  size: 20,
-                ),
-                const SizedBox(width: AppTheme.spacingS),
-                Expanded(
-                  child: Text(
-                    requirement,
-                    style: AppTheme.bodyStyle,
-                  ),
-                ),
-              ],
+          ...activity.requirements.map(
+            (requirement) => Padding(
+              padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info, color: Colors.orange, size: 20),
+                  const SizedBox(width: AppTheme.spacingS),
+                  Expanded(child: Text(requirement, style: AppTheme.bodyStyle)),
+                ],
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );
@@ -278,15 +240,16 @@ class SocialActivityDetailPage extends StatelessWidget {
             children: [
               Icon(Icons.info_outline, color: AppTheme.primaryColor),
               const SizedBox(width: AppTheme.spacingS),
-              Text(
-                '活动信息',
-                style: AppTheme.subheadingStyle,
-              ),
+              Text('活动信息', style: AppTheme.subheadingStyle),
             ],
           ),
           const SizedBox(height: AppTheme.spacingM),
           _buildInfoItem('活动时长', '${activity.duration} 分钟', Icons.access_time),
-          _buildInfoItem('适合年龄', TrainingUtils.ageStageLabel(activity.targetAge), Icons.pets),
+          _buildInfoItem(
+            '适合年龄',
+            TrainingUtils.ageStageLabel(activity.targetAge),
+            Icons.pets,
+          ),
           _buildInfoItem('难度等级', '${activity.difficulty}/5', Icons.trending_up),
           _buildInfoItem('活动类型', '社交互动', Icons.groups),
         ],
@@ -305,13 +268,12 @@ class SocialActivityDetailPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  label,
-                  style: AppTheme.captionStyle,
-                ),
+                Text(label, style: AppTheme.captionStyle),
                 Text(
                   value,
-                  style: AppTheme.bodyStyle.copyWith(fontWeight: FontWeight.w600),
+                  style: AppTheme.bodyStyle.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ],
             ),
@@ -326,9 +288,7 @@ class SocialActivityDetailPage extends StatelessWidget {
       padding: const EdgeInsets.all(AppTheme.spacingM),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(
-          top: BorderSide(color: AppTheme.dividerColor),
-        ),
+        border: Border(top: BorderSide(color: AppTheme.dividerColor)),
       ),
       child: Row(
         children: [
@@ -340,17 +300,16 @@ class SocialActivityDetailPage extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingM),
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppTheme.spacingM,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: const Text(
                 '参与活动',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
             ),
           ),
@@ -361,10 +320,7 @@ class SocialActivityDetailPage extends StatelessWidget {
               border: Border.all(color: AppTheme.dividerColor),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Icon(
-              Icons.share,
-              color: Colors.grey,
-            ),
+            child: const Icon(Icons.share, color: Colors.grey),
           ),
         ],
       ),

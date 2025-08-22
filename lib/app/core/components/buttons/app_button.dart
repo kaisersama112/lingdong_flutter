@@ -31,7 +31,7 @@ class AppButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final bgColor = backgroundColor ?? AppTheme.primaryColor;
     final txtColor = textColor ?? Colors.white;
-    
+
     if (isOutlined) {
       return SizedBox(
         width: width,
@@ -82,11 +82,7 @@ class AppButton extends StatelessWidget {
     if (icon != null) {
       return Row(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 18),
-          const SizedBox(width: 8),
-          Text(text),
-        ],
+        children: [Icon(icon, size: 18), const SizedBox(width: 8), Text(text)],
       );
     }
 

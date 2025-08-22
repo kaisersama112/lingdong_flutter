@@ -38,7 +38,7 @@ class PlaceDetailModal extends StatelessWidget {
               borderRadius: BorderRadius.circular(2),
             ),
           ),
-          
+
           // 内容
           Expanded(
             child: SingleChildScrollView(
@@ -54,10 +54,15 @@ class PlaceDetailModal extends StatelessWidget {
                         height: 80,
                         decoration: BoxDecoration(
                           color: AppTheme.secondaryLightColor,
-                          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+                          borderRadius: BorderRadius.circular(
+                            AppTheme.borderRadiusMedium,
+                          ),
                         ),
                         child: Center(
-                          child: Text(place.image, style: const TextStyle(fontSize: 40)),
+                          child: Text(
+                            place.image,
+                            style: const TextStyle(fontSize: 40),
+                          ),
                         ),
                       ),
                       const SizedBox(width: AppTheme.spacingL),
@@ -87,18 +92,26 @@ class PlaceDetailModal extends StatelessWidget {
                       ),
                     ],
                   ),
-                  
+
                   const SizedBox(height: AppTheme.spacingL),
-                  
+
                   // 详细信息
                   _buildInfoRow('地址', place.address, Icons.location_on),
                   _buildInfoRow('距离', place.distance, Icons.directions_walk),
-                  _buildInfoRow('评分', '${place.rating} (${place.reviewCount}条评价)', Icons.star),
-                  _buildInfoRow('营业状态', place.isOpen ? '营业中' : '已关闭', 
-                      place.isOpen ? Icons.check_circle : Icons.cancel, showDivider: false),
-                  
+                  _buildInfoRow(
+                    '评分',
+                    '${place.rating} (${place.reviewCount}条评价)',
+                    Icons.star,
+                  ),
+                  _buildInfoRow(
+                    '营业状态',
+                    place.isOpen ? '营业中' : '已关闭',
+                    place.isOpen ? Icons.check_circle : Icons.cancel,
+                    showDivider: false,
+                  ),
+
                   const SizedBox(height: AppTheme.spacingL),
-                  
+
                   // 特色服务
                   if (place.features.isNotEmpty) ...[
                     Text(
@@ -113,30 +126,34 @@ class PlaceDetailModal extends StatelessWidget {
                     Wrap(
                       spacing: AppTheme.spacingS,
                       runSpacing: AppTheme.spacingS,
-                      children: place.features.map((feature) => 
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: AppTheme.spacingS,
-                            vertical: 4,
-                          ),
-                          decoration: BoxDecoration(
-                            color: AppTheme.primaryLightColor,
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                          ),
-                          child: Text(
-                            feature,
-                            style: TextStyle(
-                              fontSize: AppTheme.fontSizeS,
-                              color: AppTheme.primaryColor,
-                              fontWeight: FontWeight.w500,
+                      children: place.features
+                          .map(
+                            (feature) => Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppTheme.spacingS,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppTheme.primaryLightColor,
+                                borderRadius: BorderRadius.circular(
+                                  AppTheme.borderRadiusSmall,
+                                ),
+                              ),
+                              child: Text(
+                                feature,
+                                style: TextStyle(
+                                  fontSize: AppTheme.fontSizeS,
+                                  color: AppTheme.primaryColor,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ).toList(),
+                          )
+                          .toList(),
                     ),
                     const SizedBox(height: AppTheme.spacingL),
                   ],
-                  
+
                   // 描述
                   Text(
                     '详细介绍',
@@ -155,9 +172,9 @@ class PlaceDetailModal extends StatelessWidget {
                       height: 1.5,
                     ),
                   ),
-                  
+
                   const SizedBox(height: AppTheme.spacingXL),
-                  
+
                   // 操作按钮
                   Row(
                     children: [
@@ -188,7 +205,12 @@ class PlaceDetailModal extends StatelessWidget {
     );
   }
 
-  Widget _buildInfoRow(String label, String value, IconData icon, {bool showDivider = true}) {
+  Widget _buildInfoRow(
+    String label,
+    String value,
+    IconData icon, {
+    bool showDivider = true,
+  }) {
     return Column(
       children: [
         Row(

@@ -1,0 +1,148 @@
+//
+// AUTO-GENERATED FILE, DO NOT MODIFY!
+//
+
+// ignore_for_file: unused_element
+import 'package:lingdong_server/src/model/pet_list_response.dart';
+import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
+
+part 'generic_response_pet_list_response.g.dart';
+
+/// GenericResponse[PetListResponse]
+///
+/// Properties:
+/// * [code] 
+/// * [msg] 
+/// * [data] 
+@BuiltValue()
+abstract class GenericResponsePetListResponse implements Built<GenericResponsePetListResponse, GenericResponsePetListResponseBuilder> {
+  @BuiltValueField(wireName: r'code')
+  int? get code;
+
+  @BuiltValueField(wireName: r'msg')
+  String? get msg;
+
+  @BuiltValueField(wireName: r'data')
+  PetListResponse? get data;
+
+  GenericResponsePetListResponse._();
+
+  factory GenericResponsePetListResponse([void updates(GenericResponsePetListResponseBuilder b)]) = _$GenericResponsePetListResponse;
+
+  @BuiltValueHook(initializeBuilder: true)
+  static void _defaults(GenericResponsePetListResponseBuilder b) => b;
+
+  @BuiltValueSerializer(custom: true)
+  static Serializer<GenericResponsePetListResponse> get serializer => _$GenericResponsePetListResponseSerializer();
+}
+
+class _$GenericResponsePetListResponseSerializer implements PrimitiveSerializer<GenericResponsePetListResponse> {
+  @override
+  final Iterable<Type> types = const [GenericResponsePetListResponse, _$GenericResponsePetListResponse];
+
+  @override
+  final String wireName = r'GenericResponsePetListResponse';
+
+  Iterable<Object?> _serializeProperties(
+    Serializers serializers,
+    GenericResponsePetListResponse object, {
+    FullType specifiedType = FullType.unspecified,
+  }) sync* {
+    if (object.code != null) {
+      yield r'code';
+      yield serializers.serialize(
+        object.code,
+        specifiedType: const FullType.nullable(int),
+      );
+    }
+    if (object.msg != null) {
+      yield r'msg';
+      yield serializers.serialize(
+        object.msg,
+        specifiedType: const FullType.nullable(String),
+      );
+    }
+    if (object.data != null) {
+      yield r'data';
+      yield serializers.serialize(
+        object.data,
+        specifiedType: const FullType.nullable(PetListResponse),
+      );
+    }
+  }
+
+  @override
+  Object serialize(
+    Serializers serializers,
+    GenericResponsePetListResponse object, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+  }
+
+  void _deserializeProperties(
+    Serializers serializers,
+    Object serialized, {
+    FullType specifiedType = FullType.unspecified,
+    required List<Object?> serializedList,
+    required GenericResponsePetListResponseBuilder result,
+    required List<Object?> unhandled,
+  }) {
+    for (var i = 0; i < serializedList.length; i += 2) {
+      final key = serializedList[i] as String;
+      final value = serializedList[i + 1];
+      switch (key) {
+        case r'code':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(int),
+          ) as int?;
+          if (valueDes == null) continue;
+          result.code = valueDes;
+          break;
+        case r'msg':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.msg = valueDes;
+          break;
+        case r'data':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(PetListResponse),
+          ) as PetListResponse?;
+          if (valueDes == null) continue;
+          result.data.replace(valueDes);
+          break;
+        default:
+          unhandled.add(key);
+          unhandled.add(value);
+          break;
+      }
+    }
+  }
+
+  @override
+  GenericResponsePetListResponse deserialize(
+    Serializers serializers,
+    Object serialized, {
+    FullType specifiedType = FullType.unspecified,
+  }) {
+    final result = GenericResponsePetListResponseBuilder();
+    final serializedList = (serialized as Iterable<Object?>).toList();
+    final unhandled = <Object?>[];
+    _deserializeProperties(
+      serializers,
+      serialized,
+      specifiedType: specifiedType,
+      serializedList: serializedList,
+      unhandled: unhandled,
+      result: result,
+    );
+    return result.build();
+  }
+}
+

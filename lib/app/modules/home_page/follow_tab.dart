@@ -29,7 +29,16 @@ class _FollowTabState extends State<FollowTab> {
         return FutureBuilder<PostStats>(
           future: _feedService.getPostStats(postId),
           builder: (context, snapshot) {
-            final stats = snapshot.data ?? const PostStats(likes: 0, favorites: 0, comments: 0, shares: 0, likedByCurrentUser: false, favoritedByCurrentUser: false);
+            final stats =
+                snapshot.data ??
+                const PostStats(
+                  likes: 0,
+                  favorites: 0,
+                  comments: 0,
+                  shares: 0,
+                  likedByCurrentUser: false,
+                  favoritedByCurrentUser: false,
+                );
             return GestureDetector(
               onTap: () {
                 Navigator.of(context).push(
@@ -40,25 +49,27 @@ class _FollowTabState extends State<FollowTab> {
                       content: '这是你关注的人发布的内容，保持关注获取最新动态...',
                       author: '关注用户',
                       images: isVideo ? const [] : images,
-                      videoThumb: isVideo ? 'https://picsum.photos/seed/follow_video_$index/800/450' : null,
+                      videoThumb: isVideo
+                          ? 'https://picsum.photos/seed/follow_video_$index/800/450'
+                          : null,
                     ),
                   ),
                 );
               },
               child: _buildContentCard(
-              context: context,
-              postId: postId,
-              title: '关注内容  ${index + 1}',
-              content: '这是你关注的人发布的内容，保持关注获取最新动态...',
-              author: '关注用户',
-              likes: stats.likes,
-              comments: stats.comments,
-              isLiked: stats.likedByCurrentUser,
-              isFavorited: stats.favoritedByCurrentUser,
-              images: isVideo ? const [] : images,
-              videoThumb: isVideo
-                  ? 'https://picsum.photos/seed/follow_video_$index/800/450'
-                  : null,
+                context: context,
+                postId: postId,
+                title: '关注内容  ${index + 1}',
+                content: '这是你关注的人发布的内容，保持关注获取最新动态...',
+                author: '关注用户',
+                likes: stats.likes,
+                comments: stats.comments,
+                isLiked: stats.likedByCurrentUser,
+                isFavorited: stats.favoritedByCurrentUser,
+                images: isVideo ? const [] : images,
+                videoThumb: isVideo
+                    ? 'https://picsum.photos/seed/follow_video_$index/800/450'
+                    : null,
               ),
             );
           },
@@ -135,7 +146,7 @@ class _FollowTabState extends State<FollowTab> {
             const SizedBox(height: AppTheme.spacingM),
             Text(
               title,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: AppTheme.spacingS),
             Text(
@@ -162,7 +173,7 @@ class _FollowTabState extends State<FollowTab> {
                 _FollowTagChip(label: '推荐'),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
             Row(
               children: [
                 _buildPillAction(
@@ -178,7 +189,7 @@ class _FollowTabState extends State<FollowTab> {
                     }
                   },
                 ),
-                const SizedBox(width: 24),
+                const SizedBox(width: 12),
                 _buildPillAction(
                   icon: isFavorited ? Icons.bookmark : Icons.bookmark_border,
                   label: isFavorited ? '已收藏' : '收藏',
@@ -192,7 +203,7 @@ class _FollowTabState extends State<FollowTab> {
                     }
                   },
                 ),
-                const SizedBox(width: 24),
+                const SizedBox(width: 12),
                 _buildPillAction(
                   icon: Icons.comment_outlined,
                   label: '$comments',
@@ -201,7 +212,7 @@ class _FollowTabState extends State<FollowTab> {
                     _openCommentInput(context, postId);
                   },
                 ),
-                const SizedBox(width: 24),
+                const SizedBox(width: 12),
                 _buildPillAction(
                   icon: Icons.share_outlined,
                   label: '转发',
@@ -209,31 +220,15 @@ class _FollowTabState extends State<FollowTab> {
                   onTap: () async {
                     await _feedService.incrementShare(postId);
                     if (!mounted) return;
-                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('已转发')));
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('已转发')));
                   },
                 ),
               ],
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Row(
-        children: [
-          Icon(icon, size: 20, color: color),
-          const SizedBox(width: 6),
-          Text(label, style: TextStyle(color: color, fontSize: 14)),
-        ],
       ),
     );
   }
@@ -250,29 +245,27 @@ class _FollowTabState extends State<FollowTab> {
       borderRadius: BorderRadius.circular(24),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        height: 32,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
           gradient: active ? AppTheme.primaryGradient : null,
           color: active ? null : Colors.white,
           borderRadius: BorderRadius.circular(24),
           border: active ? null : Border.all(color: AppTheme.dividerColor),
-          boxShadow: active
-              ? [
-                  BoxShadow(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.25),
-                    blurRadius: 8,
-                    offset: const Offset(0, 3),
-                  ),
-                ]
-              : const [
-                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
-                ],
+          boxShadow: null,
         ),
         child: Row(
           children: [
             Icon(icon, size: 18, color: textColor),
             const SizedBox(width: 6),
-            Text(label, style: TextStyle(color: textColor, fontSize: 13, fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
@@ -324,10 +317,13 @@ class _FollowTabState extends State<FollowTab> {
                         if (mounted) setState(() {});
                         if (context.mounted) Navigator.of(context).pop();
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('评论成功')));
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(const SnackBar(content: Text('评论成功')));
                         }
                       } catch (e) {
-                        if (context.mounted) _showLoginTip(context, e.toString());
+                        if (context.mounted)
+                          _showLoginTip(context, e.toString());
                       }
                     },
                     child: const Text('发送'),
@@ -343,9 +339,13 @@ class _FollowTabState extends State<FollowTab> {
 
   void _showLoginTip(BuildContext context, String message) {
     if (UserAuthService().currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 

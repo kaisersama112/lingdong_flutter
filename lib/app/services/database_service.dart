@@ -40,7 +40,7 @@ class DatabaseService {
         id TEXT PRIMARY KEY,
         phone TEXT UNIQUE,
         email TEXT,
-        nickname TEXT NOT NULL,
+        username TEXT NOT NULL,
         avatar TEXT,
         register_time DATETIME NOT NULL,
         last_login_time DATETIME NOT NULL,
@@ -193,40 +193,28 @@ class DatabaseService {
   /// 保存用户
   Future<void> saveUser(User user) async {
     final db = await database;
-    await db.insert(
-      'users',
-      {
-        'id': user.userId,
-        'phone': user.phone,
-        'email': user.email,
-        'nickname': user.nickname,
-        'avatar': user.avatar,
-        'register_time': user.registerTime.toIso8601String(),
-        'last_login_time': user.lastLoginTime.toIso8601String(),
-        'status': user.status.name,
-        'role': user.role.name,
-        'privacy_settings': user.privacySettings != null 
-            ? json.encode(user.privacySettings!.toJson()) 
-            : null,
-        'preferences': user.preferences != null 
-            ? json.encode(user.preferences!.toJson()) 
-            : null,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('users', {
+      'id': user.userId,
+      'phone': user.phone,
+      'email': user.email,
+      'username': user.username,
+      'avatar': user.avatar,
+      'register_time': user.registerTime.toIso8601String(),
+      'last_login_time': user.lastLoginTime.toIso8601String(),
+      'status': user.status.name,
+      'role': user.role.name,
+      'privacy_settings': json.encode(user.privacySettings.toJson()),
+      'preferences': json.encode(user.preferences.toJson()),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   /// 保存用户密码
   Future<void> savePassword(String userId, String password) async {
     final db = await database;
-    await db.insert(
-      'passwords',
-      {
-        'user_id': userId,
-        'password': password,
-      },
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+    await db.insert('passwords', {
+      'user_id': userId,
+      'password': password,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   /// 获取用户
@@ -311,10 +299,10 @@ class DatabaseService {
   /// 设置当前登录用户
   Future<void> setCurrentUser(String userId) async {
     final db = await database;
-    
+
     // 清除旧的当前用户记录
     await db.delete('current_user');
-    
+
     // 插入新的当前用户记录
     await db.insert('current_user', {
       'user_id': userId,
@@ -333,9 +321,7 @@ class DatabaseService {
     final db = await database;
     await db.update(
       'users',
-      {
-        'last_login_time': DateTime.now().toIso8601String(),
-      },
+      {'last_login_time': DateTime.now().toIso8601String()},
       where: 'id = ?',
       whereArgs: [userId],
     );
@@ -344,11 +330,7 @@ class DatabaseService {
   /// 删除用户
   Future<void> deleteUser(String userId) async {
     final db = await database;
-    await db.delete(
-      'users',
-      where: 'id = ?',
-      whereArgs: [userId],
-    );
+    await db.delete('users', where: 'id = ?', whereArgs: [userId]);
   }
 
   /// 获取所有用户
@@ -370,11 +352,17 @@ class DatabaseService {
 
   /// 将数据库记录映射为用户对象
   User _mapToUser(Map<String, dynamic> map) {
+    final String id = map['id'] as String;
+    final String? usernameFromDb = map['username'] as String?;
+    final String resolvedUsername =
+        usernameFromDb ??
+        '用户${id.substring(0, (id.length >= 6 ? 6 : id.length))}';
+
     return User(
       userId: map['id'] as String,
       phone: map['phone'] as String? ?? '',
       email: map['email'] as String?,
-      nickname: map['nickname'] as String,
+      username: resolvedUsername,
       avatar: map['avatar'] as String?,
       registerTime: DateTime.parse(map['register_time'] as String),
       lastLoginTime: DateTime.parse(map['last_login_time'] as String),
@@ -387,7 +375,9 @@ class DatabaseService {
         orElse: () => UserRole.user,
       ),
       privacySettings: map['privacy_settings'] != null
-          ? PrivacySettings.fromJson(json.decode(map['privacy_settings'] as String))
+          ? PrivacySettings.fromJson(
+              json.decode(map['privacy_settings'] as String),
+            )
           : const PrivacySettings(),
       preferences: map['preferences'] != null
           ? UserPreferences.fromJson(json.decode(map['preferences'] as String))

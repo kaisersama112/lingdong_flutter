@@ -1,0 +1,17 @@
+import 'package:test/test.dart';
+import 'package:lingdong_server/lingdong_server.dart';
+
+// tests for WeightRecordCreate
+void main() {
+  final instance = WeightRecordCreateBuilder();
+  // TODO add properties to the builder and call build()
+
+  group(WeightRecordCreate, () {
+    // Weight Value，体重值
+    // num weightValue
+    test('to test the property `weightValue`', () async {
+      // TODO
+    });
+
+  });
+}

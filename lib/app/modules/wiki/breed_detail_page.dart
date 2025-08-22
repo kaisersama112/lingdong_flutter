@@ -63,9 +63,12 @@ class BreedDetailPage extends StatelessWidget {
                         '体型: ${breed.size}',
                         BreedTagStyle.colorForSize(breed.size),
                       ),
-                      _chip('类别: ${breed.group}', const Color(0xFF90CAF9)),
-                      _chip('原产: ${breed.origin}', const Color(0xFFA5D6A7)),
-                      _chip('寿命: ${breed.lifespan}', const Color(0xFFFFCC80)),
+                      _chip('类别: ${breed.group}', AppTheme.primaryLightColor),
+                      _chip('原产: ${breed.origin}', AppTheme.accentLightColor),
+                      _chip(
+                        '寿命: ${breed.lifespan}',
+                        AppTheme.secondaryLightColor,
+                      ),
                     ],
                   ),
                   const SizedBox(height: 8),
@@ -111,7 +114,7 @@ class BreedDetailPage extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: breed.temperament
-              .map((t) => _chip(t, const Color(0xFFFFF59D)))
+              .map((t) => _chip(t, AppTheme.warningLightColor))
               .toList(),
         ),
       ),

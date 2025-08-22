@@ -6,7 +6,6 @@ export 'forms/category_selector.dart';
 export 'layout/page_header.dart';
 export 'layout/loading_widget.dart';
 export 'layout/empty_state.dart';
-export 'layout/pet_navigation_bar.dart';
 export 'lists/place_list_item.dart';
 export 'modals/place_detail_modal.dart';
 export 'auth_components.dart';
@@ -17,8 +16,6 @@ export 'forms/search_field.dart' show SearchField;
 export 'forms/category_selector.dart' show CategorySelector;
 export 'layout/loading_widget.dart' show LoadingWidget;
 export 'layout/empty_state.dart' show EmptyState;
-export 'layout/pet_navigation_bar.dart'
-    show PetNavigationBar, PetNavigationItem;
 export 'lists/place_list_item.dart' show PlaceListItem, Place;
 export 'modals/place_detail_modal.dart' show PlaceDetailModal;
 export 'auth_components.dart' show AuthComponents;

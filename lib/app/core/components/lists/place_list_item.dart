@@ -6,11 +6,7 @@ class PlaceListItem extends StatelessWidget {
   final Place place;
   final VoidCallback? onTap;
 
-  const PlaceListItem({
-    super.key,
-    required this.place,
-    this.onTap,
-  });
+  const PlaceListItem({super.key, required this.place, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +24,19 @@ class PlaceListItem extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                   color: AppTheme.secondaryLightColor,
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+                  borderRadius: BorderRadius.circular(
+                    AppTheme.borderRadiusMedium,
+                  ),
                 ),
                 child: Center(
-                  child: Text(place.image, style: const TextStyle(fontSize: 24)),
+                  child: Text(
+                    place.image,
+                    style: const TextStyle(fontSize: 24),
+                  ),
                 ),
               ),
               const SizedBox(width: AppTheme.spacingM),
-              
+
               // 场所信息
               Expanded(
                 child: Column(
@@ -59,14 +60,20 @@ class PlaceListItem extends StatelessWidget {
                             vertical: 4,
                           ),
                           decoration: BoxDecoration(
-                            color: place.isOpen ? AppTheme.successLightColor : AppTheme.errorLightColor,
-                            borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
+                            color: place.isOpen
+                                ? AppTheme.successLightColor
+                                : AppTheme.errorLightColor,
+                            borderRadius: BorderRadius.circular(
+                              AppTheme.borderRadiusSmall,
+                            ),
                           ),
                           child: Text(
                             place.isOpen ? '营业中' : '已关闭',
                             style: TextStyle(
                               fontSize: AppTheme.fontSizeS,
-                              color: place.isOpen ? AppTheme.successColor : AppTheme.errorColor,
+                              color: place.isOpen
+                                  ? AppTheme.successColor
+                                  : AppTheme.errorColor,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -86,9 +93,9 @@ class PlaceListItem extends StatelessWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 评分和距离
           Row(
             children: [
@@ -119,7 +126,7 @@ class PlaceListItem extends StatelessWidget {
                 ],
               ),
               const SizedBox(width: AppTheme.spacingL),
-              
+
               // 距离
               Row(
                 children: [
@@ -140,38 +147,43 @@ class PlaceListItem extends StatelessWidget {
               ),
             ],
           ),
-          
+
           const SizedBox(height: AppTheme.spacingM),
-          
+
           // 特色标签
           if (place.features.isNotEmpty) ...[
             Wrap(
               spacing: AppTheme.spacingS,
               runSpacing: AppTheme.spacingS,
-              children: place.features.take(3).map((feature) => 
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacingS,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryLightColor,
-                    borderRadius: BorderRadius.circular(AppTheme.borderRadiusSmall),
-                  ),
-                  child: Text(
-                    feature,
-                    style: TextStyle(
-                      fontSize: AppTheme.fontSizeS,
-                      color: AppTheme.primaryColor,
-                      fontWeight: FontWeight.w500,
+              children: place.features
+                  .take(3)
+                  .map(
+                    (feature) => Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppTheme.spacingS,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryLightColor,
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadiusSmall,
+                        ),
+                      ),
+                      child: Text(
+                        feature,
+                        style: TextStyle(
+                          fontSize: AppTheme.fontSizeS,
+                          color: AppTheme.primaryColor,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ).toList(),
+                  )
+                  .toList(),
             ),
             const SizedBox(height: AppTheme.spacingS),
           ],
-          
+
           // 描述
           Text(
             place.description,

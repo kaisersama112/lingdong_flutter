@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
-import '../theme/app_components.dart';
 
 class MessagePage extends StatefulWidget {
   const MessagePage({super.key});
@@ -9,11 +8,12 @@ class MessagePage extends StatefulWidget {
   State<MessagePage> createState() => _MessagePageState();
 }
 
-class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin {
+class _MessagePageState extends State<MessagePage>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  
+
   // 模拟消息数据
   final List<MessageItem> _allMessages = [
     MessageItem(
@@ -72,9 +72,17 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
     if (_searchQuery.isEmpty) {
       return _allMessages;
     }
-    return _allMessages.where((message) =>
-        message.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        message.content.toLowerCase().contains(_searchQuery.toLowerCase())).toList();
+    return _allMessages
+        .where(
+          (message) =>
+              message.title.toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ) ||
+              message.content.toLowerCase().contains(
+                _searchQuery.toLowerCase(),
+              ),
+        )
+        .toList();
   }
 
   @override
@@ -99,10 +107,10 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
           children: [
             // 简洁的页面头部
             _buildSimpleHeader(),
-            
+
             // 简洁的标签栏
             _buildSimpleTabBar(),
-            
+
             // 标签页内容
             Expanded(
               child: TabBarView(
@@ -151,14 +159,11 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
               ),
             ),
           ),
-          
+
           // 搜索按钮
           IconButton(
             onPressed: () => _showSearchDialog(),
-            icon: const Icon(
-              Icons.search,
-              color: AppTheme.textSecondaryColor,
-            ),
+            icon: const Icon(Icons.search, color: AppTheme.textSecondaryColor),
             tooltip: '搜索消息',
           ),
         ],
@@ -193,17 +198,23 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
 
   // 构建系统消息标签页
   Widget _buildSystemTab() {
-    return _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.system).toList());
+    return _buildMessageListView(
+      _filteredMessages.where((m) => m.type == MessageType.system).toList(),
+    );
   }
 
   // 构建订单消息标签页
   Widget _buildOrderTab() {
-    return _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.order).toList());
+    return _buildMessageListView(
+      _filteredMessages.where((m) => m.type == MessageType.order).toList(),
+    );
   }
 
   // 构建客服消息标签页
   Widget _buildServiceTab() {
-    return _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.service).toList());
+    return _buildMessageListView(
+      _filteredMessages.where((m) => m.type == MessageType.service).toList(),
+    );
   }
 
   // 显示搜索对话框
@@ -249,11 +260,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
           Container(
             padding: const EdgeInsets.all(AppTheme.spacingS),
             decoration: AppTheme.glassmorphismDecoration,
-            child: const Icon(
-              Icons.message,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: const Icon(Icons.message, color: Colors.white, size: 24),
           ),
           const SizedBox(width: AppTheme.spacingM),
           Expanded(
@@ -270,7 +277,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
                 Text(
                   '及时了解最新动态和通知',
                   style: AppTheme.captionStyle.copyWith(
-                    color: Colors.white.withValues(alpha:0.8),
+                    color: Colors.white.withValues(alpha: 0.8),
                   ),
                 ),
               ],
@@ -305,10 +312,16 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
         decoration: InputDecoration(
           hintText: '搜索消息...',
           hintStyle: TextStyle(color: AppTheme.textSecondaryColor),
-          prefixIcon: const Icon(Icons.search, color: AppTheme.textSecondaryColor),
+          prefixIcon: const Icon(
+            Icons.search,
+            color: AppTheme.textSecondaryColor,
+          ),
           suffixIcon: _searchQuery.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear, color: AppTheme.textSecondaryColor),
+                  icon: const Icon(
+                    Icons.clear,
+                    color: AppTheme.textSecondaryColor,
+                  ),
                   onPressed: () {
                     _searchController.clear();
                     setState(() {
@@ -339,7 +352,9 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
         ),
         labelColor: AppTheme.primaryColor,
         unselectedLabelColor: AppTheme.textSecondaryColor,
-        labelStyle: AppTheme.subheadingStyle.copyWith(fontSize: AppTheme.fontSizeM),
+        labelStyle: AppTheme.subheadingStyle.copyWith(
+          fontSize: AppTheme.fontSizeM,
+        ),
         unselectedLabelStyle: AppTheme.bodyStyle,
         tabs: const [
           Tab(text: '全部'),
@@ -356,9 +371,15 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
       controller: _tabController,
       children: [
         _buildMessageListView(_filteredMessages),
-        _buildMessageListView(_filteredMessages.where((m) => !m.isRead).toList()),
-        _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.system).toList()),
-        _buildMessageListView(_filteredMessages.where((m) => m.type == MessageType.order).toList()),
+        _buildMessageListView(
+          _filteredMessages.where((m) => !m.isRead).toList(),
+        ),
+        _buildMessageListView(
+          _filteredMessages.where((m) => m.type == MessageType.system).toList(),
+        ),
+        _buildMessageListView(
+          _filteredMessages.where((m) => m.type == MessageType.order).toList(),
+        ),
       ],
     );
   }
@@ -390,23 +411,19 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                message.avatarColor.withValues(alpha:0.2),
-                message.avatarColor.withValues(alpha:0.1),
+                message.avatarColor.withValues(alpha: 0.2),
+                message.avatarColor.withValues(alpha: 0.1),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
             border: Border.all(
-              color: message.avatarColor.withValues(alpha:0.3),
+              color: message.avatarColor.withValues(alpha: 0.3),
               width: 1,
             ),
           ),
-          child: Icon(
-            message.avatar,
-            color: message.avatarColor,
-            size: 24,
-          ),
+          child: Icon(message.avatar, color: message.avatarColor, size: 24),
         ),
         title: Row(
           children: [
@@ -415,8 +432,12 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
                 message.title,
                 style: AppTheme.subheadingStyle.copyWith(
                   fontSize: AppTheme.fontSizeL,
-                  fontWeight: message.isRead ? FontWeight.normal : FontWeight.w600,
-                  color: message.isRead ? AppTheme.textSecondaryColor : AppTheme.textPrimaryColor,
+                  fontWeight: message.isRead
+                      ? FontWeight.normal
+                      : FontWeight.w600,
+                  color: message.isRead
+                      ? AppTheme.textSecondaryColor
+                      : AppTheme.textPrimaryColor,
                 ),
               ),
             ),
@@ -429,7 +450,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: AppTheme.errorColor.withValues(alpha:0.3),
+                      color: AppTheme.errorColor.withValues(alpha: 0.3),
                       blurRadius: 4,
                       spreadRadius: 1,
                     ),
@@ -451,10 +472,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: AppTheme.spacingS),
-            Text(
-              message.time,
-              style: AppTheme.captionStyle,
-            ),
+            Text(message.time, style: AppTheme.captionStyle),
           ],
         ),
         onTap: () {
@@ -472,11 +490,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.inbox_outlined,
-            size: 80,
-            color: AppTheme.textLightColor,
-          ),
+          Icon(Icons.inbox_outlined, size: 80, color: AppTheme.textLightColor),
           const SizedBox(height: AppTheme.spacingM),
           Text(
             '暂无消息',
@@ -500,7 +514,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
     setState(() {
       message.isRead = true;
     });
-    
+
     // 显示消息详情
     _showMessageDetail(message);
   }
@@ -520,30 +534,23 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    message.avatarColor.withValues(alpha:0.2),
-                    message.avatarColor.withValues(alpha:0.1),
+                    message.avatarColor.withValues(alpha: 0.2),
+                    message.avatarColor.withValues(alpha: 0.1),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
                 border: Border.all(
-                  color: message.avatarColor.withValues(alpha:0.3),
+                  color: message.avatarColor.withValues(alpha: 0.3),
                   width: 1,
                 ),
               ),
-              child: Icon(
-                message.avatar,
-                color: message.avatarColor,
-                size: 20,
-              ),
+              child: Icon(message.avatar, color: message.avatarColor, size: 20),
             ),
             const SizedBox(width: AppTheme.spacingM),
             Expanded(
-              child: Text(
-                message.title,
-                style: AppTheme.subheadingStyle,
-              ),
+              child: Text(message.title, style: AppTheme.subheadingStyle),
             ),
           ],
         ),
@@ -551,10 +558,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
-              message.content,
-              style: AppTheme.bodyStyle,
-            ),
+            Text(message.content, style: AppTheme.bodyStyle),
             const SizedBox(height: AppTheme.spacingM),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: AppTheme.spacingS),
@@ -570,10 +574,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
                     ),
                   ),
                   Expanded(
-                    child: Text(
-                      message.time,
-                      style: AppTheme.captionStyle,
-                    ),
+                    child: Text(message.time, style: AppTheme.captionStyle),
                   ),
                 ],
               ),
@@ -615,10 +616,7 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
             ),
             ListTile(
               leading: const Icon(Icons.delete, color: AppTheme.errorColor),
-              title: Text(
-                '删除消息',
-                style: TextStyle(color: AppTheme.errorColor),
-              ),
+              title: Text('删除消息', style: TextStyle(color: AppTheme.errorColor)),
               onTap: () {
                 setState(() {
                   _allMessages.remove(message);
@@ -680,26 +678,20 @@ class _MessagePageState extends State<MessagePage> with TickerProviderStateMixin
   }
 
   void _showSettings() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('消息设置功能开发中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('消息设置功能开发中...')));
   }
 
   void _showHelp() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('帮助与反馈功能开发中...')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('帮助与反馈功能开发中...')));
   }
 }
 
 // 消息类型枚举
-enum MessageType {
-  system,
-  order,
-  promotion,
-  service,
-  security,
-}
+enum MessageType { system, order, promotion, service, security }
 
 // 消息数据模型
 class MessageItem {
@@ -723,4 +715,3 @@ class MessageItem {
     required this.avatarColor,
   });
 }
-
