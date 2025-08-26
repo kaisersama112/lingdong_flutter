@@ -5,7 +5,8 @@ import 'components/user_header.dart';
 import 'components/stats_card.dart';
 import 'components/basic_info_card.dart';
 import 'components/pets_card.dart';
-import 'services/mock_data_service.dart';
+import '../../services/user_auth_service.dart';
+import '../../model/user.dart' as user_model;
 import '../../core/models.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -16,61 +17,120 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final UserAuthService _auth = UserAuthService();
+  user_model.User? _currentUser;
   late UserProfile _userProfile;
   late List<Pet> _pets;
   late Map<String, String> _stats;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    _userProfile = MockDataService.getUserProfile();
-    _pets = MockDataService.getPets();
-    _stats = MockDataService.getDefaultStats();
+    _initDefaults();
+    _loadUser();
+  }
+
+  void _initDefaults() {
+    _userProfile = UserProfile(
+      name: '未登录',
+      phone: '',
+      email: '',
+      avatar: '👤',
+      joinDate: DateTime.now(),
+      address: '',
+      bio: '',
+      level: 'Lv.1',
+      points: 0,
+    );
+    _pets = const [];
+    _stats = const {'following': '0', 'followers': '0', 'likes': '0'};
+  }
+
+  Future<void> _loadUser() async {
+    setState(() => _isLoading = true);
+    try {
+      // 优先刷新一次，确保最新
+      await _auth.refreshUserInfo();
+      final u = _auth.currentUser;
+      setState(() {
+        _currentUser = u;
+        _userProfile = UserProfile(
+          name: u?.username ?? '未登录',
+          phone: u?.phone ?? '',
+          email: u?.email ?? '',
+          // 这里沿用 UserProfile.avatar 为 String：既可能是表情/首字母，也可能是 URL
+          avatar: u?.avatar ?? '👤',
+          joinDate: u?.registerTime ?? DateTime.now(),
+          address: '',
+          bio: '',
+          level: 'Lv.${u != null ? 3 : 1}',
+          points: 0,
+        );
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      debugPrint('加载用户信息失败: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // 用户头部信息
-            UserHeader(userProfile: _userProfile, onEditProfile: _showEditHint),
-
-            // 内容区域
-            Padding(
-              padding: const EdgeInsets.all(AppTheme.spacingL),
-              child: Column(
-                children: [
-                  // 统计信息卡片
-                  StatsCard(
-                    petCount: _pets.length,
-                    followingCount: _stats['following']!,
-                    followersCount: _stats['followers']!,
-                    likesCount: _stats['likes']!,
-                  ),
-
-                  const SizedBox(height: AppTheme.spacingL),
-
-                  // 基本信息
-                  BasicInfoCard(
-                    userProfile: _userProfile,
-                    onEditPhone: _showEditHint,
-                    onEditEmail: _showEditHint,
-                    onEditAddress: _showEditHint,
-                  ),
-
-                  const SizedBox(height: AppTheme.spacingL),
-
-                  // 我的宠物
-                  PetsCard(pets: _pets, onViewAllPets: _viewAllPets),
-
-                  const SizedBox(height: AppTheme.spacingL),
-                ],
+      body: RefreshIndicator(
+        onRefresh: _loadUser,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            children: [
+              // 用户头部信息
+              UserHeader(
+                userProfile: _userProfile,
+                onEditProfile: _showEditHint,
               ),
-            ),
-          ],
+
+              // 内容区域
+              Padding(
+                padding: const EdgeInsets.all(AppTheme.spacingL),
+                child: Column(
+                  children: [
+                    // 统计信息卡片
+                    StatsCard(
+                      petCount: _pets.length,
+                      followingCount: _stats['following']!,
+                      followersCount: _stats['followers']!,
+                      likesCount: _stats['likes']!,
+                    ),
+
+                    const SizedBox(height: AppTheme.spacingL),
+
+                    // 基本信息
+                    BasicInfoCard(
+                      userProfile: _userProfile,
+                      onEditPhone: _showEditHint,
+                      onEditEmail: _showEditHint,
+                      onEditAddress: _showEditHint,
+                    ),
+
+                    const SizedBox(height: AppTheme.spacingL),
+
+                    // 我的宠物（暂保留为空列表，后续接入真实宠物服务）
+                    PetsCard(pets: _pets, onViewAllPets: _viewAllPets),
+
+                    const SizedBox(height: AppTheme.spacingL),
+
+                    if (_isLoading)
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: CircularProgressIndicator(),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

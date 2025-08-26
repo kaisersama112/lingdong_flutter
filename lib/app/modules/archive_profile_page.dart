@@ -205,6 +205,47 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     return '👤';
   }
 
+  /// 判断是否为有效的URL
+  bool _isValidUrl(String? value) {
+    if (value == null || value.isEmpty) return false;
+    return value.startsWith('http://') || value.startsWith('https://');
+  }
+
+  /// 构建用户头像内容（支持URL/表情/首字母）
+  Widget _buildUserAvatarContent() {
+    if (_isLoadingUser) {
+      return SizedBox(
+        width: 16,
+        height: 16,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+        ),
+      );
+    }
+
+    final avatar = _currentUser?.avatar;
+    if (_isValidUrl(avatar)) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.network(
+          avatar!,
+          width: 28,
+          height: 28,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stack) {
+            return const Icon(Icons.person, color: Colors.white, size: 18);
+          },
+        ),
+      );
+    }
+
+    return Text(
+      _getUserAvatar(),
+      style: const TextStyle(fontSize: 16, color: Colors.white),
+    );
+  }
+
   /// 检查用户是否已登录
   bool get _isUserLoggedIn => _currentUser != null;
 
@@ -402,8 +443,8 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
       children: [
         Container(
           padding: const EdgeInsets.symmetric(
-            horizontal: AppTheme.spacingL,
-            vertical: AppTheme.spacingM,
+            horizontal: AppTheme.spacingM,
+            vertical: AppTheme.spacingS,
           ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -423,18 +464,18 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           ),
           child: Row(
             children: [
-              _buildUserAvatarButton(),
-              const SizedBox(width: AppTheme.spacingM),
-              Expanded(child: _buildPetSwitcher()),
+              // 仅头像，节省空间
+              _buildCompactUserAvatarButton(),
               const SizedBox(width: AppTheme.spacingS),
-              _buildAddPetButton(),
+              // 自适应的宠物下拉
+              Expanded(child: _buildCompactPetSwitcher()),
               const SizedBox(width: AppTheme.spacingS),
-              _buildSettingsButton(),
+              _buildCompactAddPetButton(),
+              const SizedBox(width: AppTheme.spacingXS),
+              _buildCompactSettingsButton(),
             ],
           ),
         ),
-        // 用户状态指示器
-        // _buildUserStatusIndicator(),
       ],
     );
   }
@@ -704,86 +745,190 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
-  Widget _buildUserAvatarButton() {
-    return GestureDetector(
-      onTap: _navigateToProfile,
-      child: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: AppTheme.getSurfaceColor(context),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: AppTheme.primaryColor.withValues(alpha: 0.2),
-            width: 1.5,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.08),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
+  // 紧凑版用户头像按钮（去掉用户名与箭头）
+  Widget _buildCompactUserAvatarButton() {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: _navigateToProfile,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          height: 36,
+          width: 36,
+          decoration: BoxDecoration(
+            color: AppTheme.getSurfaceColor(context),
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: AppTheme.primaryColor.withValues(alpha: 0.2),
+              width: 1,
             ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          alignment: Alignment.center,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: SizedBox(
               width: 28,
               height: 28,
-              decoration: BoxDecoration(
-                color: AppTheme.primaryColor,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.25),
-                    blurRadius: 4,
-                    offset: const Offset(0, 1),
-                  ),
-                ],
-              ),
-              alignment: Alignment.center,
-              child: _isLoadingUser
-                  ? SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    )
-                  : Text(
-                      _getUserAvatar(),
-                      style: const TextStyle(fontSize: 16, color: Colors.white),
-                    ),
+              child: _buildUserAvatarContent(),
             ),
-            const SizedBox(width: 8),
-            Flexible(
-              child: Text(
-                _getUserDisplayName(),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: AppTheme.fontSizeS,
-                  fontWeight: FontWeight.w600,
-                  color: AppTheme.getTextPrimaryColor(context),
-                ),
-              ),
-            ),
-            const SizedBox(width: 6),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: AppTheme.primaryColor,
-              size: 14,
-            ),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  // 设置按钮
-  Widget _buildSettingsButton() {
+  // 紧凑版宠物切换器
+  Widget _buildCompactPetSwitcher() {
+    return Container(
+      height: 36,
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      decoration: BoxDecoration(
+        color: AppTheme.getSurfaceColor(context),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppTheme.getDividerColor(context), width: 1),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isDense: true,
+          isExpanded: true,
+          value: _pets.isNotEmpty ? _pets[_selectedPetIndex].id : null,
+          hint: Row(
+            children: [
+              Icon(
+                Icons.pets,
+                size: 16,
+                color: AppTheme.getTextSecondaryColor(context),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                '选择宠物',
+                style: TextStyle(
+                  color: AppTheme.getTextSecondaryColor(context),
+                  fontSize: AppTheme.fontSizeS,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+          icon: const Icon(Icons.expand_more, size: 18),
+          selectedItemBuilder: (context) => _pets
+              .map(
+                (p) => Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      PetAvatar(
+                        avatar: p.avatar,
+                        size: 16,
+                        brokenIconColor: p.color,
+                      ),
+                      const SizedBox(width: 6),
+                      Flexible(
+                        child: Text(
+                          p.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppTheme.getTextPrimaryColor(context),
+                            fontSize: AppTheme.fontSizeS,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+          items: _pets
+              .map(
+                (p) => DropdownMenuItem<String>(
+                  value: p.id,
+                  child: Row(
+                    children: [
+                      PetAvatar(
+                        avatar: p.avatar,
+                        size: 16,
+                        brokenIconColor: p.color,
+                      ),
+                      const SizedBox(width: 8),
+                      Flexible(
+                        child: Text(
+                          p.name,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppTheme.getTextPrimaryColor(context),
+                            fontSize: AppTheme.fontSizeS,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+          onChanged: (value) {
+            if (value == null) return;
+            setState(() {
+              _selectedPetIndex = _pets.indexWhere((p) => p.id == value);
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  // 紧凑版新增宠物按钮
+  Widget _buildCompactAddPetButton() {
+    return Tooltip(
+      message: '新增宠物',
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: _addNewPet,
+          borderRadius: BorderRadius.circular(18),
+          child: Container(
+            height: 36,
+            width: 36,
+            decoration: BoxDecoration(
+              color: AppTheme.getSurfaceColor(context),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: AppTheme.getDividerColor(context),
+                width: 1,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Icon(
+              Icons.add,
+              size: 18,
+              color: AppTheme.getTextPrimaryColor(context),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 紧凑版设置按钮
+  Widget _buildCompactSettingsButton() {
     return Tooltip(
       message: '设置 (长按测试API、认证和Token缓存)',
       child: Material(
@@ -791,24 +936,23 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         child: InkWell(
           onTap: _openSettings,
           onLongPress: () async {
-            // 同时测试用户信息、认证Token、Token缓存和宠物API
             await Future.wait([
               _testUserInfo(),
               _testAuthToken(),
               _testTokenCache(),
             ]);
           },
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(18),
           child: Container(
-            height: 40,
-            width: 40,
+            height: 36,
+            width: 36,
             decoration: BoxDecoration(
               color: AppTheme.primaryColor,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(18),
               boxShadow: [
                 BoxShadow(
-                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
-                  blurRadius: 8,
+                  color: AppTheme.primaryColor.withValues(alpha: 0.25),
+                  blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
               ],

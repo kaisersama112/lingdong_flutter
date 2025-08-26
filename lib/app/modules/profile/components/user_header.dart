@@ -12,6 +12,8 @@ class UserHeader extends StatelessWidget {
     required this.onEditProfile,
   });
 
+  bool _isUrl(String s) => s.startsWith('http://') || s.startsWith('https://');
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -97,10 +99,24 @@ class UserHeader extends StatelessWidget {
                       child: CircleAvatar(
                         radius: 40,
                         backgroundColor: AppTheme.primaryLightColor,
-                        child: Text(
-                          userProfile.avatar,
-                          style: const TextStyle(fontSize: 32),
-                        ),
+                        child: _isUrl(userProfile.avatar)
+                            ? ClipOval(
+                                child: Image.network(
+                                  userProfile.avatar,
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (c, e, s) => const Icon(
+                                    Icons.person,
+                                    color: Colors.white,
+                                    size: 40,
+                                  ),
+                                ),
+                              )
+                            : Text(
+                                userProfile.avatar,
+                                style: const TextStyle(fontSize: 32),
+                              ),
                       ),
                     ),
 

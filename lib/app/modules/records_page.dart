@@ -257,11 +257,20 @@ class _RecordsPageState extends State<RecordsPage> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 12,
+                    ),
                     hintText: '搜索标题/备注',
-                    prefixIcon: const Icon(Icons.search),
+                    prefixIcon: const Icon(Icons.search, size: 18),
+                    prefixIconConstraints: const BoxConstraints(
+                      minWidth: 36,
+                      minHeight: 36,
+                    ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear),
+                            icon: const Icon(Icons.clear, size: 18),
                             onPressed: () =>
                                 setState(() => _searchController.clear()),
                           )
@@ -272,8 +281,15 @@ class _RecordsPageState extends State<RecordsPage> {
               ),
               const SizedBox(width: AppTheme.spacingM),
               OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 10,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                ),
                 onPressed: _pickDateRange,
-                icon: const Icon(Icons.date_range),
+                icon: const Icon(Icons.date_range, size: 18),
                 label: Text(
                   _dateRange == null
                       ? '选择日期'
@@ -504,120 +520,160 @@ class _RecordsPageState extends State<RecordsPage> {
   Widget _healthRecordTile(models.HealthRecord record) {
     final color = models.HealthRecordUtils.getTypeColor(record.type);
     final icon = models.HealthRecordUtils.getTypeIcon(record.type);
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-        border: Border.all(color: AppTheme.dividerColor),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+    return InkWell(
+      onTap: () {},
+      borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+      child: Container(
+        padding: const EdgeInsets.all(AppTheme.spacingM),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
             ),
-            child: Icon(icon, color: color, size: 20),
+          ],
+          border: Border.all(
+            color: AppTheme.dividerColor.withValues(alpha: 0.7),
           ),
-          const SizedBox(width: AppTheme.spacingM),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        record.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.textPrimaryColor,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 左侧彩色竖条 + 图标
+            Container(
+              width: 4,
+              height: 40,
+              margin: const EdgeInsets.only(right: AppTheme.spacingM, top: 2),
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Icon(icon, color: color, size: 20),
+            ),
+            const SizedBox(width: AppTheme.spacingM),
+            // 右侧内容
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          record.title,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: AppTheme.textPrimaryColor,
+                          ),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                    ),
-                    Text(
-                      _formatDate(record.date),
-                      style: TextStyle(
-                        color: AppTheme.textSecondaryColor,
-                        fontSize: AppTheme.fontSizeS,
+                      const SizedBox(width: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.event, size: 14, color: Colors.grey),
+                          const SizedBox(width: 4),
+                          Text(
+                            _formatDate(record.date),
+                            style: TextStyle(
+                              color: AppTheme.textSecondaryColor,
+                              fontSize: AppTheme.fontSizeS,
+                            ),
+                          ),
+                        ],
                       ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  // 身份码与快捷操作（复制/二维码）
+                  Row(
+                    children: [
+                      const Icon(Icons.qr_code_2, size: 14, color: Colors.grey),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          _currentPet()?.identityCode ?? '-',
+                          style: TextStyle(
+                            color: AppTheme.textSecondaryColor,
+                            fontSize: AppTheme.fontSizeS,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      IconButton(
+                        tooltip: '复制身份码',
+                        icon: const Icon(
+                          Icons.copy,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () async {
+                          final code = _currentPet()?.identityCode;
+                          if (code == null) return;
+                          await Clipboard.setData(ClipboardData(text: code));
+                          if (!mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('已复制身份码')),
+                          );
+                        },
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      IconButton(
+                        tooltip: '查看二维码',
+                        icon: const Icon(
+                          Icons.qr_code,
+                          size: 16,
+                          color: Colors.grey,
+                        ),
+                        onPressed: () {
+                          final code = _currentPet()?.identityCode;
+                          if (code == null) return;
+                          _showIdentityQrDialog(code);
+                        },
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ],
+                  ),
+                  if ((record.notes ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      record.notes!,
+                      style: TextStyle(color: AppTheme.textSecondaryColor),
                     ),
                   ],
-                ),
-                const SizedBox(height: 4),
-                // 身份码与快捷操作（复制/二维码）
-                Row(
-                  children: [
-                    const Icon(Icons.qr_code_2, size: 14, color: Colors.grey),
-                    const SizedBox(width: 4),
-                    Text(
-                      _currentPet()?.identityCode ?? '-',
-                      style: TextStyle(
-                        color: AppTheme.textSecondaryColor,
-                        fontSize: AppTheme.fontSizeS,
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 6,
+                    children: [
+                      _miniBadge(
+                        models.HealthRecordUtils.getTypeLabel(record.type),
+                        color,
                       ),
-                    ),
-                    const SizedBox(width: 6),
-                    InkWell(
-                      onTap: () async {
-                        final code = _currentPet()?.identityCode;
-                        if (code == null) return;
-                        await Clipboard.setData(ClipboardData(text: code));
-                        if (!mounted) return;
-                        ScaffoldMessenger.of(
-                          context,
-                        ).showSnackBar(const SnackBar(content: Text('已复制身份码')));
-                      },
-                      child: const Icon(
-                        Icons.copy,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    InkWell(
-                      onTap: () {
-                        final code = _currentPet()?.identityCode;
-                        if (code == null) return;
-                        _showIdentityQrDialog(code);
-                      },
-                      child: const Icon(
-                        Icons.qr_code,
-                        size: 16,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-                if ((record.notes ?? '').isNotEmpty) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    record.notes!,
-                    style: TextStyle(color: AppTheme.textSecondaryColor),
+                      if (record.weight != null)
+                        _miniBadge('${record.weight} kg', Colors.teal),
+                      if ((record.clinic ?? '').isNotEmpty)
+                        _miniBadge(record.clinic!, Colors.indigo),
+                    ],
                   ),
                 ],
-                const SizedBox(height: 6),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 6,
-                  children: [
-                    _miniBadge(
-                      models.HealthRecordUtils.getTypeLabel(record.type),
-                      color,
-                    ),
-                    if (record.weight != null)
-                      _miniBadge('${record.weight} kg', Colors.teal),
-                    if ((record.clinic ?? '').isNotEmpty)
-                      _miniBadge(record.clinic!, Colors.indigo),
-                  ],
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

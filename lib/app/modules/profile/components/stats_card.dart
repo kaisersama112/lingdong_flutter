@@ -33,15 +33,8 @@ class StatsCard extends StatelessWidget {
           const SizedBox(height: AppTheme.spacingM),
 
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: _buildStatItem(
-                  icon: Icons.pets,
-                  label: '宠物数量',
-                  value: petCount.toString(),
-                  color: AppTheme.primaryColor,
-                ),
-              ),
               Expanded(
                 child: _buildStatItem(
                   icon: Icons.favorite,
@@ -80,26 +73,34 @@ class StatsCard extends StatelessWidget {
     required Color color,
   }) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          padding: const EdgeInsets.all(AppTheme.spacingM),
-          decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+        SizedBox(
+          width: 48,
+          height: 48,
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.1),
+              borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
+            ),
+            child: Center(child: Icon(icon, color: color, size: 22)),
           ),
-          child: Icon(icon, color: color, size: 24),
         ),
         const SizedBox(height: AppTheme.spacingS),
         Text(
           value,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: AppTheme.fontSizeL,
             fontWeight: FontWeight.bold,
             color: color,
           ),
         ),
+        const SizedBox(height: 2),
         Text(
           label,
+          textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: AppTheme.fontSizeS,
             color: AppTheme.textSecondaryColor,

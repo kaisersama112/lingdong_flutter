@@ -41,6 +41,21 @@ class PetAvatar extends StatelessWidget {
         );
       }
     }
+    if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
+      return ClipOval(
+        child: Image.network(
+          avatar,
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => Icon(
+            Icons.broken_image,
+            size: size * 0.9,
+            color: brokenIconColor ?? Colors.grey,
+          ),
+        ),
+      );
+    }
     return Text(avatar, style: TextStyle(fontSize: size));
   }
 }
