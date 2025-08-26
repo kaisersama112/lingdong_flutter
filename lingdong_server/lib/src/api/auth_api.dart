@@ -25,7 +25,6 @@ import 'package:lingdong_server/src/model/send_code_request.dart';
 import 'package:lingdong_server/src/model/set_password_by_code_request.dart';
 
 class AuthApi {
-
   final Dio _dio;
 
   final Serializers _serializers;
@@ -33,10 +32,10 @@ class AuthApi {
   const AuthApi(this._dio, this._serializers);
 
   /// 修改密码（需登录+旧密码）
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [changePasswordRequest] 
+  /// * [changePasswordRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -46,7 +45,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseEmptyResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseEmptyResponse>> changePasswordApiAuthChangePasswordPost({ 
+  Future<Response<GenericResponseEmptyResponse>>
+      changePasswordApiAuthChangePasswordPost({
     ChangePasswordRequest? changePasswordRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -73,11 +73,12 @@ class AuthApi {
 
     try {
       const _type = FullType(ChangePasswordRequest);
-      _bodyData = changePasswordRequest == null ? null : _serializers.serialize(changePasswordRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = changePasswordRequest == null
+          ? null
+          : _serializers.serialize(changePasswordRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -100,11 +101,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseEmptyResponse),
-      ) as GenericResponseEmptyResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseEmptyResponse),
+            ) as GenericResponseEmptyResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -128,10 +130,10 @@ class AuthApi {
   }
 
   /// 修改密码（需登录+旧密码）
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [changePasswordRequest] 
+  /// * [changePasswordRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -141,7 +143,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseEmptyResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseEmptyResponse>> changePasswordApiAuthChangePasswordPost_1({ 
+  Future<Response<GenericResponseEmptyResponse>>
+      changePasswordApiAuthChangePasswordPost_1({
     ChangePasswordRequest? changePasswordRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -168,11 +171,12 @@ class AuthApi {
 
     try {
       const _type = FullType(ChangePasswordRequest);
-      _bodyData = changePasswordRequest == null ? null : _serializers.serialize(changePasswordRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = changePasswordRequest == null
+          ? null
+          : _serializers.serialize(changePasswordRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -195,11 +199,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseEmptyResponse),
-      ) as GenericResponseEmptyResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseEmptyResponse),
+            ) as GenericResponseEmptyResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -226,7 +231,7 @@ class AuthApi {
   /// 用户登录，支持用户名或手机号登录 :param request: 登录请求 :param db: 数据库会话 :return: 访问令牌和刷新令牌
   ///
   /// Parameters:
-  /// * [loginRequest] 
+  /// * [loginRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -236,7 +241,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseLoginResponse>> loginForAccessTokenApiAuthLoginPost({ 
+  Future<Response<GenericResponseLoginResponse>>
+      loginForAccessTokenApiAuthLoginPost({
     LoginRequest? loginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -263,11 +269,12 @@ class AuthApi {
 
     try {
       const _type = FullType(LoginRequest);
-      _bodyData = loginRequest == null ? null : _serializers.serialize(loginRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = loginRequest == null
+          ? null
+          : _serializers.serialize(loginRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -290,11 +297,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseLoginResponse),
-      ) as GenericResponseLoginResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseLoginResponse),
+            ) as GenericResponseLoginResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -321,7 +329,7 @@ class AuthApi {
   /// 用户登录，支持用户名或手机号登录 :param request: 登录请求 :param db: 数据库会话 :return: 访问令牌和刷新令牌
   ///
   /// Parameters:
-  /// * [loginRequest] 
+  /// * [loginRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -331,7 +339,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseLoginResponse>> loginForAccessTokenApiAuthLoginPost_2({ 
+  Future<Response<GenericResponseLoginResponse>>
+      loginForAccessTokenApiAuthLoginPost_2({
     LoginRequest? loginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -358,11 +367,12 @@ class AuthApi {
 
     try {
       const _type = FullType(LoginRequest);
-      _bodyData = loginRequest == null ? null : _serializers.serialize(loginRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = loginRequest == null
+          ? null
+          : _serializers.serialize(loginRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -385,11 +395,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseLoginResponse),
-      ) as GenericResponseLoginResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseLoginResponse),
+            ) as GenericResponseLoginResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -413,10 +424,10 @@ class AuthApi {
   }
 
   /// 手机号+验证码 一键注册/登录
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [phoneCodeLoginRequest] 
+  /// * [phoneCodeLoginRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -426,7 +437,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePhoneCodeLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePhoneCodeLoginResponse>> phoneCodeLoginApiAuthPhoneCodeLoginPost({ 
+  Future<Response<GenericResponsePhoneCodeLoginResponse>>
+      phoneCodeLoginApiAuthPhoneCodeLoginPost({
     PhoneCodeLoginRequest? phoneCodeLoginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -453,11 +465,12 @@ class AuthApi {
 
     try {
       const _type = FullType(PhoneCodeLoginRequest);
-      _bodyData = phoneCodeLoginRequest == null ? null : _serializers.serialize(phoneCodeLoginRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = phoneCodeLoginRequest == null
+          ? null
+          : _serializers.serialize(phoneCodeLoginRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -480,11 +493,13 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponsePhoneCodeLoginResponse),
-      ) as GenericResponsePhoneCodeLoginResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType:
+                  const FullType(GenericResponsePhoneCodeLoginResponse),
+            ) as GenericResponsePhoneCodeLoginResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -508,10 +523,10 @@ class AuthApi {
   }
 
   /// 手机号+验证码 一键注册/登录
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [phoneCodeLoginRequest] 
+  /// * [phoneCodeLoginRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -521,7 +536,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePhoneCodeLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePhoneCodeLoginResponse>> phoneCodeLoginApiAuthPhoneCodeLoginPost_3({ 
+  Future<Response<GenericResponsePhoneCodeLoginResponse>>
+      phoneCodeLoginApiAuthPhoneCodeLoginPost_3({
     PhoneCodeLoginRequest? phoneCodeLoginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -548,11 +564,12 @@ class AuthApi {
 
     try {
       const _type = FullType(PhoneCodeLoginRequest);
-      _bodyData = phoneCodeLoginRequest == null ? null : _serializers.serialize(phoneCodeLoginRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = phoneCodeLoginRequest == null
+          ? null
+          : _serializers.serialize(phoneCodeLoginRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -575,11 +592,13 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponsePhoneCodeLoginResponse),
-      ) as GenericResponsePhoneCodeLoginResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType:
+                  const FullType(GenericResponsePhoneCodeLoginResponse),
+            ) as GenericResponsePhoneCodeLoginResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -603,10 +622,10 @@ class AuthApi {
   }
 
   /// 手机号+密码 登录（仅登录，未注册报错）
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [phoneLoginRequest] 
+  /// * [phoneLoginRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -616,7 +635,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePhoneLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePhoneLoginResponse>> phonePasswordLoginApiAuthPhoneLoginPost({ 
+  Future<Response<GenericResponsePhoneLoginResponse>>
+      phonePasswordLoginApiAuthPhoneLoginPost({
     PhoneLoginRequest? phoneLoginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -643,11 +663,12 @@ class AuthApi {
 
     try {
       const _type = FullType(PhoneLoginRequest);
-      _bodyData = phoneLoginRequest == null ? null : _serializers.serialize(phoneLoginRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = phoneLoginRequest == null
+          ? null
+          : _serializers.serialize(phoneLoginRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -670,11 +691,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponsePhoneLoginResponse),
-      ) as GenericResponsePhoneLoginResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponsePhoneLoginResponse),
+            ) as GenericResponsePhoneLoginResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -698,10 +720,10 @@ class AuthApi {
   }
 
   /// 手机号+密码 登录（仅登录，未注册报错）
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [phoneLoginRequest] 
+  /// * [phoneLoginRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -711,7 +733,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePhoneLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePhoneLoginResponse>> phonePasswordLoginApiAuthPhoneLoginPost_4({ 
+  Future<Response<GenericResponsePhoneLoginResponse>>
+      phonePasswordLoginApiAuthPhoneLoginPost_4({
     PhoneLoginRequest? phoneLoginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -738,11 +761,12 @@ class AuthApi {
 
     try {
       const _type = FullType(PhoneLoginRequest);
-      _bodyData = phoneLoginRequest == null ? null : _serializers.serialize(phoneLoginRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = phoneLoginRequest == null
+          ? null
+          : _serializers.serialize(phoneLoginRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -765,11 +789,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponsePhoneLoginResponse),
-      ) as GenericResponsePhoneLoginResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponsePhoneLoginResponse),
+            ) as GenericResponsePhoneLoginResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -805,7 +830,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserInfoResponse>> readUsersMeApiAuthUsersMeGet({ 
+  Future<Response<GenericResponseUserInfoResponse>>
+      readUsersMeApiAuthUsersMeGet({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -838,11 +864,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseUserInfoResponse),
-      ) as GenericResponseUserInfoResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseUserInfoResponse),
+            ) as GenericResponseUserInfoResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -878,7 +905,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserInfoResponse>> readUsersMeApiAuthUsersMeGet_5({ 
+  Future<Response<GenericResponseUserInfoResponse>>
+      readUsersMeApiAuthUsersMeGet_5({
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -911,11 +939,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseUserInfoResponse),
-      ) as GenericResponseUserInfoResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseUserInfoResponse),
+            ) as GenericResponseUserInfoResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -942,7 +971,7 @@ class AuthApi {
   /// 使用刷新令牌获取新的访问令牌 :param refresh_token: 刷新令牌 :param db: 数据库会话 :return: 新的访问令牌
   ///
   /// Parameters:
-  /// * [refreshToken] - 
+  /// * [refreshToken] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -952,7 +981,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseRefreshTokenResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseRefreshTokenResponse>> refreshAccessTokenApiAuthRefreshPost({ 
+  Future<Response<GenericResponseRefreshTokenResponse>>
+      refreshAccessTokenApiAuthRefreshPost({
     required String refreshToken,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -975,7 +1005,8 @@ class AuthApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'refresh_token': encodeQueryParameter(_serializers, refreshToken, const FullType(String)),
+      r'refresh_token': encodeQueryParameter(
+          _serializers, refreshToken, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -991,11 +1022,13 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseRefreshTokenResponse),
-      ) as GenericResponseRefreshTokenResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType:
+                  const FullType(GenericResponseRefreshTokenResponse),
+            ) as GenericResponseRefreshTokenResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1022,7 +1055,7 @@ class AuthApi {
   /// 使用刷新令牌获取新的访问令牌 :param refresh_token: 刷新令牌 :param db: 数据库会话 :return: 新的访问令牌
   ///
   /// Parameters:
-  /// * [refreshToken] - 
+  /// * [refreshToken] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1032,7 +1065,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseRefreshTokenResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseRefreshTokenResponse>> refreshAccessTokenApiAuthRefreshPost_6({ 
+  Future<Response<GenericResponseRefreshTokenResponse>>
+      refreshAccessTokenApiAuthRefreshPost_6({
     required String refreshToken,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1055,7 +1089,8 @@ class AuthApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'refresh_token': encodeQueryParameter(_serializers, refreshToken, const FullType(String)),
+      r'refresh_token': encodeQueryParameter(
+          _serializers, refreshToken, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1071,11 +1106,13 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseRefreshTokenResponse),
-      ) as GenericResponseRefreshTokenResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType:
+                  const FullType(GenericResponseRefreshTokenResponse),
+            ) as GenericResponseRefreshTokenResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1102,10 +1139,10 @@ class AuthApi {
   /// 注册用户 :param username: 用户名 :param password: 密码 :param email: 邮箱 :param phone: 手机号 :param db: 数据库会话 :return: 注册成功的消息
   ///
   /// Parameters:
-  /// * [username] - 
-  /// * [password] - 
-  /// * [email] - 
-  /// * [phone] - 
+  /// * [username] -
+  /// * [password] -
+  /// * [email] -
+  /// * [phone] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1115,7 +1152,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserInfoResponse>> registerUserApiAuthRegisterPost({ 
+  Future<Response<GenericResponseUserInfoResponse>>
+      registerUserApiAuthRegisterPost({
     required String username,
     required String password,
     required String email,
@@ -1141,10 +1179,15 @@ class AuthApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'username': encodeQueryParameter(_serializers, username, const FullType(String)),
-      r'password': encodeQueryParameter(_serializers, password, const FullType(String)),
-      r'email': encodeQueryParameter(_serializers, email, const FullType(String)),
-      if (phone != null) r'phone': encodeQueryParameter(_serializers, phone, const FullType(String)),
+      r'username':
+          encodeQueryParameter(_serializers, username, const FullType(String)),
+      r'password':
+          encodeQueryParameter(_serializers, password, const FullType(String)),
+      r'email':
+          encodeQueryParameter(_serializers, email, const FullType(String)),
+      if (phone != null)
+        r'phone':
+            encodeQueryParameter(_serializers, phone, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1160,11 +1203,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseUserInfoResponse),
-      ) as GenericResponseUserInfoResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseUserInfoResponse),
+            ) as GenericResponseUserInfoResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1191,10 +1235,10 @@ class AuthApi {
   /// 注册用户 :param username: 用户名 :param password: 密码 :param email: 邮箱 :param phone: 手机号 :param db: 数据库会话 :return: 注册成功的消息
   ///
   /// Parameters:
-  /// * [username] - 
-  /// * [password] - 
-  /// * [email] - 
-  /// * [phone] - 
+  /// * [username] -
+  /// * [password] -
+  /// * [email] -
+  /// * [phone] -
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1204,7 +1248,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserInfoResponse>> registerUserApiAuthRegisterPost_7({ 
+  Future<Response<GenericResponseUserInfoResponse>>
+      registerUserApiAuthRegisterPost_7({
     required String username,
     required String password,
     required String email,
@@ -1230,10 +1275,15 @@ class AuthApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'username': encodeQueryParameter(_serializers, username, const FullType(String)),
-      r'password': encodeQueryParameter(_serializers, password, const FullType(String)),
-      r'email': encodeQueryParameter(_serializers, email, const FullType(String)),
-      if (phone != null) r'phone': encodeQueryParameter(_serializers, phone, const FullType(String)),
+      r'username':
+          encodeQueryParameter(_serializers, username, const FullType(String)),
+      r'password':
+          encodeQueryParameter(_serializers, password, const FullType(String)),
+      r'email':
+          encodeQueryParameter(_serializers, email, const FullType(String)),
+      if (phone != null)
+        r'phone':
+            encodeQueryParameter(_serializers, phone, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1249,11 +1299,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseUserInfoResponse),
-      ) as GenericResponseUserInfoResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseUserInfoResponse),
+            ) as GenericResponseUserInfoResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1277,10 +1328,10 @@ class AuthApi {
   }
 
   /// 发送手机验证码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [sendCodeRequest] 
+  /// * [sendCodeRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1290,7 +1341,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseSendCodeResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseSendCodeResponse>> sendLoginCodeApiAuthSendCodePost({ 
+  Future<Response<GenericResponseSendCodeResponse>>
+      sendLoginCodeApiAuthSendCodePost({
     SendCodeRequest? sendCodeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1317,11 +1369,12 @@ class AuthApi {
 
     try {
       const _type = FullType(SendCodeRequest);
-      _bodyData = sendCodeRequest == null ? null : _serializers.serialize(sendCodeRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = sendCodeRequest == null
+          ? null
+          : _serializers.serialize(sendCodeRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1344,11 +1397,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseSendCodeResponse),
-      ) as GenericResponseSendCodeResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseSendCodeResponse),
+            ) as GenericResponseSendCodeResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1372,10 +1426,10 @@ class AuthApi {
   }
 
   /// 发送手机验证码
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [sendCodeRequest] 
+  /// * [sendCodeRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1385,7 +1439,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseSendCodeResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseSendCodeResponse>> sendLoginCodeApiAuthSendCodePost_8({ 
+  Future<Response<GenericResponseSendCodeResponse>>
+      sendLoginCodeApiAuthSendCodePost_8({
     SendCodeRequest? sendCodeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1412,11 +1467,12 @@ class AuthApi {
 
     try {
       const _type = FullType(SendCodeRequest);
-      _bodyData = sendCodeRequest == null ? null : _serializers.serialize(sendCodeRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = sendCodeRequest == null
+          ? null
+          : _serializers.serialize(sendCodeRequest, specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1439,11 +1495,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseSendCodeResponse),
-      ) as GenericResponseSendCodeResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseSendCodeResponse),
+            ) as GenericResponseSendCodeResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1467,10 +1524,10 @@ class AuthApi {
   }
 
   /// 通过手机号验证码设置密码（无需登录）
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [setPasswordByCodeRequest] 
+  /// * [setPasswordByCodeRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1480,7 +1537,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseEmptyResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseEmptyResponse>> setPasswordByCodeApiAuthSetPasswordByCodePost({ 
+  Future<Response<GenericResponseEmptyResponse>>
+      setPasswordByCodeApiAuthSetPasswordByCodePost({
     SetPasswordByCodeRequest? setPasswordByCodeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1507,11 +1565,13 @@ class AuthApi {
 
     try {
       const _type = FullType(SetPasswordByCodeRequest);
-      _bodyData = setPasswordByCodeRequest == null ? null : _serializers.serialize(setPasswordByCodeRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = setPasswordByCodeRequest == null
+          ? null
+          : _serializers.serialize(setPasswordByCodeRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1534,11 +1594,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseEmptyResponse),
-      ) as GenericResponseEmptyResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseEmptyResponse),
+            ) as GenericResponseEmptyResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1562,10 +1623,10 @@ class AuthApi {
   }
 
   /// 通过手机号验证码设置密码（无需登录）
-  /// 
+  ///
   ///
   /// Parameters:
-  /// * [setPasswordByCodeRequest] 
+  /// * [setPasswordByCodeRequest]
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1575,7 +1636,8 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseEmptyResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseEmptyResponse>> setPasswordByCodeApiAuthSetPasswordByCodePost_9({ 
+  Future<Response<GenericResponseEmptyResponse>>
+      setPasswordByCodeApiAuthSetPasswordByCodePost_9({
     SetPasswordByCodeRequest? setPasswordByCodeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1602,11 +1664,13 @@ class AuthApi {
 
     try {
       const _type = FullType(SetPasswordByCodeRequest);
-      _bodyData = setPasswordByCodeRequest == null ? null : _serializers.serialize(setPasswordByCodeRequest, specifiedType: _type);
-
-    } catch(error, stackTrace) {
+      _bodyData = setPasswordByCodeRequest == null
+          ? null
+          : _serializers.serialize(setPasswordByCodeRequest,
+              specifiedType: _type);
+    } catch (error, stackTrace) {
       throw DioException(
-         requestOptions: _options.compose(
+        requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1629,11 +1693,12 @@ class AuthApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null ? null : _serializers.deserialize(
-        rawResponse,
-        specifiedType: const FullType(GenericResponseEmptyResponse),
-      ) as GenericResponseEmptyResponse;
-
+      _responseData = rawResponse == null
+          ? null
+          : _serializers.deserialize(
+              rawResponse,
+              specifiedType: const FullType(GenericResponseEmptyResponse),
+            ) as GenericResponseEmptyResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1655,5 +1720,4 @@ class AuthApi {
       extra: _response.extra,
     );
   }
-
 }

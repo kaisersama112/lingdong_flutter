@@ -15,6 +15,7 @@ class UserAuthService {
   User? _currentUser;
   Dio? _dio;
   server.AuthApi? _authApi;
+  String? _cachedToken; // 新增：用于缓存Token
 
   /// 获取当前登录用户
   User? get currentUser => _currentUser;
@@ -35,6 +36,15 @@ class UserAuthService {
       // 从数据库恢复当前用户
       _currentUser = await _dbService.getCurrentUser();
 
+      // 如果有当前用户，尝试从数据库恢复Token到内存缓存
+      if (_currentUser != null) {
+        final tokenFromDb = await _dbService.getAuthToken(_currentUser!.userId);
+        if (tokenFromDb != null && tokenFromDb.isNotEmpty) {
+          _cachedToken = tokenFromDb;
+          debugPrint('已从数据库恢复Token缓存');
+        }
+      }
+
       debugPrint('认证服务初始化完成，当前用户: ${_currentUser?.username ?? "未登录"}');
       _initializeApiClient();
     } catch (e) {
@@ -45,6 +55,7 @@ class UserAuthService {
 
   void _initializeApiClient() {
     if (_dio != null && _authApi != null) return;
+
     _dio = Dio(
       BaseOptions(
         baseUrl: 'http://172.16.4.114:7009',
@@ -53,7 +64,75 @@ class UserAuthService {
         sendTimeout: const Duration(seconds: 10),
       ),
     );
+
+    // 从本地存储加载Token并设置认证头
+    _loadAndSetCachedToken();
+
     _authApi = server.AuthApi(_dio!, server.standardSerializers);
+  }
+
+  /// 从本地存储加载Token并设置认证头
+  void _loadAndSetCachedToken() {
+    final cachedToken = _loadTokenFromStorage();
+    if (cachedToken != null && cachedToken.isNotEmpty) {
+      _dio!.options.headers['Authorization'] = 'Bearer $cachedToken';
+      debugPrint('从本地存储恢复Token: Bearer ${cachedToken.substring(0, 20)}...');
+    } else {
+      debugPrint('本地存储中没有Token');
+    }
+  }
+
+  void _setAuthToken(String token) {
+    if (_dio != null) {
+      _dio!.options.headers['Authorization'] = 'Bearer $token';
+      debugPrint('认证头已设置: Bearer ${token.substring(0, 20)}...');
+
+      // 保存Token到本地存储
+      _saveTokenToStorage(token);
+      // 同步保存到数据库（若已登录）
+      if (_currentUser != null) {
+        _dbService.saveAuthToken(_currentUser!.userId, token);
+      }
+    } else {
+      debugPrint('Dio实例未初始化，无法设置认证头');
+    }
+  }
+
+  /// 保存Token到本地存储
+  void _saveTokenToStorage(String token) {
+    try {
+      // 使用SharedPreferences保存Token
+      // 这里暂时使用一个简单的内存缓存，实际应该使用SharedPreferences
+      _cachedToken = token;
+      debugPrint('Token已保存到本地存储');
+    } catch (e) {
+      debugPrint('保存Token到本地存储失败: $e');
+    }
+  }
+
+  /// 从本地存储加载Token
+  String? _loadTokenFromStorage() {
+    try {
+      // 从本地存储加载Token
+      // 这里暂时使用内存缓存，实际应该使用SharedPreferences
+      return _cachedToken;
+    } catch (e) {
+      debugPrint('从本地存储加载Token失败: $e');
+      return null;
+    }
+  }
+
+  /// 清除Token缓存
+  void _clearTokenFromStorage() {
+    try {
+      _cachedToken = null;
+      if (_dio != null) {
+        _dio!.options.headers.remove('Authorization');
+      }
+      debugPrint('Token缓存已清除');
+    } catch (e) {
+      debugPrint('清除Token缓存失败: $e');
+    }
   }
 
   /// 用户注册
@@ -123,14 +202,63 @@ class UserAuthService {
       if (code != 200) {
         throw AuthException(resp.data?.msg ?? '登录失败($code)');
       }
-      final local = await _ensureLocalUser(phone: phone);
+
+      // 设置认证头
+      final accessToken = resp.data?.data?.accessToken;
+      if (accessToken != null) {
+        _setAuthToken(accessToken);
+        debugPrint('设置认证Token: ${accessToken.substring(0, 20)}...');
+      }
+
+      // 获取用户信息
+      final userInfoResp = await _authApi!.readUsersMeApiAuthUsersMeGet();
+      final userInfoCode =
+          userInfoResp.data?.code ?? userInfoResp.statusCode ?? 500;
+      if (userInfoCode != 200) {
+        throw AuthException(
+          '获取用户信息失败($userInfoCode): ${userInfoResp.data?.msg}',
+        );
+      }
+
+      final userInfo = userInfoResp.data?.data;
+      if (userInfo == null) {
+        throw AuthException('用户信息为空');
+      }
+
+      debugPrint('获取到用户信息: ${userInfo.username}, ID: ${userInfo.id}');
+
+      // 使用后端返回的用户信息更新本地用户
+      final local = await _ensureLocalUserWithInfo(
+        phone: phone,
+        username: userInfo.username,
+        email: userInfo.email,
+        avatar: userInfo.avatar,
+        backendId: userInfo.id,
+        createdAt: userInfo.createdAt,
+        updatedAt: userInfo.updatedAt,
+        level: userInfo.level,
+        isPasswordSet: userInfo.isPasswordSet,
+      );
+
       await _dbService.updateLastLoginTime(local.userId);
       await _dbService.setCurrentUser(local.userId);
+      // 绑定保存token
+      if (accessToken != null) {
+        await _dbService.saveAuthToken(local.userId, accessToken);
+      }
       final updatedUser = await _dbService.getUser(local.userId);
       _currentUser = updatedUser;
       return updatedUser!;
     } on DioException catch (e) {
+      debugPrint('登录网络错误: ${e.message}');
+      if (e.response != null) {
+        debugPrint('响应状态码: ${e.response!.statusCode}');
+        debugPrint('响应数据: ${e.response!.data}');
+      }
       throw AuthException(e.message ?? '网络错误');
+    } catch (e) {
+      debugPrint('登录其他错误: $e');
+      throw AuthException(e.toString());
     }
   }
 
@@ -166,14 +294,62 @@ class UserAuthService {
       if (code != 200) {
         throw AuthException(resp.data?.msg ?? '登录失败($code)');
       }
-      final local = await _ensureLocalUser(phone: phone);
+
+      // 设置认证头
+      final accessToken = resp.data?.data?.accessToken;
+      if (accessToken != null) {
+        _setAuthToken(accessToken);
+        debugPrint('设置认证Token: ${accessToken.substring(0, 20)}...');
+      }
+
+      // 获取用户信息
+      final userInfoResp = await _authApi!.readUsersMeApiAuthUsersMeGet();
+      final userInfoCode =
+          userInfoResp.data?.code ?? userInfoResp.statusCode ?? 500;
+      if (userInfoCode != 200) {
+        throw AuthException(
+          '获取用户信息失败($userInfoCode): ${userInfoResp.data?.msg}',
+        );
+      }
+
+      final userInfo = userInfoResp.data?.data;
+      if (userInfo == null) {
+        throw AuthException('用户信息为空');
+      }
+
+      debugPrint('获取到用户信息: ${userInfo.username}, ID: ${userInfo.id}');
+
+      // 使用后端返回的用户信息更新本地用户
+      final local = await _ensureLocalUserWithInfo(
+        phone: phone,
+        username: userInfo.username,
+        email: userInfo.email,
+        avatar: userInfo.avatar,
+        backendId: userInfo.id,
+        createdAt: userInfo.createdAt,
+        updatedAt: userInfo.updatedAt,
+        level: userInfo.level,
+        isPasswordSet: userInfo.isPasswordSet,
+      );
+
       await _dbService.updateLastLoginTime(local.userId);
       await _dbService.setCurrentUser(local.userId);
+      if (accessToken != null) {
+        await _dbService.saveAuthToken(local.userId, accessToken);
+      }
       final updatedUser = await _dbService.getUser(local.userId);
       _currentUser = updatedUser;
       return updatedUser!;
     } on DioException catch (e) {
+      debugPrint('验证码登录网络错误: ${e.message}');
+      if (e.response != null) {
+        debugPrint('响应状态码: ${e.response!.statusCode}');
+        debugPrint('响应数据: ${e.response!.data}');
+      }
       throw AuthException(e.message ?? '网络错误');
+    } catch (e) {
+      debugPrint('验证码登录其他错误: $e');
+      throw AuthException(e.toString());
     }
   }
 
@@ -388,15 +564,20 @@ class UserAuthService {
 
   /// 用户登出
   Future<void> logout() async {
-    // 模拟网络延迟
-    await Future.delayed(const Duration(milliseconds: 200));
+    try {
+      // 清除Token缓存
+      _clearTokenFromStorage();
 
-    _currentUser = null;
+      // 清除当前用户
+      _currentUser = null;
 
-    // 清除当前用户
-    await _dbService.clearCurrentUser();
+      // 清除数据库中的当前用户记录
+      await _dbService.clearCurrentUser();
 
-    debugPrint('用户登出成功');
+      debugPrint('用户已登出');
+    } catch (e) {
+      debugPrint('登出失败: $e');
+    }
   }
 
   /// 清除所有数据（仅用于测试）
@@ -511,6 +692,70 @@ class UserAuthService {
     return user;
   }
 
+  Future<User> _ensureLocalUserWithInfo({
+    required String phone,
+    required String username,
+    String? email,
+    String? avatar,
+    int? backendId,
+    String? createdAt,
+    String? updatedAt,
+    int? level,
+    bool? isPasswordSet,
+  }) async {
+    final existing = await _dbService.getUserByPhone(phone);
+    if (existing != null) {
+      // 更新现有用户的信息
+      final updatedUser = existing.copyWith(
+        username: username,
+        email: email,
+        avatar: avatar,
+      );
+      await _dbService.saveUser(updatedUser);
+      return updatedUser;
+    }
+
+    // 创建新用户
+    final userId = _generateUserId();
+    final now = DateTime.now();
+
+    // 解析时间字符串
+    DateTime? parsedCreatedAt;
+    DateTime? parsedUpdatedAt;
+
+    if (createdAt != null) {
+      try {
+        parsedCreatedAt = DateTime.parse(createdAt);
+      } catch (e) {
+        debugPrint('解析createdAt失败: $createdAt, 使用当前时间');
+        parsedCreatedAt = now;
+      }
+    }
+
+    if (updatedAt != null) {
+      try {
+        parsedUpdatedAt = DateTime.parse(updatedAt);
+      } catch (e) {
+        debugPrint('解析updatedAt失败: $updatedAt, 使用当前时间');
+        parsedUpdatedAt = now;
+      }
+    }
+
+    final user = User(
+      userId: userId,
+      phone: phone,
+      username: username,
+      email: email,
+      avatar: avatar,
+      registerTime: parsedCreatedAt ?? now,
+      lastLoginTime: parsedUpdatedAt ?? now,
+      status: UserStatus.active,
+      role: UserRole.user,
+    );
+    await _dbService.saveUser(user);
+    return user;
+  }
+
   /// 生成用户ID
   String _generateUserId() {
     const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -537,7 +782,320 @@ class UserAuthService {
   Future<User?> getUserByPhone(String phone) async {
     return await _dbService.getUserByPhone(phone);
   }
+
+  /// 获取当前用户的访问令牌
+  String? getAccessToken() {
+    // 优先从本地存储加载Token
+    final cachedToken = _loadTokenFromStorage();
+    if (cachedToken != null && cachedToken.isNotEmpty) {
+      debugPrint('从本地存储获取Token: ${cachedToken.substring(0, 20)}...');
+      return cachedToken;
+    }
+
+    // 如果本地存储没有，尝试从Dio headers获取
+    if (_dio != null && _dio!.options.headers.containsKey('Authorization')) {
+      final authHeader = _dio!.options.headers['Authorization'] as String;
+      if (authHeader.startsWith('Bearer ')) {
+        final token = authHeader.substring(7); // 移除 'Bearer ' 前缀
+        debugPrint('从Dio headers获取Token: ${token.substring(0, 20)}...');
+        // 保存到本地存储
+        _saveTokenToStorage(token);
+        return token;
+      }
+    }
+
+    debugPrint('无法获取访问令牌');
+    return null;
+  }
+
+  /// 获取当前用户信息
+  Future<User?> getCurrentUserInfo() async {
+    if (_currentUser == null) {
+      debugPrint('当前用户未登录，无法获取用户信息');
+      return null;
+    }
+
+    _initializeApiClient();
+    try {
+      final userInfoResp = await _authApi!.readUsersMeApiAuthUsersMeGet();
+      final userInfoCode =
+          userInfoResp.data?.code ?? userInfoResp.statusCode ?? 500;
+      if (userInfoCode != 200) {
+        debugPrint('获取用户信息失败($userInfoCode): ${userInfoResp.data?.msg}');
+        return _currentUser; // 返回本地缓存的用户信息
+      }
+
+      final userInfo = userInfoResp.data?.data;
+      if (userInfo == null) {
+        debugPrint('用户信息为空');
+        return _currentUser; // 返回本地缓存的用户信息
+      }
+
+      debugPrint('获取到最新用户信息: ${userInfo.username}, ID: ${userInfo.id}');
+
+      // 更新本地用户信息
+      final updatedUser = _currentUser!.copyWith(
+        username: userInfo.username,
+        email: userInfo.email,
+        avatar: userInfo.avatar,
+      );
+
+      await _dbService.saveUser(updatedUser);
+      _currentUser = updatedUser;
+      return updatedUser;
+    } on DioException catch (e) {
+      debugPrint('获取用户信息网络错误: ${e.message}');
+      return _currentUser; // 返回本地缓存的用户信息
+    } catch (e) {
+      debugPrint('获取用户信息其他错误: $e');
+      return _currentUser; // 返回本地缓存的用户信息
+    }
+  }
+
+  /// 刷新用户信息
+  Future<User?> refreshUserInfo() async {
+    return await getCurrentUserInfo();
+  }
+
+  /// 测试Token缓存功能
+  Future<void> testTokenCache() async {
+    try {
+      debugPrint('开始测试Token缓存功能...');
+
+      // 检查当前Token
+      final currentToken = getAccessToken();
+      if (currentToken != null && currentToken.isNotEmpty) {
+        debugPrint('当前Token: ${currentToken.substring(0, 20)}...');
+
+        // 模拟清除内存中的Token（模拟应用刷新）
+        if (_dio != null) {
+          _dio!.options.headers.remove('Authorization');
+        }
+        debugPrint('已清除内存中的Token');
+
+        // 重新获取Token（应该从缓存恢复）
+        final restoredToken = getAccessToken();
+        if (restoredToken != null && restoredToken.isNotEmpty) {
+          debugPrint('Token恢复成功: ${restoredToken.substring(0, 20)}...');
+        } else {
+          debugPrint('Token恢复失败');
+        }
+      } else {
+        debugPrint('当前没有Token');
+      }
+
+      debugPrint('Token缓存测试完成');
+    } catch (e) {
+      debugPrint('Token缓存测试失败: $e');
+    }
+  }
+
+  /// 测试登录和获取用户信息功能
+  Future<void> testLoginAndGetUserInfo({
+    required String phone,
+    required String password,
+  }) async {
+    try {
+      debugPrint('开始测试登录功能...');
+
+      // 1. 执行登录
+      final user = await login(phone: phone, password: password);
+      debugPrint('登录成功: ${user.username}');
+
+      // 2. 获取用户信息
+      final userInfo = await getCurrentUserInfo();
+      if (userInfo != null) {
+        debugPrint('获取用户信息成功: ${userInfo.username}');
+        debugPrint('用户详细信息:');
+        debugPrint('  - 用户ID: ${userInfo.userId}');
+        debugPrint('  - 手机号: ${userInfo.phone}');
+        debugPrint('  - 邮箱: ${userInfo.email}');
+        debugPrint('  - 头像: ${userInfo.avatar}');
+        debugPrint('  - 注册时间: ${userInfo.registerTime}');
+        debugPrint('  - 最后登录: ${userInfo.lastLoginTime}');
+      } else {
+        debugPrint('获取用户信息失败');
+      }
+    } catch (e) {
+      debugPrint('测试失败: $e');
+      rethrow;
+    }
+  }
 }
+
+/*
+使用示例：
+
+1. 在登录页面中使用：
+
+```dart
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final UserAuthService _authService = UserAuthService();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  bool _isLoading = false;
+
+  Future<void> _login() async {
+    if (_phoneController.text.isEmpty || _passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('请输入手机号和密码')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final user = await _authService.login(
+        phone: _phoneController.text,
+        password: _passwordController.text,
+      );
+      
+      // 登录成功后，用户信息已经自动获取并保存
+      print('登录成功: ${user.username}');
+      
+      // 可以跳转到主页
+      Navigator.of(context).pushReplacementNamed('/home');
+      
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('登录失败: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('登录')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _phoneController,
+              decoration: InputDecoration(labelText: '手机号'),
+              keyboardType: TextInputType.phone,
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: '密码'),
+              obscureText: true,
+            ),
+            SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: _isLoading ? null : _login,
+              child: _isLoading 
+                ? CircularProgressIndicator() 
+                : Text('登录'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+2. 在其他页面获取用户信息：
+
+```dart
+class ProfilePage extends StatefulWidget {
+  @override
+  _ProfilePageState createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final UserAuthService _authService = UserAuthService();
+  User? _currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    // 获取当前用户信息（如果已登录）
+    final user = _authService.currentUser;
+    if (user != null) {
+      setState(() {
+        _currentUser = user;
+      });
+      
+      // 可选：从服务器刷新最新信息
+      final refreshedUser = await _authService.refreshUserInfo();
+      if (refreshedUser != null) {
+        setState(() {
+          _currentUser = refreshedUser;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_currentUser == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text('个人资料')),
+        body: Center(child: Text('请先登录')),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: Text('个人资料')),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('用户名: ${_currentUser!.username}'),
+            Text('手机号: ${_currentUser!.phone}'),
+            if (_currentUser!.email != null)
+              Text('邮箱: ${_currentUser!.email}'),
+            Text('注册时间: ${_currentUser!.registerTime}'),
+            Text('最后登录: ${_currentUser!.lastLoginTime}'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+3. 验证码登录：
+
+```dart
+Future<void> _loginWithCode() async {
+  try {
+    final user = await _authService.loginOrRegisterWithVerificationCode(
+      phone: _phoneController.text,
+      verificationCode: _codeController.text,
+    );
+    
+    print('验证码登录成功: ${user.username}');
+    Navigator.of(context).pushReplacementNamed('/home');
+    
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('登录失败: $e')),
+    );
+  }
+}
+```
+*/
 
 /// 认证异常
 class AuthException implements Exception {

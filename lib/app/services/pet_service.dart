@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 import '../core/models.dart' as models;
 import 'database_service.dart';
+import 'user_auth_service.dart';
+import 'package:lingdong_server/lingdong_server.dart' as server;
 
 class PetService {
   static final PetService _instance = PetService._internal();
@@ -8,9 +11,158 @@ class PetService {
   PetService._internal();
 
   final DatabaseService _databaseService = DatabaseService();
+  final UserAuthService _authService = UserAuthService();
+  Dio? _dio;
+  server.PetProfileApi? _petApi;
+
+  /// 初始化API客户端
+  void _initializeApiClient() {
+    if (_dio != null && _petApi != null) return;
+
+    _dio = Dio(
+      BaseOptions(
+        baseUrl: 'http://172.16.4.114:7009',
+        connectTimeout: const Duration(seconds: 10),
+        receiveTimeout: const Duration(seconds: 15),
+        sendTimeout: const Duration(seconds: 10),
+      ),
+    );
+
+    // 设置认证头 - 从UserAuthService获取Token
+    _updateAuthToken();
+
+    _petApi = server.PetProfileApi(_dio!, server.standardSerializers);
+  }
+
+  /// 更新认证Token
+  void _updateAuthToken() {
+    if (_dio == null) return;
+
+    // 从UserAuthService获取当前Token
+    final currentUser = _authService.currentUser;
+    if (currentUser != null) {
+      // 这里需要从UserAuthService获取实际的access token
+      // 暂时使用一个占位符，实际应该从认证服务获取
+      final token = _getAuthToken();
+      if (token.isNotEmpty) {
+        _dio!.options.headers['Authorization'] = 'Bearer $token';
+        debugPrint('PetService认证头已设置: Bearer ${token.substring(0, 20)}...');
+      } else {
+        debugPrint('PetService: 无法获取认证Token');
+      }
+    } else {
+      debugPrint('PetService: 当前用户未登录');
+    }
+  }
+
+  /// 获取认证Token
+  String _getAuthToken() {
+    try {
+      // 从UserAuthService获取实际的access token
+      final token = _authService.getAccessToken();
+      if (token != null && token.isNotEmpty) {
+        debugPrint('PetService: 成功获取认证Token: ${token.substring(0, 20)}...');
+        return token;
+      } else {
+        debugPrint('PetService: 认证Token为空或未设置');
+        return "";
+      }
+    } catch (e) {
+      debugPrint('获取认证Token失败: $e');
+      return "";
+    }
+  }
+
+  /// 设置认证Token（公共方法）
+  void setAuthToken(String token) {
+    if (_dio != null) {
+      _dio!.options.headers['Authorization'] = 'Bearer $token';
+      debugPrint('PetService认证Token已设置: Bearer ${token.substring(0, 20)}...');
+    } else {
+      debugPrint('PetService: Dio未初始化，无法设置Token');
+    }
+  }
+
+  /// 设置认证Token（内部方法）
+  void _setAuthToken(String token) {
+    setAuthToken(token);
+  }
+
+  /// 刷新认证Token
+  void _refreshAuthToken() {
+    if (_dio == null) return;
+
+    final token = _getAuthToken();
+    if (token.isNotEmpty) {
+      _dio!.options.headers['Authorization'] = 'Bearer $token';
+      debugPrint('PetService认证Token已刷新: Bearer ${token.substring(0, 20)}...');
+    } else {
+      debugPrint('PetService: 无法刷新认证Token，用户可能未登录');
+    }
+  }
+
+  /// 检查并更新认证Token
+  void _ensureValidAuthToken() {
+    if (_dio == null) return;
+
+    // 检查当前Token是否有效
+    final currentToken = _dio!.options.headers['Authorization'] as String?;
+    if (currentToken == null || !currentToken.startsWith('Bearer ')) {
+      debugPrint('PetService: 当前Token无效，尝试刷新...');
+      _refreshAuthToken();
+    }
+  }
 
   /// 获取用户的所有宠物
   Future<List<models.Pet>> getUserPets(String userId) async {
+    try {
+      // 优先从后端API获取
+      return await _getPetsFromApi();
+    } catch (e) {
+      debugPrint('从API获取宠物列表失败，使用本地数据: $e');
+      // 如果API失败，回退到本地数据库
+      return await _getPetsFromLocal(userId);
+    }
+  }
+
+  /// 从后端API获取宠物列表
+  Future<List<models.Pet>> _getPetsFromApi() async {
+    _initializeApiClient();
+    _ensureValidAuthToken(); // 在API调用前检查Token
+
+    try {
+      final response = await _petApi!.readPetsApiPetProfileGet();
+      final code = response.data?.code ?? response.statusCode ?? 500;
+
+      if (code != 200) {
+        throw Exception('获取宠物列表失败($code): ${response.data?.msg}');
+      }
+
+      final petListResponse = response.data?.data;
+      if (petListResponse == null ||
+          petListResponse.pets == null ||
+          petListResponse.pets!.isEmpty) {
+        debugPrint('API返回的宠物列表为空');
+        return [];
+      }
+
+      debugPrint('从API获取到 ${petListResponse.pets!.length} 个宠物');
+
+      // 转换后端数据模型到前端模型
+      return petListResponse.pets!
+          .map((petResponse) => _convertPetResponseToModel(petResponse))
+          .toList();
+    } on DioException catch (e) {
+      debugPrint('API请求失败: ${e.message}');
+      throw Exception('网络请求失败: ${e.message}');
+    } catch (e) {
+      debugPrint('API数据处理失败: $e');
+      throw Exception('数据处理失败: $e');
+    }
+  }
+
+  /// 从本地数据库获取宠物列表
+  Future<List<models.Pet>> _getPetsFromLocal(String userId) async {
     try {
       final db = await _databaseService.database;
       final List<Map<String, dynamic>> maps = await db.query(
@@ -24,7 +176,83 @@ class PetService {
         return _mapToPet(maps[i]);
       });
     } catch (e) {
-      throw Exception('获取宠物列表失败: $e');
+      throw Exception('获取本地宠物列表失败: $e');
+    }
+  }
+
+  /// 转换后端PetResponse到前端Pet模型
+  models.Pet _convertPetResponseToModel(server.PetResponse petResponse) {
+    return models.Pet(
+      id: petResponse.id.toString(),
+      name: petResponse.name ?? '未命名',
+      type: petResponse.species ?? '未知',
+      breed: petResponse.breed ?? '未知',
+      avatar: _getPetAvatar(petResponse.species ?? ''),
+      color: _getPetColor(petResponse.species ?? ''),
+      birthDate: petResponse.birthday?.toDateTime() ?? DateTime.now(),
+      weight: 0.0, // PetResponse中没有weight字段，使用默认值
+      gender: petResponse.gender ?? '未知',
+      identityCode: petResponse.chipId ?? 'PET${petResponse.id}',
+    );
+  }
+
+  /// 根据宠物类型获取头像
+  String _getPetAvatar(String species) {
+    switch (species.toLowerCase()) {
+      case 'dog':
+      case '狗狗':
+      case '狗':
+        return '🐕';
+      case 'cat':
+      case '猫咪':
+      case '猫':
+        return '🐱';
+      case 'bird':
+      case '鸟类':
+      case '鸟':
+        return '🐦';
+      case 'fish':
+      case '鱼类':
+      case '鱼':
+        return '🐠';
+      case 'rabbit':
+      case '兔子':
+        return '🐰';
+      case 'hamster':
+      case '仓鼠':
+        return '🐹';
+      default:
+        return '🐾';
+    }
+  }
+
+  /// 根据宠物类型获取颜色
+  Color _getPetColor(String species) {
+    switch (species.toLowerCase()) {
+      case 'dog':
+      case '狗狗':
+      case '狗':
+        return Colors.orange;
+      case 'cat':
+      case '猫咪':
+      case '猫':
+        return Colors.blue;
+      case 'bird':
+      case '鸟类':
+      case '鸟':
+        return Colors.green;
+      case 'fish':
+      case '鱼类':
+      case '鱼':
+        return Colors.cyan;
+      case 'rabbit':
+      case '兔子':
+        return Colors.pink;
+      case 'hamster':
+      case '仓鼠':
+        return Colors.brown;
+      default:
+        return Colors.grey;
     }
   }
 
@@ -52,10 +280,10 @@ class PetService {
   Future<models.Pet> savePet(models.Pet pet) async {
     try {
       final db = await _databaseService.database;
-      
+
       // 检查是否已存在
       final existingPet = await getPetById(pet.id);
-      
+
       if (existingPet != null) {
         // 更新现有宠物
         await db.update(
@@ -68,7 +296,7 @@ class PetService {
         // 新增宠物
         await db.insert('pets', _petToMap(pet));
       }
-      
+
       return pet;
     } catch (e) {
       throw Exception('保存宠物信息失败: $e');
@@ -79,11 +307,7 @@ class PetService {
   Future<void> deletePet(String petId) async {
     try {
       final db = await _databaseService.database;
-      await db.delete(
-        'pets',
-        where: 'id = ?',
-        whereArgs: [petId],
-      );
+      await db.delete('pets', where: 'id = ?', whereArgs: [petId]);
     } catch (e) {
       throw Exception('删除宠物失败: $e');
     }
@@ -92,22 +316,170 @@ class PetService {
   /// 获取宠物的健康记录数量
   Future<Map<String, int>> getPetRecordCounts(String petId) async {
     try {
+      // 优先从API获取
+      return await _getRecordCountsFromApi(int.parse(petId));
+    } catch (e) {
+      debugPrint('从API获取记录数量失败，使用本地数据: $e');
+      // 如果API失败，回退到本地数据库
+      return await _getRecordCountsFromLocal(petId);
+    }
+  }
+
+  /// 从API获取宠物健康记录数量
+  Future<Map<String, int>> _getRecordCountsFromApi(int petId) async {
+    _initializeApiClient();
+    _ensureValidAuthToken(); // 在API调用前检查Token
+
+    try {
+      final Map<String, int> counts = {};
+
+      // 获取各种类型的记录数量
+      // 疫苗接种记录
+      try {
+        final vaccinationResponse = await _petApi!
+            .getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(
+              petId: petId,
+              skip: 0,
+              size: 1,
+            );
+        if (vaccinationResponse.data?.code == 200) {
+          final data = vaccinationResponse.data?.data;
+          if (data != null && data['total'] != null) {
+            counts['vaccination'] = data['total'] as int;
+          }
+        }
+      } catch (e) {
+        debugPrint('获取疫苗接种记录数量失败: $e');
+        counts['vaccination'] = 0;
+      }
+
+      // 驱虫记录
+      try {
+        final dewormingResponse = await _petApi!
+            .getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(
+              petId: petId,
+              skip: 0,
+              size: 1,
+            );
+        if (dewormingResponse.data?.code == 200) {
+          final data = dewormingResponse.data?.data;
+          if (data != null && data['total'] != null) {
+            counts['deworming'] = data['total'] as int;
+          }
+        }
+      } catch (e) {
+        debugPrint('获取驱虫记录数量失败: $e');
+        counts['deworming'] = 0;
+      }
+
+      // 体检记录
+      try {
+        final examinationResponse = await _petApi!
+            .getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(
+              petId: petId,
+              skip: 0,
+              size: 1,
+            );
+        if (examinationResponse.data?.code == 200) {
+          final data = examinationResponse.data?.data;
+          if (data != null && data['total'] != null) {
+            counts['vetVisit'] = data['total'] as int;
+          }
+        }
+      } catch (e) {
+        debugPrint('获取体检记录数量失败: $e');
+        counts['vetVisit'] = 0;
+      }
+
+      // 体重记录
+      try {
+        final weightResponse = await _petApi!
+            .getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(
+              petId: petId,
+              skip: 0,
+              size: 1,
+            );
+        if (weightResponse.data?.code == 200) {
+          final data = weightResponse.data?.data;
+          if (data != null && data['total'] != null) {
+            counts['weight'] = data['total'] as int;
+          }
+        }
+      } catch (e) {
+        debugPrint('获取体重记录数量失败: $e');
+        counts['weight'] = 0;
+      }
+
+      // 美容记录
+      try {
+        final groomingResponse = await _petApi!
+            .getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(
+              petId: petId,
+              skip: 0,
+              size: 1,
+            );
+        if (groomingResponse.data?.code == 200) {
+          final data = groomingResponse.data?.data;
+          if (data != null && data['total'] != null) {
+            counts['grooming'] = data['total'] as int;
+          }
+        }
+      } catch (e) {
+        debugPrint('获取美容记录数量失败: $e');
+        counts['grooming'] = 0;
+      }
+
+      // 其他健康记录
+      try {
+        final otherResponse = await _petApi!
+            .getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(
+              petId: petId,
+              skip: 0,
+              size: 1,
+            );
+        if (otherResponse.data?.code == 200) {
+          final data = otherResponse.data?.data;
+          if (data != null && data['total'] != null) {
+            counts['medication'] = data['total'] as int; // 使用medication类型
+          }
+        }
+      } catch (e) {
+        debugPrint('获取其他健康记录数量失败: $e');
+        counts['medication'] = 0;
+      }
+
+      debugPrint('从API获取到记录数量: $counts');
+      return counts;
+    } catch (e) {
+      debugPrint('获取记录数量失败: $e');
+      throw Exception('获取记录数量失败: $e');
+    }
+  }
+
+  /// 从本地数据库获取宠物健康记录数量
+  Future<Map<String, int>> _getRecordCountsFromLocal(String petId) async {
+    try {
       final db = await _databaseService.database;
-      final List<Map<String, dynamic>> maps = await db.rawQuery('''
+      final List<Map<String, dynamic>> maps = await db.rawQuery(
+        '''
         SELECT type, COUNT(*) as count
         FROM health_records
         WHERE pet_id = ?
         GROUP BY type
-      ''', [petId]);
+      ''',
+        [petId],
+      );
 
       final Map<String, int> counts = {};
       for (final map in maps) {
-        counts[map['type'] as String] = map['count'] as int;
+        final type = map['type'] as String;
+        final count = map['count'] as int;
+        counts[type] = count;
       }
 
       return counts;
     } catch (e) {
-      throw Exception('获取记录数量失败: $e');
+      throw Exception('获取本地记录数量失败: $e');
     }
   }
 
@@ -163,10 +535,12 @@ class PetService {
   /// 解析颜色字符串为Color对象
   Color _parseColor(String? colorString) {
     if (colorString == null) return const Color(0xFF2196F3);
-    
+
     try {
       // 移除 'Color(' 和 ')' 并解析
-      final colorValue = int.parse(colorString.replaceAll(RegExp(r'[^\d]'), ''));
+      final colorValue = int.parse(
+        colorString.replaceAll(RegExp(r'[^\d]'), ''),
+      );
       return Color(colorValue);
     } catch (e) {
       return const Color(0xFF2196F3); // 默认蓝色
@@ -207,5 +581,46 @@ class PetService {
       const Color(0xFF795548), // 棕色
       const Color(0xFF607D8B), // 蓝灰
     ];
+  }
+
+  /// 测试宠物API功能
+  Future<void> testPetApi() async {
+    try {
+      debugPrint('开始测试宠物API功能...');
+
+      // 测试获取宠物列表
+      final pets = await _getPetsFromApi();
+      debugPrint('获取宠物列表成功: ${pets.length} 个宠物');
+
+      for (final pet in pets) {
+        debugPrint('宠物: ${pet.name} (${pet.type})');
+
+        // 测试获取记录数量
+        try {
+          final counts = await _getRecordCountsFromApi(int.parse(pet.id));
+          debugPrint('  - 记录数量: $counts');
+        } catch (e) {
+          debugPrint('  - 获取记录数量失败: $e');
+        }
+      }
+
+      debugPrint('宠物API测试完成');
+    } catch (e) {
+      debugPrint('宠物API测试失败: $e');
+      rethrow;
+    }
+  }
+
+  /// 刷新宠物数据
+  Future<List<models.Pet>> refreshPets(String userId) async {
+    try {
+      debugPrint('刷新宠物数据...');
+      final pets = await _getPetsFromApi();
+      debugPrint('刷新成功，获取到 ${pets.length} 个宠物');
+      return pets;
+    } catch (e) {
+      debugPrint('刷新宠物数据失败: $e');
+      throw Exception('刷新宠物数据失败: $e');
+    }
   }
 }

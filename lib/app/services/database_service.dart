@@ -26,7 +26,7 @@ class DatabaseService {
 
     return await openDatabase(
       path,
-      version: 2,
+      version: 3,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -100,6 +100,16 @@ class DatabaseService {
         id INTEGER PRIMARY KEY,
         user_id TEXT NOT NULL,
         login_time DATETIME NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      )
+    ''');
+
+    // 认证令牌表
+    await db.execute('''
+      CREATE TABLE auth_tokens (
+        user_id TEXT PRIMARY KEY,
+        token TEXT NOT NULL,
+        created_at DATETIME NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
@@ -184,6 +194,17 @@ class DatabaseService {
           post_id TEXT NOT NULL,
           user_id TEXT NOT NULL,
           content TEXT NOT NULL,
+          created_at DATETIME NOT NULL
+        )
+      ''');
+    }
+
+    // 版本升级到v3：添加认证令牌表
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE IF NOT EXISTS auth_tokens (
+          user_id TEXT PRIMARY KEY,
+          token TEXT NOT NULL,
           created_at DATETIME NOT NULL
         )
       ''');
@@ -308,6 +329,49 @@ class DatabaseService {
       'user_id': userId,
       'login_time': DateTime.now().toIso8601String(),
     });
+  }
+
+  /// 保存认证令牌
+  Future<void> saveAuthToken(String userId, String token) async {
+    final db = await database;
+    await _ensureAuthTokensTable(db);
+    await db.insert('auth_tokens', {
+      'user_id': userId,
+      'token': token,
+      'created_at': DateTime.now().toIso8601String(),
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  /// 读取认证令牌
+  Future<String?> getAuthToken(String userId) async {
+    final db = await database;
+    await _ensureAuthTokensTable(db);
+    final rows = await db.query(
+      'auth_tokens',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+      limit: 1,
+    );
+    if (rows.isEmpty) return null;
+    return rows.first['token'] as String;
+  }
+
+  /// 清除认证令牌
+  Future<void> clearAuthToken(String userId) async {
+    final db = await database;
+    await _ensureAuthTokensTable(db);
+    await db.delete('auth_tokens', where: 'user_id = ?', whereArgs: [userId]);
+  }
+
+  /// 确保认证令牌表存在（用于老版本数据库的兼容）
+  Future<void> _ensureAuthTokensTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS auth_tokens (
+        user_id TEXT PRIMARY KEY,
+        token TEXT NOT NULL,
+        created_at DATETIME NOT NULL
+      )
+    ''');
   }
 
   /// 清除当前登录用户
