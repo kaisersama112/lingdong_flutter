@@ -106,6 +106,18 @@ class UserHeader extends StatelessWidget {
                                   width: 80,
                                   height: 80,
                                   fit: BoxFit.cover,
+                                  cacheWidth:
+                                      (80 *
+                                              MediaQuery.of(
+                                                context,
+                                              ).devicePixelRatio)
+                                          .round(),
+                                  cacheHeight:
+                                      (80 *
+                                              MediaQuery.of(
+                                                context,
+                                              ).devicePixelRatio)
+                                          .round(),
                                   errorBuilder: (c, e, s) => const Icon(
                                     Icons.person,
                                     color: Colors.white,

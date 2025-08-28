@@ -187,11 +187,14 @@ class PetService {
       name: petResponse.name ?? '未命名',
       type: petResponse.species ?? '未知',
       breed: petResponse.breed ?? '未知',
-      avatar: _getPetAvatar(petResponse.species ?? ''),
+      avatar:
+          (petResponse.avatar != null && petResponse.avatar!.trim().isNotEmpty)
+          ? petResponse.avatar!.trim()
+          : _getPetAvatar(petResponse.species ?? ''),
       color: _getPetColor(petResponse.species ?? ''),
       birthDate: petResponse.birthday?.toDateTime() ?? DateTime.now(),
-      weight: 0.0, // PetResponse中没有weight字段，使用默认值
-      gender: petResponse.gender ?? '未知',
+      weight: (petResponse.weight ?? 0.0).toDouble(),
+      gender: petResponse.gender ?? '雄',
       identityCode: petResponse.chipId ?? 'PET${petResponse.id}',
     );
   }
@@ -509,7 +512,7 @@ class PetService {
       color: _parseColor(map['color'] as String?),
       birthDate: DateTime.parse(map['birth_date'] as String),
       weight: (map['weight'] as num?)?.toDouble() ?? 0.0,
-      gender: map['gender'] as String? ?? '公',
+      gender: map['gender'] as String? ?? '雄',
     );
   }
 

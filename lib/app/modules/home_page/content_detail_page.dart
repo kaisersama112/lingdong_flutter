@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../services/feed_service.dart';
 import '../../services/user_auth_service.dart';
+import '../../core/components/optimized_image.dart';
 
 class ContentDetailPage extends StatefulWidget {
   final String postId;
@@ -51,10 +52,7 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(
-        title: const Text('内容详情'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('内容详情'), centerTitle: true),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -101,18 +99,34 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(widget.author, style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16)),
-                    Text('刚刚', style: TextStyle(color: Colors.grey[500], fontSize: 12)),
+                    Text(
+                      widget.author,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      '刚刚',
+                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    ),
                   ],
                 ),
               ],
             ),
             const SizedBox(height: AppTheme.spacingL),
-            Text(widget.title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800)),
+            Text(
+              widget.title,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
+            ),
             const SizedBox(height: AppTheme.spacingS),
             Text(
               widget.content,
-              style: const TextStyle(fontSize: 15, color: AppTheme.textSecondaryColor, height: 1.5),
+              style: const TextStyle(
+                fontSize: 15,
+                color: AppTheme.textSecondaryColor,
+                height: 1.5,
+              ),
             ),
           ],
         ),
@@ -131,13 +145,22 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(widget.videoThumb!, fit: BoxFit.cover),
+                OptimizedThumbnail(
+                  imageUrl: widget.videoThumb!,
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width * 9 / 16,
+                ),
+
                 Container(color: Colors.black.withValues(alpha: 0.2)),
                 const Center(
                   child: CircleAvatar(
                     backgroundColor: Colors.white70,
                     radius: 28,
-                    child: Icon(Icons.play_arrow, size: 32, color: Colors.black87),
+                    child: Icon(
+                      Icons.play_arrow,
+                      size: 32,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
               ],
@@ -155,13 +178,22 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: widget.images.length == 1 ? 1 : (widget.images.length <= 4 ? 2 : 3),
+            crossAxisCount: widget.images.length == 1
+                ? 1
+                : (widget.images.length <= 4 ? 2 : 3),
             crossAxisSpacing: 4,
             mainAxisSpacing: 4,
           ),
           itemCount: widget.images.length,
           itemBuilder: (context, index) {
-            return Container(color: Colors.grey[200], child: Image.network(widget.images[index], fit: BoxFit.cover));
+            return Container(
+              color: Colors.grey[200],
+              child: OptimizedThumbnail(
+                imageUrl: widget.images[index],
+                width: 300,
+                height: 300,
+              ),
+            );
           },
         ),
       ),
@@ -169,7 +201,16 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   }
 
   Widget _buildActions() {
-    final stats = _stats ?? const PostStats(likes: 0, favorites: 0, comments: 0, shares: 0, likedByCurrentUser: false, favoritedByCurrentUser: false);
+    final stats =
+        _stats ??
+        const PostStats(
+          likes: 0,
+          favorites: 0,
+          comments: 0,
+          shares: 0,
+          likedByCurrentUser: false,
+          favoritedByCurrentUser: false,
+        );
     return Container(
       margin: const EdgeInsets.all(AppTheme.spacingM),
       decoration: AppTheme.cardDecoration,
@@ -179,9 +220,13 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             _actionChip(
-              icon: stats.likedByCurrentUser ? Icons.favorite : Icons.favorite_border,
+              icon: stats.likedByCurrentUser
+                  ? Icons.favorite
+                  : Icons.favorite_border,
               label: '${stats.likes}',
-              color: stats.likedByCurrentUser ? Colors.red : AppTheme.textSecondaryColor,
+              color: stats.likedByCurrentUser
+                  ? Colors.red
+                  : AppTheme.textSecondaryColor,
               onTap: () async {
                 try {
                   final s = await _feedService.toggleLike(widget.postId);
@@ -192,9 +237,13 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
               },
             ),
             _actionChip(
-              icon: stats.favoritedByCurrentUser ? Icons.bookmark : Icons.bookmark_border,
+              icon: stats.favoritedByCurrentUser
+                  ? Icons.bookmark
+                  : Icons.bookmark_border,
               label: stats.favoritedByCurrentUser ? '已收藏' : '收藏',
-              color: stats.favoritedByCurrentUser ? AppTheme.primaryColor : AppTheme.textSecondaryColor,
+              color: stats.favoritedByCurrentUser
+                  ? AppTheme.primaryColor
+                  : AppTheme.textSecondaryColor,
               onTap: () async {
                 try {
                   final s = await _feedService.toggleFavorite(widget.postId);
@@ -212,7 +261,9 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                 final s = await _feedService.incrementShare(widget.postId);
                 setState(() => _stats = s);
                 if (!mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('已转发')));
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('已转发')));
               },
             ),
           ],
@@ -228,7 +279,9 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     required VoidCallback onTap,
   }) {
     final bool isActive = color != AppTheme.textSecondaryColor;
-    final Color textColor = isActive ? Colors.white : AppTheme.textSecondaryColor;
+    final Color textColor = isActive
+        ? Colors.white
+        : AppTheme.textSecondaryColor;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
@@ -239,7 +292,9 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
           gradient: isActive ? AppTheme.primaryGradient : null,
           color: isActive ? null : Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: isActive ? null : Border.all(color: AppTheme.dividerColor, width: 1),
+          border: isActive
+              ? null
+              : Border.all(color: AppTheme.dividerColor, width: 1),
           boxShadow: isActive
               ? [
                   BoxShadow(
@@ -249,14 +304,25 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                   ),
                 ]
               : const [
-                  BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 2)),
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 6,
+                    offset: Offset(0, 2),
+                  ),
                 ],
         ),
         child: Row(
           children: [
             Icon(icon, size: 18, color: textColor),
             const SizedBox(width: 6),
-            Text(label, style: TextStyle(color: textColor, fontSize: 14, fontWeight: FontWeight.w600)),
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ],
         ),
       ),
@@ -272,13 +338,19 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('评论', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            const Text(
+              '评论',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            ),
             const SizedBox(height: 12),
             if (_comments.isEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 24),
                 child: Center(
-                  child: Text('还没有评论，来说点什么吧～', style: TextStyle(color: Colors.grey[500])),
+                  child: Text(
+                    '还没有评论，来说点什么吧～',
+                    style: TextStyle(color: Colors.grey[500]),
+                  ),
                 ),
               )
             else
@@ -301,7 +373,10 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('用户 ${c.userId.substring(0, 6)}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(
+                  '用户 ${c.userId.substring(0, 6)}',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
                 const SizedBox(height: 4),
                 Text(c.content),
                 const SizedBox(height: 4),
@@ -322,7 +397,10 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        decoration: const BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black12)]),
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black12)],
+        ),
         child: Row(
           children: [
             Expanded(
@@ -365,9 +443,13 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
 
   void _loginTip(String message) {
     if (UserAuthService().currentUser == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
     }
   }
 
@@ -379,5 +461,3 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     return '${diff.inDays} 天前';
   }
 }
-
-

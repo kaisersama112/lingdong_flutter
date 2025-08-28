@@ -1,5 +1,5 @@
-import '../../../core/models.dart';
-import '../../../theme/app_theme.dart';
+import '../core/models.dart';
+import '../theme/app_theme.dart';
 
 class MockDataService {
   /// 获取模拟用户数据
@@ -30,7 +30,7 @@ class MockDataService {
         color: AppTheme.primaryColor,
         birthDate: DateTime(2022, 3, 15),
         weight: 4.2,
-        gender: '公',
+        gender: '雄',
       ),
       Pet(
         id: '2',
@@ -42,7 +42,7 @@ class MockDataService {
         color: AppTheme.secondaryColor,
         birthDate: DateTime(2021, 8, 20),
         weight: 25.5,
-        gender: '公',
+        gender: '雄',
       ),
       Pet(
         id: '3',
@@ -54,7 +54,7 @@ class MockDataService {
         color: AppTheme.warningColor,
         birthDate: DateTime(2023, 1, 10),
         weight: 3.8,
-        gender: '母',
+        gender: '雌',
       ),
     ];
   }

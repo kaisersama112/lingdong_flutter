@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../core/error_handler.dart';
-import '../core/models.dart';
-import '../core/pet_components.dart';
-import '../services/user_auth_service.dart';
-import '../services/pet_service.dart';
-import '../model/user.dart' as user_model;
-import 'records_page.dart';
-import 'records/add_health_record_sheet.dart';
-import 'profile/profile_page.dart';
-import 'profile/settings_page.dart';
-import 'pet_detail_page.dart';
-import 'pet_management_page.dart';
+import '../../theme/app_theme.dart';
+import '../../core/error_handler.dart';
+import '../../core/models.dart';
+import '../pet/pet_components.dart';
+import '../../services/user_auth_service.dart';
+import '../../services/pet_service.dart';
+import '../../model/user.dart' as user_model;
+import '../records/records_page.dart';
+import '../records/add_health_record_sheet.dart';
+import 'profile_page.dart';
+import 'settings_page.dart';
+import '../pet/pet_detail_page.dart';
+import '../pet/pet_management_page.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -233,6 +233,8 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           width: 28,
           height: 28,
           fit: BoxFit.cover,
+          cacheWidth: (28 * MediaQuery.of(context).devicePixelRatio).round(),
+          cacheHeight: (28 * MediaQuery.of(context).devicePixelRatio).round(),
           errorBuilder: (context, error, stack) {
             return const Icon(Icons.person, color: Colors.white, size: 18);
           },

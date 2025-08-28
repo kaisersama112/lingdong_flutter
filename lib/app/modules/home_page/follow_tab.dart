@@ -356,7 +356,20 @@ class _FollowTabState extends State<FollowTab> {
           borderRadius: BorderRadius.circular(12),
           child: AspectRatio(
             aspectRatio: 16 / 9,
-            child: Image.network(url, fit: BoxFit.cover),
+            child: Image.network(
+              url,
+              fit: BoxFit.cover,
+              cacheWidth:
+                  (MediaQuery.of(context).size.width *
+                          MediaQuery.of(context).devicePixelRatio)
+                      .round(),
+              cacheHeight:
+                  (MediaQuery.of(context).size.width *
+                          9 /
+                          16 *
+                          MediaQuery.of(context).devicePixelRatio)
+                      .round(),
+            ),
           ),
         ),
         Positioned.fill(
@@ -402,7 +415,12 @@ class _FollowTabState extends State<FollowTab> {
           final img = items[index];
           return Container(
             color: Colors.grey[200],
-            child: Image.network(img, fit: BoxFit.cover),
+            child: Image.network(
+              img,
+              fit: BoxFit.cover,
+              cacheWidth: 300,
+              cacheHeight: 300,
+            ),
           );
         },
       ),

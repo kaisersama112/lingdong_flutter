@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../core/error_handler.dart';
-import '../../../core/app_state.dart';
-import '../../../services/user_auth_service.dart';
+import '../core/error_handler.dart';
+import '../core/app_state.dart';
+import 'user_auth_service.dart';
 
 class LogoutService {
   static const String _tokenKey = 'user_token';

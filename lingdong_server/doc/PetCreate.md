@@ -15,6 +15,7 @@ Name | Type | Description | Notes
 **chipId** | **String** |  | [optional] 
 **avatar** | **String** |  | [optional] 
 **gender** | **String** |  | [optional] 
+**weight** | **num** |  | [optional] 
 **neutered** | **bool** |  | [optional] 
 **allergyHistory** | **String** |  | [optional] 
 

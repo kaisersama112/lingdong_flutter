@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../core/models.dart' as models;
-import '../core/pet_components.dart';
+import '../../theme/app_theme.dart';
+import '../../core/models.dart' as models;
+import 'pet_components.dart';
 import 'pet_management_page.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';

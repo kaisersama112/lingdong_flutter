@@ -42,6 +42,11 @@ void main() {
       // TODO
     });
 
+    // num weight
+    test('to test the property `weight`', () async {
+      // TODO
+    });
+
     // bool neutered
     test('to test the property `neutered`', () async {
       // TODO

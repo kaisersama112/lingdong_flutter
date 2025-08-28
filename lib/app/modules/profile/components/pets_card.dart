@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../theme/app_theme.dart';
 import '../../../core/components.dart';
 import '../../../core/models.dart';
-import '../../../core/pet_components.dart';
+import '../../pet/pet_components.dart';
 
 class PetsCard extends StatelessWidget {
   final List<Pet> pets;

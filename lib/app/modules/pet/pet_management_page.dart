@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import '../core/models.dart' as models;
-import '../core/error_handler.dart';
-import '../services/pet_service.dart';
+import '../../theme/app_theme.dart';
+import '../../core/models.dart' as models;
+import '../../core/error_handler.dart';
+import '../../services/pet_service.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:convert';
@@ -25,7 +25,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
 
   // 表单数据
   String _selectedType = '狗狗';
-  String _selectedGender = '公';
+  String _selectedGender = '雄';
   DateTime _selectedBirthDate = DateTime.now().subtract(
     const Duration(days: 365),
   );
@@ -62,7 +62,7 @@ class _PetManagementPageState extends State<PetManagementPage> {
       _weightController.text = widget.pet!.weight.toString();
       _descriptionController.text = '';
       _selectedType = widget.pet!.type;
-      _selectedGender = widget.pet!.gender;
+      _selectedGender = _normalizeGender(widget.pet!.gender);
       _selectedBirthDate = widget.pet!.birthDate;
       _selectedColor = widget.pet!.color;
       if (widget.pet!.avatar.startsWith('data:image')) {
@@ -71,6 +71,26 @@ class _PetManagementPageState extends State<PetManagementPage> {
       } else {
         _selectedAvatar = widget.pet!.avatar;
       }
+    }
+  }
+
+  /// 标准化性别值，将各种可能的性别值映射为下拉菜单支持的值
+  String _normalizeGender(String gender) {
+    switch (gender) {
+      case '公':
+      case '雄':
+      case 'male':
+      case 'Male':
+      case 'M':
+        return '雄';
+      case '母':
+      case '雌':
+      case 'female':
+      case 'Female':
+      case 'F':
+        return '雌';
+      default:
+        return '雄'; // 默认值
     }
   }
 
@@ -363,15 +383,15 @@ class _PetManagementPageState extends State<PetManagementPage> {
 
           // 性别选择
           DropdownButtonFormField<String>(
-            value: _selectedGender,
+            value: _normalizeGender(_selectedGender),
             decoration: const InputDecoration(
               labelText: '性别',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.wc),
             ),
             items: const [
-              DropdownMenuItem(value: '公', child: Text('公')),
-              DropdownMenuItem(value: '母', child: Text('母')),
+              DropdownMenuItem(value: '雄', child: Text('雄')),
+              DropdownMenuItem(value: '雌', child: Text('雌')),
             ],
             onChanged: (value) {
               setState(() {

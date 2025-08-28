@@ -3,7 +3,7 @@ import '../modules/home_page.dart';
 import '../modules/social_page.dart';
 import '../modules/publish_page.dart';
 import '../modules/message_page.dart';
-import '../modules/archive_profile_page.dart';
+import '../modules/profile/archive_profile_page.dart';
 import '../modules/auth/login_page.dart';
 import '../theme/app_theme.dart';
 import '../services/user_auth_service.dart';
@@ -20,7 +20,7 @@ class _NavigationControllerState extends State<NavigationController>
   int _currentIndex = 0;
   final _authService = UserAuthService();
   AnimationController? _bounceController;
-  // 已切换原生 BottomNavigationBar，移除不再使用的动画控制器
+
   AnimationController? _pawController;
   AnimationController? _glowController;
 

@@ -22,6 +22,8 @@ class _$PetCreate extends PetCreate {
   @override
   final String? gender;
   @override
+  final num? weight;
+  @override
   final bool? neutered;
   @override
   final String? allergyHistory;
@@ -37,6 +39,7 @@ class _$PetCreate extends PetCreate {
       this.chipId,
       this.avatar,
       this.gender,
+      this.weight,
       this.neutered,
       this.allergyHistory})
       : super._();
@@ -58,6 +61,7 @@ class _$PetCreate extends PetCreate {
         chipId == other.chipId &&
         avatar == other.avatar &&
         gender == other.gender &&
+        weight == other.weight &&
         neutered == other.neutered &&
         allergyHistory == other.allergyHistory;
   }
@@ -72,6 +76,7 @@ class _$PetCreate extends PetCreate {
     _$hash = $jc(_$hash, chipId.hashCode);
     _$hash = $jc(_$hash, avatar.hashCode);
     _$hash = $jc(_$hash, gender.hashCode);
+    _$hash = $jc(_$hash, weight.hashCode);
     _$hash = $jc(_$hash, neutered.hashCode);
     _$hash = $jc(_$hash, allergyHistory.hashCode);
     _$hash = $jf(_$hash);
@@ -88,6 +93,7 @@ class _$PetCreate extends PetCreate {
           ..add('chipId', chipId)
           ..add('avatar', avatar)
           ..add('gender', gender)
+          ..add('weight', weight)
           ..add('neutered', neutered)
           ..add('allergyHistory', allergyHistory))
         .toString();
@@ -125,6 +131,10 @@ class PetCreateBuilder implements Builder<PetCreate, PetCreateBuilder> {
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
+  num? _weight;
+  num? get weight => _$this._weight;
+  set weight(num? weight) => _$this._weight = weight;
+
   bool? _neutered;
   bool? get neutered => _$this._neutered;
   set neutered(bool? neutered) => _$this._neutered = neutered;
@@ -148,6 +158,7 @@ class PetCreateBuilder implements Builder<PetCreate, PetCreateBuilder> {
       _chipId = $v.chipId;
       _avatar = $v.avatar;
       _gender = $v.gender;
+      _weight = $v.weight;
       _neutered = $v.neutered;
       _allergyHistory = $v.allergyHistory;
       _$v = null;
@@ -180,6 +191,7 @@ class PetCreateBuilder implements Builder<PetCreate, PetCreateBuilder> {
           chipId: chipId,
           avatar: avatar,
           gender: gender,
+          weight: weight,
           neutered: neutered,
           allergyHistory: allergyHistory,
         );

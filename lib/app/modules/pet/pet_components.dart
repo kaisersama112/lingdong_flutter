@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import '../theme/app_theme.dart';
-import 'models.dart' as models;
+import '../../theme/app_theme.dart';
+import '../../core/models.dart' as models;
+import '../../core/components/optimized_image.dart';
 import 'package:flutter/services.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -42,17 +43,13 @@ class PetAvatar extends StatelessWidget {
       }
     }
     if (avatar.startsWith('http://') || avatar.startsWith('https://')) {
-      return ClipOval(
-        child: Image.network(
-          avatar,
-          width: size,
-          height: size,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.broken_image,
-            size: size * 0.9,
-            color: brokenIconColor ?? Colors.grey,
-          ),
+      return OptimizedAvatar(
+        imageUrl: avatar,
+        size: size,
+        fallback: Icon(
+          Icons.broken_image,
+          size: size * 0.9,
+          color: brokenIconColor ?? Colors.grey,
         ),
       );
     }
@@ -60,7 +57,7 @@ class PetAvatar extends StatelessWidget {
   }
 }
 
-/// 宠物选择器组件 - 单宠家庭优化版本
+/// 宠物选择器组件 - 紧凑版本
 class PetSelector extends StatelessWidget {
   final List<models.Pet> pets;
   final String selectedPetId;
@@ -79,57 +76,184 @@ class PetSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (pets.isEmpty) {
+      return _buildEmptyState();
+    }
+
+    if (pets.length == 1) {
+      return _buildCompactSinglePetView(pets.first);
+    }
+
+    // 使用横向头像快速切换条
+    return _buildHorizontalQuickSwitcher();
+  }
+
+  Widget _buildCompactSinglePetView(models.Pet pet) {
     return Container(
-      margin: const EdgeInsets.all(AppTheme.spacingM),
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingM,
+        vertical: AppTheme.spacingS,
+      ),
       decoration: BoxDecoration(
-        color: AppTheme.surfaceColor,
-        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.08),
-            blurRadius: 20,
-            offset: const Offset(0, 4),
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingL),
-        child: Column(
+        padding: const EdgeInsets.all(AppTheme.spacingM),
+        child: Row(
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.pets,
-                    color: AppTheme.primaryColor,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  pets.length > 1 ? '我的宠物' : '我的宠物',
-                  style: const TextStyle(
-                    fontSize: AppTheme.fontSizeL,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimaryColor,
-                  ),
-                ),
-                const Spacer(),
-                if (showAddButton && onAddPet != null) _buildAddPetButton(),
-              ],
+            // 宠物头像
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: pet.color.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: PetAvatar(
+                avatar: pet.avatar,
+                size: 20,
+                brokenIconColor: pet.color,
+              ),
             ),
-            const SizedBox(height: AppTheme.spacingL),
-            if (pets.isEmpty)
-              _buildEmptyState()
-            else if (pets.length == 1)
-              _buildSinglePetView(pets.first)
-            else
-              _buildMultiPetSelector(),
+            const SizedBox(width: AppTheme.spacingM),
+            // 宠物信息
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    pet.name,
+                    style: const TextStyle(
+                      fontSize: AppTheme.fontSizeM,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimaryColor,
+                    ),
+                  ),
+                  Text(
+                    '${pet.breed} · ${pet.gender} · ${pet.weight}kg',
+                    style: TextStyle(
+                      fontSize: AppTheme.fontSizeXS,
+                      color: AppTheme.textSecondaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // 当前状态标签
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: pet.color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: pet.color.withValues(alpha: 0.3)),
+              ),
+              child: Text(
+                '当前',
+                style: TextStyle(
+                  color: pet.color,
+                  fontSize: AppTheme.fontSizeXS,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompactMultiPetSelector() {
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingM,
+        vertical: AppTheme.spacingS,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppTheme.spacingM),
+        child: Row(
+          children: [
+            Icon(Icons.pets, color: AppTheme.primaryColor, size: 20),
+            const SizedBox(width: AppTheme.spacingS),
+            Expanded(
+              child: DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+                  isDense: true,
+                  isExpanded: true,
+                  value: selectedPetId.isNotEmpty ? selectedPetId : null,
+                  hint: Text(
+                    '选择宠物',
+                    style: TextStyle(
+                      color: AppTheme.textSecondaryColor,
+                      fontSize: AppTheme.fontSizeS,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.expand_more,
+                    color: AppTheme.textSecondaryColor,
+                    size: 18,
+                  ),
+                  items: pets.map((pet) {
+                    return DropdownMenuItem(
+                      value: pet.id,
+                      child: Row(
+                        children: [
+                          PetAvatar(
+                            avatar: pet.avatar,
+                            size: 16,
+                            brokenIconColor: pet.color,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              pet.name,
+                              style: const TextStyle(
+                                fontSize: AppTheme.fontSizeS,
+                                color: AppTheme.textPrimaryColor,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      onPetSelected(value);
+                    }
+                  },
+                ),
+              ),
+            ),
+            if (showAddButton && onAddPet != null) ...[
+              const SizedBox(width: AppTheme.spacingS),
+              IconButton(
+                onPressed: onAddPet,
+                icon: Icon(Icons.add, color: AppTheme.primaryColor, size: 20),
+                tooltip: '添加宠物',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              ),
+            ],
           ],
         ),
       ),
@@ -184,30 +308,61 @@ class PetSelector extends StatelessWidget {
 
   Widget _buildEmptyState() {
     return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingXL),
-      child: Column(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingM,
+        vertical: AppTheme.spacingS,
+      ),
+      padding: const EdgeInsets.all(AppTheme.spacingL),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
         children: [
           Icon(
             Icons.pets_outlined,
-            size: 48,
+            size: 24,
             color: AppTheme.textSecondaryColor.withValues(alpha: 0.5),
           ),
-          const SizedBox(height: AppTheme.spacingM),
-          Text(
-            '还没有添加宠物',
-            style: TextStyle(
-              color: AppTheme.textSecondaryColor,
-              fontSize: AppTheme.fontSizeM,
+          const SizedBox(width: AppTheme.spacingM),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  '还没有添加宠物',
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryColor,
+                    fontSize: AppTheme.fontSizeS,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  '点击添加按钮创建宠物档案',
+                  style: TextStyle(
+                    color: AppTheme.textSecondaryColor.withValues(alpha: 0.7),
+                    fontSize: AppTheme.fontSizeXS,
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: AppTheme.spacingS),
-          Text(
-            '点击上方按钮添加你的第一个宠物',
-            style: TextStyle(
-              color: AppTheme.textSecondaryColor.withValues(alpha: 0.7),
-              fontSize: AppTheme.fontSizeS,
+          if (showAddButton && onAddPet != null)
+            IconButton(
+              onPressed: onAddPet,
+              icon: Icon(Icons.add, color: AppTheme.primaryColor, size: 20),
+              tooltip: '添加宠物',
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
             ),
-          ),
         ],
       ),
     );
@@ -472,6 +627,134 @@ class PetSelector extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
               overflow: TextOverflow.ellipsis, // 添加文本溢出处理
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 横向头像快速切换条（极简：圆头像 + 两字名）
+  Widget _buildHorizontalQuickSwitcher() {
+    final String currentId = selectedPetId.isNotEmpty
+        ? selectedPetId
+        : (pets.isNotEmpty ? pets.first.id : '');
+
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacingM,
+        vertical: AppTheme.spacingS,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.06),
+            blurRadius: 12,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppTheme.spacingM,
+          vertical: AppTheme.spacingS,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    for (final p in pets) ...[
+                      _MiniAvatarItem(
+                        pet: p,
+                        isActive: p.id == currentId,
+                        onTap: () => onPetSelected(p.id),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  ],
+                ),
+              ),
+            ),
+            if (showAddButton && onAddPet != null)
+              IconButton(
+                onPressed: onAddPet,
+                icon: Icon(Icons.add, color: AppTheme.primaryColor, size: 20),
+                tooltip: '添加宠物',
+                padding: EdgeInsets.zero,
+                constraints: const BoxConstraints(minWidth: 32, minHeight: 32),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniAvatarItem extends StatelessWidget {
+  final models.Pet pet;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _MiniAvatarItem({
+    required this.pet,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final String shortName = pet.name.characters.take(2).toString();
+    final double avatarSize = 28;
+
+    return GestureDetector(
+      onTap: onTap,
+      behavior: HitTestBehavior.opaque,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(2),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: isActive
+                    ? pet.color.withValues(alpha: 0.6)
+                    : Colors.transparent,
+                width: 2,
+              ),
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: pet.color.withValues(alpha: 0.10),
+                shape: BoxShape.circle,
+              ),
+              child: PetAvatar(
+                avatar: pet.avatar,
+                size: avatarSize,
+                brokenIconColor: pet.color,
+              ),
+            ),
+          ),
+          const SizedBox(height: 4),
+          SizedBox(
+            width: 40,
+            child: Text(
+              shortName,
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: AppTheme.fontSizeXS,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+                color: isActive
+                    ? AppTheme.textPrimaryColor
+                    : AppTheme.textSecondaryColor,
+              ),
             ),
           ),
         ],

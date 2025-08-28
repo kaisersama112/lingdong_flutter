@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
 import '../../core/error_handler.dart';
-import 'services/logout_service.dart';
-import 'services/mock_data_service.dart';
+import '../../services/logout_service.dart';
+import '../../services/mock_data_service.dart';
 import '../../core/models.dart';
 
 class SettingsPage extends StatefulWidget {

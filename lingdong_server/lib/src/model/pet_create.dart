@@ -19,6 +19,7 @@ part 'pet_create.g.dart';
 /// * [chipId] 
 /// * [avatar] 
 /// * [gender] 
+/// * [weight] 
 /// * [neutered] 
 /// * [allergyHistory] 
 @BuiltValue()
@@ -45,6 +46,9 @@ abstract class PetCreate implements Built<PetCreate, PetCreateBuilder> {
 
   @BuiltValueField(wireName: r'gender')
   String? get gender;
+
+  @BuiltValueField(wireName: r'weight')
+  num? get weight;
 
   @BuiltValueField(wireName: r'neutered')
   bool? get neutered;
@@ -118,6 +122,13 @@ class _$PetCreateSerializer implements PrimitiveSerializer<PetCreate> {
       yield serializers.serialize(
         object.gender,
         specifiedType: const FullType.nullable(String),
+      );
+    }
+    if (object.weight != null) {
+      yield r'weight';
+      yield serializers.serialize(
+        object.weight,
+        specifiedType: const FullType.nullable(num),
       );
     }
     if (object.neutered != null) {
@@ -210,6 +221,14 @@ class _$PetCreateSerializer implements PrimitiveSerializer<PetCreate> {
           ) as String?;
           if (valueDes == null) continue;
           result.gender = valueDes;
+          break;
+        case r'weight':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(num),
+          ) as num?;
+          if (valueDes == null) continue;
+          result.weight = valueDes;
           break;
         case r'neutered':
           final valueDes = serializers.deserialize(

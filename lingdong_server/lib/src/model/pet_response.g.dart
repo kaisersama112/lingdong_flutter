@@ -22,6 +22,8 @@ class _$PetResponse extends PetResponse {
   @override
   final String? gender;
   @override
+  final num? weight;
+  @override
   final bool? neutered;
   @override
   final String? allergyHistory;
@@ -39,6 +41,7 @@ class _$PetResponse extends PetResponse {
       this.chipId,
       this.avatar,
       this.gender,
+      this.weight,
       this.neutered,
       this.allergyHistory,
       required this.id})
@@ -61,6 +64,7 @@ class _$PetResponse extends PetResponse {
         chipId == other.chipId &&
         avatar == other.avatar &&
         gender == other.gender &&
+        weight == other.weight &&
         neutered == other.neutered &&
         allergyHistory == other.allergyHistory &&
         id == other.id;
@@ -76,6 +80,7 @@ class _$PetResponse extends PetResponse {
     _$hash = $jc(_$hash, chipId.hashCode);
     _$hash = $jc(_$hash, avatar.hashCode);
     _$hash = $jc(_$hash, gender.hashCode);
+    _$hash = $jc(_$hash, weight.hashCode);
     _$hash = $jc(_$hash, neutered.hashCode);
     _$hash = $jc(_$hash, allergyHistory.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
@@ -93,6 +98,7 @@ class _$PetResponse extends PetResponse {
           ..add('chipId', chipId)
           ..add('avatar', avatar)
           ..add('gender', gender)
+          ..add('weight', weight)
           ..add('neutered', neutered)
           ..add('allergyHistory', allergyHistory)
           ..add('id', id))
@@ -131,6 +137,10 @@ class PetResponseBuilder implements Builder<PetResponse, PetResponseBuilder> {
   String? get gender => _$this._gender;
   set gender(String? gender) => _$this._gender = gender;
 
+  num? _weight;
+  num? get weight => _$this._weight;
+  set weight(num? weight) => _$this._weight = weight;
+
   bool? _neutered;
   bool? get neutered => _$this._neutered;
   set neutered(bool? neutered) => _$this._neutered = neutered;
@@ -158,6 +168,7 @@ class PetResponseBuilder implements Builder<PetResponse, PetResponseBuilder> {
       _chipId = $v.chipId;
       _avatar = $v.avatar;
       _gender = $v.gender;
+      _weight = $v.weight;
       _neutered = $v.neutered;
       _allergyHistory = $v.allergyHistory;
       _id = $v.id;
@@ -189,6 +200,7 @@ class PetResponseBuilder implements Builder<PetResponse, PetResponseBuilder> {
           chipId: chipId,
           avatar: avatar,
           gender: gender,
+          weight: weight,
           neutered: neutered,
           allergyHistory: allergyHistory,
           id: BuiltValueNullFieldError.checkNotNull(id, r'PetResponse', 'id'),
