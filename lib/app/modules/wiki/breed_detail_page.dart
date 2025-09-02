@@ -12,25 +12,26 @@ class BreedDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(breed.name),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppTheme.textPrimaryColor,
-        elevation: 0.5,
+        elevation: 0,
+        centerTitle: true,
       ),
       backgroundColor: AppTheme.backgroundColor,
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         children: [
           _buildHeader(),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.spacingM),
           _buildBadges(),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppTheme.spacingM),
           _buildRatings(),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppTheme.spacingM),
           ...allGuideCategories
               .map((c) => _buildGuideSection(c))
               .where((w) => w != null)
               .cast<Widget>(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppTheme.spacingL),
         ],
       ),
     );
@@ -40,24 +41,21 @@ class BreedDetailPage extends StatelessWidget {
     return Container(
       decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(breed.emoji, style: const TextStyle(fontSize: 48)),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppTheme.spacingM),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    breed.name,
-                    style: AppTheme.subheadingStyle.copyWith(fontSize: 20),
-                  ),
+                  Text(breed.name, style: AppTheme.headingStyle),
                   const SizedBox(height: 6),
                   Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: AppTheme.spacingS,
+                    runSpacing: AppTheme.spacingS,
                     children: [
                       _chip(
                         '体型: ${breed.size}',
@@ -76,6 +74,7 @@ class BreedDetailPage extends StatelessWidget {
                     breed.description,
                     style: AppTheme.bodyStyle.copyWith(
                       color: AppTheme.textSecondaryColor,
+                      height: 1.6,
                     ),
                   ),
                 ],
@@ -106,40 +105,36 @@ class BreedDetailPage extends StatelessWidget {
   }
 
   Widget _buildBadges() {
-    return Container(
-      decoration: AppTheme.cardDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: breed.temperament
-              .map((t) => _chip(t, AppTheme.warningLightColor))
-              .toList(),
-        ),
+    return _section(
+      icon: Icons.tag,
+      title: '性格特征',
+      child: Wrap(
+        spacing: AppTheme.spacingS,
+        runSpacing: AppTheme.spacingS,
+        children: breed.temperament
+            .map((t) => _chip(t, AppTheme.warningLightColor))
+            .toList(),
       ),
     );
   }
 
   Widget _buildRatings() {
-    return Container(
-      decoration: AppTheme.cardDecoration,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ratingRow('掉毛', breed.shedding, Icons.air),
-            const SizedBox(height: 10),
-            _ratingRow('护理', breed.grooming, Icons.content_cut),
-            const SizedBox(height: 10),
-            _ratingRow('精力', breed.energy, Icons.directions_run),
-            const SizedBox(height: 10),
-            _ratingRow('可训', breed.trainability, Icons.school),
-            const SizedBox(height: 10),
-            _ratingRow('叫声', breed.barkLevel, Icons.campaign),
-          ],
-        ),
+    return _section(
+      icon: Icons.star,
+      title: '特性评分',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _ratingRow('掉毛', breed.shedding, Icons.air),
+          const SizedBox(height: 10),
+          _ratingRow('护理', breed.grooming, Icons.content_cut),
+          const SizedBox(height: 10),
+          _ratingRow('精力', breed.energy, Icons.directions_run),
+          const SizedBox(height: 10),
+          _ratingRow('可训', breed.trainability, Icons.school),
+          const SizedBox(height: 10),
+          _ratingRow('叫声', breed.barkLevel, Icons.campaign),
+        ],
       ),
     );
   }
@@ -169,39 +164,63 @@ class BreedDetailPage extends StatelessWidget {
   Widget? _buildGuideSection(GuideCategory category) {
     final items = breed.guides[category];
     if (items == null || items.isEmpty) return null;
+    return _section(
+      title: guideCategoryLabel(category),
+      icon: Icons.menu_book,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ...items.map(
+            (e) => Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    e.title,
+                    style: AppTheme.bodyStyle.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    e.content,
+                    style: AppTheme.bodyStyle.copyWith(
+                      color: AppTheme.textSecondaryColor,
+                      height: 1.6,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _section({
+    required String title,
+    required IconData icon,
+    required Widget child,
+  }) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
       decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppTheme.spacingM),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(guideCategoryLabel(category), style: AppTheme.subheadingStyle),
-            const SizedBox(height: 8),
-            ...items.map(
-              (e) => Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      e.title,
-                      style: AppTheme.bodyStyle.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      e.content,
-                      style: AppTheme.bodyStyle.copyWith(
-                        color: AppTheme.textSecondaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            Row(
+              children: [
+                Icon(icon, color: AppTheme.primaryColor),
+                const SizedBox(width: AppTheme.spacingS),
+                Text(title, style: AppTheme.subheadingStyle),
+              ],
             ),
+            const SizedBox(height: AppTheme.spacingM),
+            child,
           ],
         ),
       ),

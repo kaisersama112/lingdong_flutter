@@ -4,6 +4,7 @@ import '../core/models.dart' as models;
 import 'database_service.dart';
 import 'user_auth_service.dart';
 import 'package:lingdong_server/lingdong_server.dart' as server;
+import 'dart:async'; // Added for Completer
 
 class PetService {
   static final PetService _instance = PetService._internal();
@@ -328,7 +329,7 @@ class PetService {
     }
   }
 
-  /// 从API获取宠物健康记录数量
+  /// 从API获取宠物健康记录数量（优化版本 - 按需请求）
   Future<Map<String, int>> _getRecordCountsFromApi(int petId) async {
     _initializeApiClient();
     _ensureValidAuthToken(); // 在API调用前检查Token
@@ -336,120 +337,30 @@ class PetService {
     try {
       final Map<String, int> counts = {};
 
-      // 获取各种类型的记录数量
-      // 疫苗接种记录
-      try {
-        final vaccinationResponse = await _petApi!
-            .getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(
-              petId: petId,
-              skip: 0,
-              size: 1,
-            );
-        if (vaccinationResponse.data?.code == 200) {
-          final data = vaccinationResponse.data?.data;
-          if (data != null && data['total'] != null) {
-            counts['vaccination'] = data['total'] as int;
-          }
-        }
-      } catch (e) {
-        debugPrint('获取疫苗接种记录数量失败: $e');
-        counts['vaccination'] = 0;
+      // 使用缓存机制，避免重复请求
+      final String cacheKey = 'record_counts_$petId';
+      final cachedCounts = _getCachedRecordCounts(cacheKey);
+      if (cachedCounts.isNotEmpty) {
+        debugPrint('使用缓存的记录数量: $cachedCounts');
+        return cachedCounts;
       }
 
-      // 驱虫记录
-      try {
-        final dewormingResponse = await _petApi!
-            .getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(
-              petId: petId,
-              skip: 0,
-              size: 1,
-            );
-        if (dewormingResponse.data?.code == 200) {
-          final data = dewormingResponse.data?.data;
-          if (data != null && data['total'] != null) {
-            counts['deworming'] = data['total'] as int;
-          }
+      // 只请求用户当前需要的记录类型数量
+      // 默认只获取疫苗接种和驱虫记录数量（最常用的）
+      final priorityTypes = ['vaccination', 'deworming'];
+
+      for (final type in priorityTypes) {
+        try {
+          final count = await _getRecordCountByType(petId, type);
+          counts[type] = count;
+        } catch (e) {
+          debugPrint('获取$type记录数量失败: $e');
+          counts[type] = 0;
         }
-      } catch (e) {
-        debugPrint('获取驱虫记录数量失败: $e');
-        counts['deworming'] = 0;
       }
 
-      // 体检记录
-      try {
-        final examinationResponse = await _petApi!
-            .getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(
-              petId: petId,
-              skip: 0,
-              size: 1,
-            );
-        if (examinationResponse.data?.code == 200) {
-          final data = examinationResponse.data?.data;
-          if (data != null && data['total'] != null) {
-            counts['vetVisit'] = data['total'] as int;
-          }
-        }
-      } catch (e) {
-        debugPrint('获取体检记录数量失败: $e');
-        counts['vetVisit'] = 0;
-      }
-
-      // 体重记录
-      try {
-        final weightResponse = await _petApi!
-            .getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(
-              petId: petId,
-              skip: 0,
-              size: 1,
-            );
-        if (weightResponse.data?.code == 200) {
-          final data = weightResponse.data?.data;
-          if (data != null && data['total'] != null) {
-            counts['weight'] = data['total'] as int;
-          }
-        }
-      } catch (e) {
-        debugPrint('获取体重记录数量失败: $e');
-        counts['weight'] = 0;
-      }
-
-      // 美容记录
-      try {
-        final groomingResponse = await _petApi!
-            .getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(
-              petId: petId,
-              skip: 0,
-              size: 1,
-            );
-        if (groomingResponse.data?.code == 200) {
-          final data = groomingResponse.data?.data;
-          if (data != null && data['total'] != null) {
-            counts['grooming'] = data['total'] as int;
-          }
-        }
-      } catch (e) {
-        debugPrint('获取美容记录数量失败: $e');
-        counts['grooming'] = 0;
-      }
-
-      // 其他健康记录
-      try {
-        final otherResponse = await _petApi!
-            .getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(
-              petId: petId,
-              skip: 0,
-              size: 1,
-            );
-        if (otherResponse.data?.code == 200) {
-          final data = otherResponse.data?.data;
-          if (data != null && data['total'] != null) {
-            counts['medication'] = data['total'] as int; // 使用medication类型
-          }
-        }
-      } catch (e) {
-        debugPrint('获取其他健康记录数量失败: $e');
-        counts['medication'] = 0;
-      }
+      // 缓存结果
+      _cacheRecordCounts(cacheKey, counts);
 
       debugPrint('从API获取到记录数量: $counts');
       return counts;
@@ -457,6 +368,150 @@ class PetService {
       debugPrint('获取记录数量失败: $e');
       throw Exception('获取记录数量失败: $e');
     }
+  }
+
+  /// 根据类型获取记录数量（按需请求）
+  Future<int> _getRecordCountByType(int petId, String type) async {
+    try {
+      switch (type) {
+        case 'vaccination':
+          final response = await _petApi!
+              .getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(
+                petId: petId,
+                skip: 0,
+                size: 1,
+              );
+          if (response.data?.code == 200) {
+            final data = response.data?.data;
+            return data?['total'] as int? ?? 0;
+          }
+          break;
+
+        case 'deworming':
+          final response = await _petApi!
+              .getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(
+                petId: petId,
+                skip: 0,
+                size: 1,
+              );
+          if (response.data?.code == 200) {
+            final data = response.data?.data;
+            return data?['total'] as int? ?? 0;
+          }
+          break;
+
+        case 'vetVisit':
+          final response = await _petApi!
+              .getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(
+                petId: petId,
+                skip: 0,
+                size: 1,
+              );
+          if (response.data?.code == 200) {
+            final data = response.data?.data;
+            return data?['total'] as int? ?? 0;
+          }
+          break;
+
+        case 'weight':
+          final response = await _petApi!
+              .getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(
+                petId: petId,
+                skip: 0,
+                size: 1,
+              );
+          if (response.data?.code == 200) {
+            final data = response.data?.data;
+            return data?['total'] as int? ?? 0;
+          }
+          break;
+
+        case 'grooming':
+          final response = await _petApi!
+              .getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(
+                petId: petId,
+                skip: 0,
+                size: 1,
+              );
+          if (response.data?.code == 200) {
+            final data = response.data?.data;
+            return data?['total'] as int? ?? 0;
+          }
+          break;
+      }
+      return 0;
+    } catch (e) {
+      debugPrint('获取$type记录数量失败: $e');
+      return 0;
+    }
+  }
+
+  /// 获取完整的记录数量（当用户需要查看所有类型时调用）
+  Future<Map<String, int>> getFullRecordCounts(String petId) async {
+    try {
+      final Map<String, int> counts = {};
+      final allTypes = [
+        'vaccination',
+        'deworming',
+        'vetVisit',
+        'weight',
+        'grooming',
+      ];
+
+      // 并行请求所有类型的记录数量，但限制并发数
+      final semaphore = _Semaphore(3); // 最多3个并发请求
+      final futures = allTypes.map((type) async {
+        await semaphore.acquire();
+        try {
+          final count = await _getRecordCountByType(int.parse(petId), type);
+          return MapEntry(type, count);
+        } finally {
+          semaphore.release();
+        }
+      });
+
+      final results = await Future.wait(futures);
+      for (final entry in results) {
+        counts[entry.key] = entry.value;
+      }
+
+      // 缓存完整结果
+      final String cacheKey = 'full_record_counts_$petId';
+      _cacheRecordCounts(cacheKey, counts);
+
+      return counts;
+    } catch (e) {
+      debugPrint('获取完整记录数量失败: $e');
+      return {};
+    }
+  }
+
+  // 简单的内存缓存
+  static final Map<String, Map<String, int>> _recordCountsCache = {};
+  static final Map<String, DateTime> _cacheTimestamps = {};
+  static const Duration _cacheExpiry = Duration(minutes: 5); // 5分钟缓存过期
+
+  /// 获取缓存的记录数量
+  Map<String, int> _getCachedRecordCounts(String cacheKey) {
+    final timestamp = _cacheTimestamps[cacheKey];
+    if (timestamp != null &&
+        DateTime.now().difference(timestamp) < _cacheExpiry) {
+      return _recordCountsCache[cacheKey] ?? {};
+    }
+    return {};
+  }
+
+  /// 缓存记录数量
+  void _cacheRecordCounts(String cacheKey, Map<String, int> counts) {
+    _recordCountsCache[cacheKey] = counts;
+    _cacheTimestamps[cacheKey] = DateTime.now();
+  }
+
+  /// 清除缓存
+  void clearRecordCountsCache() {
+    _recordCountsCache.clear();
+    _cacheTimestamps.clear();
+    debugPrint('记录数量缓存已清除');
   }
 
   /// 从本地数据库获取宠物健康记录数量
@@ -624,6 +679,35 @@ class PetService {
     } catch (e) {
       debugPrint('刷新宠物数据失败: $e');
       throw Exception('刷新宠物数据失败: $e');
+    }
+  }
+}
+
+/// 简单的信号量实现，用于限制并发请求数量
+class _Semaphore {
+  final int _maxCount;
+  int _currentCount;
+  final List<Completer<void>> _waiters = [];
+
+  _Semaphore(this._maxCount) : _currentCount = _maxCount;
+
+  Future<void> acquire() async {
+    if (_currentCount > 0) {
+      _currentCount--;
+      return;
+    }
+
+    final completer = Completer<void>();
+    _waiters.add(completer);
+    await completer.future;
+  }
+
+  void release() {
+    if (_waiters.isNotEmpty) {
+      final completer = _waiters.removeAt(0);
+      completer.complete();
+    } else {
+      _currentCount++;
     }
   }
 }

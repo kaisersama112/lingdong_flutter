@@ -33,7 +33,6 @@ enum HealthRecordType {
   deworming, // 驱虫
   vetVisit, // 就诊体检
   weight, // 体重
-  medication, // 用药
   grooming, // 美容
 }
 
@@ -89,52 +88,78 @@ class UserProfile {
 class HealthRecordUtils {
   static String getTypeLabel(HealthRecordType type) {
     switch (type) {
+      case HealthRecordType.weight:
+        return '体重';
+      case HealthRecordType.grooming:
+        return '美容';
       case HealthRecordType.vaccination:
         return '疫苗';
       case HealthRecordType.deworming:
         return '驱虫';
       case HealthRecordType.vetVisit:
-        return '就诊体检';
-      case HealthRecordType.weight:
-        return '体重';
-      case HealthRecordType.medication:
-        return '用药';
-      case HealthRecordType.grooming:
-        return '美容';
+        return '体检';
     }
   }
 
   static IconData getTypeIcon(HealthRecordType type) {
     switch (type) {
       case HealthRecordType.vaccination:
-        return Icons.vaccines;
+        return Icons.vaccines_outlined;
       case HealthRecordType.deworming:
-        return Icons.bug_report;
+        return Icons.pest_control_outlined;
       case HealthRecordType.vetVisit:
-        return Icons.local_hospital;
+        return Icons.medical_services_outlined;
       case HealthRecordType.weight:
-        return Icons.monitor_weight;
-      case HealthRecordType.medication:
-        return Icons.medication_liquid;
+        return Icons.monitor_weight_outlined;
       case HealthRecordType.grooming:
-        return Icons.content_cut;
+        return Icons.content_cut_outlined;
     }
   }
 
   static Color getTypeColor(HealthRecordType type) {
     switch (type) {
       case HealthRecordType.vaccination:
-        return Colors.deepPurple;
+        return const Color(0xFF6366F1); // 现代紫色
       case HealthRecordType.deworming:
-        return Colors.teal;
+        return const Color(0xFF10B981); // 翠绿色
       case HealthRecordType.vetVisit:
-        return Colors.indigo;
+        return const Color(0xFF3B82F6); // 现代蓝色
       case HealthRecordType.weight:
-        return Colors.orange;
-      case HealthRecordType.medication:
-        return Colors.pink;
+        return const Color(0xFFF59E0B); // 琥珀色
       case HealthRecordType.grooming:
-        return Colors.green;
+        return const Color(0xFF8B5CF6); // 紫罗兰色
+    }
+  }
+
+  /// 获取类型的渐变颜色列表
+  static List<Color> getTypeGradientColors(HealthRecordType type) {
+    switch (type) {
+      case HealthRecordType.vaccination:
+        return [const Color(0xFF6366F1), const Color(0xFF8B5CF6)];
+      case HealthRecordType.deworming:
+        return [const Color(0xFF10B981), const Color(0xFF059669)];
+      case HealthRecordType.vetVisit:
+        return [const Color(0xFF3B82F6), const Color(0xFF1D4ED8)];
+      case HealthRecordType.weight:
+        return [const Color(0xFFF59E0B), const Color(0xFFD97706)];
+      case HealthRecordType.grooming:
+        return [const Color(0xFF8B5CF6), const Color(0xFF7C3AED)];
+    }
+  }
+
+  /// 获取类型的浅色背景
+  static Color getTypeLightColor(HealthRecordType type) {
+    switch (type) {
+      case HealthRecordType.vaccination:
+        return const Color(0xFFEEF2FF);
+      case HealthRecordType.deworming:
+        return const Color(0xFFECFDF5);
+      case HealthRecordType.vetVisit:
+        return const Color(0xFFEFF6FF);
+      case HealthRecordType.weight:
+        return const Color(0xFFFFFBEB);
+      case HealthRecordType.grooming:
+        return const Color(0xFFF5F3FF);
     }
   }
 }

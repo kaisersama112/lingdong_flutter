@@ -12,9 +12,10 @@ class SocialActivityDetailPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(activity.title),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppTheme.textPrimaryColor,
         elevation: 0,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(AppTheme.spacingM),
@@ -124,52 +125,25 @@ class SocialActivityDetailPage extends StatelessWidget {
   }
 
   Widget _buildDescription() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.description, color: Colors.green),
-              const SizedBox(width: AppTheme.spacingS),
-              Text('活动描述', style: AppTheme.subheadingStyle),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingM),
-          Text(
-            activity.description,
-            style: AppTheme.bodyStyle.copyWith(height: 1.6, fontSize: 16),
-          ),
-        ],
+    return _section(
+      icon: Icons.description,
+      iconColor: Colors.green,
+      title: '活动描述',
+      child: Text(
+        activity.description,
+        style: AppTheme.bodyStyle.copyWith(height: 1.6, fontSize: 16),
       ),
     );
   }
 
   Widget _buildBenefits() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
-      ),
+    return _section(
+      icon: Icons.thumb_up,
+      iconColor: Colors.green,
+      title: '活动益处',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.thumb_up, color: Colors.green),
-              const SizedBox(width: AppTheme.spacingS),
-              Text('活动益处', style: AppTheme.subheadingStyle),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingM),
           ...activity.benefits.map(
             (benefit) => Padding(
               padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
@@ -189,24 +163,13 @@ class SocialActivityDetailPage extends StatelessWidget {
   }
 
   Widget _buildRequirements() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
-      ),
+    return _section(
+      icon: Icons.checklist,
+      iconColor: Colors.orange,
+      title: '参与要求',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.checklist, color: Colors.orange),
-              const SizedBox(width: AppTheme.spacingS),
-              Text('参与要求', style: AppTheme.subheadingStyle),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingM),
           ...activity.requirements.map(
             (requirement) => Padding(
               padding: const EdgeInsets.only(bottom: AppTheme.spacingS),
@@ -226,24 +189,12 @@ class SocialActivityDetailPage extends StatelessWidget {
   }
 
   Widget _buildActivityInfo() {
-    return Container(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppTheme.dividerColor),
-      ),
+    return _section(
+      icon: Icons.info_outline,
+      title: '活动信息',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Icon(Icons.info_outline, color: AppTheme.primaryColor),
-              const SizedBox(width: AppTheme.spacingS),
-              Text('活动信息', style: AppTheme.subheadingStyle),
-            ],
-          ),
-          const SizedBox(height: AppTheme.spacingM),
           _buildInfoItem('活动时长', '${activity.duration} 分钟', Icons.access_time),
           _buildInfoItem(
             '适合年龄',
@@ -322,6 +273,37 @@ class SocialActivityDetailPage extends StatelessWidget {
             ),
             child: const Icon(Icons.share, color: Colors.grey),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _section({
+    required IconData icon,
+    Color? iconColor,
+    required String title,
+    required Widget child,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppTheme.spacingM),
+      margin: const EdgeInsets.only(bottom: AppTheme.spacingM),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.dividerColor),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: iconColor ?? AppTheme.primaryColor),
+              const SizedBox(width: AppTheme.spacingS),
+              Text(title, style: AppTheme.subheadingStyle),
+            ],
+          ),
+          const SizedBox(height: AppTheme.spacingM),
+          child,
         ],
       ),
     );

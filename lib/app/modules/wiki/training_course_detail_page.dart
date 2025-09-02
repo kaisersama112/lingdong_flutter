@@ -5,17 +5,14 @@ import 'breed_models.dart';
 class TrainingCourseDetailPage extends StatefulWidget {
   final TrainingCourse course;
 
-  const TrainingCourseDetailPage({
-    super.key,
-    required this.course,
-  });
+  const TrainingCourseDetailPage({super.key, required this.course});
 
   @override
-  State<TrainingCourseDetailPage> createState() => _TrainingCourseDetailPageState();
+  State<TrainingCourseDetailPage> createState() =>
+      _TrainingCourseDetailPageState();
 }
 
 class _TrainingCourseDetailPageState extends State<TrainingCourseDetailPage> {
-  bool _isPlaying = false;
   double _progress = 0.0;
 
   @override
@@ -23,9 +20,10 @@ class _TrainingCourseDetailPageState extends State<TrainingCourseDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.course.title),
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
         foregroundColor: AppTheme.textPrimaryColor,
         elevation: 0,
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -47,7 +45,9 @@ class _TrainingCourseDetailPageState extends State<TrainingCourseDetailPage> {
       height: 200,
       width: double.infinity,
       decoration: BoxDecoration(
-        color: TrainingUtils.courseTypeColor(widget.course.type).withValues(alpha: 0.1),
+        color: TrainingUtils.courseTypeColor(
+          widget.course.type,
+        ).withValues(alpha: 0.1),
       ),
       child: Center(
         child: Icon(
@@ -60,19 +60,33 @@ class _TrainingCourseDetailPageState extends State<TrainingCourseDetailPage> {
   }
 
   Widget _buildCourseInfo() {
-    return Padding(
+    return Container(
+      margin: const EdgeInsets.all(AppTheme.spacingM),
       padding: const EdgeInsets.all(AppTheme.spacingM),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: AppTheme.dividerColor),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            widget.course.title,
-            style: AppTheme.headingStyle,
+          Row(
+            children: [
+              Icon(
+                Icons.menu_book,
+                color: TrainingUtils.courseTypeColor(widget.course.type),
+              ),
+              const SizedBox(width: AppTheme.spacingS),
+              Text('课程信息', style: AppTheme.subheadingStyle),
+            ],
           ),
+          const SizedBox(height: AppTheme.spacingM),
+          Text(widget.course.title, style: AppTheme.headingStyle),
           const SizedBox(height: AppTheme.spacingS),
           Text(
             widget.course.description,
-            style: AppTheme.bodyStyle,
+            style: AppTheme.bodyStyle.copyWith(height: 1.6),
           ),
           const SizedBox(height: AppTheme.spacingM),
           Row(
@@ -100,7 +114,16 @@ class _TrainingCourseDetailPageState extends State<TrainingCourseDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('学习进度', style: AppTheme.subheadingStyle),
+          Row(
+            children: [
+              Icon(
+                Icons.trending_up,
+                color: TrainingUtils.courseTypeColor(widget.course.type),
+              ),
+              const SizedBox(width: AppTheme.spacingS),
+              Text('学习进度', style: AppTheme.subheadingStyle),
+            ],
+          ),
           const SizedBox(height: AppTheme.spacingM),
           LinearProgressIndicator(value: _progress),
           Text('${(_progress * 100).toInt()}% 完成'),
@@ -121,7 +144,16 @@ class _TrainingCourseDetailPageState extends State<TrainingCourseDetailPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('课程内容', style: AppTheme.subheadingStyle),
+          Row(
+            children: [
+              Icon(
+                Icons.list,
+                color: TrainingUtils.courseTypeColor(widget.course.type),
+              ),
+              const SizedBox(width: AppTheme.spacingS),
+              Text('课程内容', style: AppTheme.subheadingStyle),
+            ],
+          ),
           const SizedBox(height: AppTheme.spacingM),
           Text('• 课程介绍'),
           Text('• 基础理论'),

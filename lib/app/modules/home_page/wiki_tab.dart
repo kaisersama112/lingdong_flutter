@@ -197,16 +197,37 @@ class _WikiTabState extends State<WikiTab> {
         child: Center(child: Text('没有匹配的犬种', style: AppTheme.captionStyle)),
       );
     }
-    return GridView.builder(
-      padding: const EdgeInsets.all(AppTheme.spacingM),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.2,
-      ),
-      itemCount: breeds.length,
-      itemBuilder: (_, i) => _breedCard(breeds[i]),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final double width = constraints.maxWidth;
+        int columns = 2;
+        double aspect = 1.0;
+        if (width >= 1200) {
+          columns = 4;
+          aspect = 1.2;
+        } else if (width >= 900) {
+          columns = 3;
+          aspect = 1.15;
+        } else if (width >= 600) {
+          columns = 2;
+          aspect = 1.05;
+        } else {
+          columns = 2;
+          aspect = 0.85;
+        }
+
+        return GridView.builder(
+          padding: const EdgeInsets.all(AppTheme.spacingM),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: columns,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childAspectRatio: aspect,
+          ),
+          itemCount: breeds.length,
+          itemBuilder: (_, i) => _breedCard(breeds[i]),
+        );
+      },
     );
   }
 
@@ -227,6 +248,8 @@ class _WikiTabState extends State<WikiTab> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppTheme.spacingM),
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
       itemCount: allCourses.length,
       itemBuilder: (_, i) => _trainingCourseCard(allCourses[i]),
     );
@@ -249,6 +272,8 @@ class _WikiTabState extends State<WikiTab> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppTheme.spacingM),
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
       itemCount: allGuides.length,
       itemBuilder: (_, i) => _behaviorGuideCard(allGuides[i]),
     );
@@ -271,6 +296,8 @@ class _WikiTabState extends State<WikiTab> {
 
     return ListView.builder(
       padding: const EdgeInsets.all(AppTheme.spacingM),
+      shrinkWrap: true,
+      physics: const ClampingScrollPhysics(),
       itemCount: allActivities.length,
       itemBuilder: (_, i) => _socialActivityCard(allActivities[i]),
     );
@@ -284,18 +311,18 @@ class _WikiTabState extends State<WikiTab> {
       borderRadius: BorderRadius.circular(16),
       child: Container(
         decoration: AppTheme.cardDecoration,
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(breed.emoji, style: const TextStyle(fontSize: 28)),
+                Text(breed.emoji, style: const TextStyle(fontSize: 24)),
                 const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 8,
-                    vertical: 4,
+                    vertical: 3,
                   ),
                   decoration: BoxDecoration(
                     color: BreedTagStyle.colorForSize(
@@ -307,50 +334,87 @@ class _WikiTabState extends State<WikiTab> {
                     breed.size,
                     style: TextStyle(
                       color: BreedTagStyle.colorForSize(breed.size),
-                      fontSize: 11,
+                      fontSize: 10,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 6),
             Text(
               breed.name,
               style: AppTheme.subheadingStyle.copyWith(
-                fontSize: 17,
+                fontSize: 15,
                 fontWeight: FontWeight.w700,
               ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 2),
             Text(
               breed.aliases.join(' / '),
               style: AppTheme.captionStyle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            const Spacer(),
+            const SizedBox(height: 6),
             Row(
               children: [
-                Icon(Icons.star, size: 14, color: Colors.amber[700]),
-                const SizedBox(width: 2),
-                Text('${breed.trainability}', style: AppTheme.captionStyle),
-                const SizedBox(width: 10),
-                Icon(Icons.air, size: 14, color: Colors.blueGrey[400]),
-                const SizedBox(width: 2),
-                Text('${breed.shedding}', style: AppTheme.captionStyle),
-                const Spacer(),
-                Text(
-                  '查看指南',
-                  style: AppTheme.bodyStyle.copyWith(
-                    color: AppTheme.primaryColor,
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.star, size: 14, color: Colors.amber[700]),
+                      const SizedBox(width: 2),
+                      Flexible(
+                        child: Text(
+                          '${breed.trainability}',
+                          style: AppTheme.captionStyle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.air, size: 14, color: Colors.blueGrey[400]),
+                      const SizedBox(width: 2),
+                      Flexible(
+                        child: Text(
+                          '${breed.shedding}',
+                          style: AppTheme.captionStyle,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 6),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 14,
-                  color: Colors.black26,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 60),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: const [
+                      Flexible(
+                        child: Text(
+                          '详情',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: AppTheme.primaryColor,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: 4),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        size: 12,
+                        color: Colors.black26,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

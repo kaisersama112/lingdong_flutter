@@ -381,44 +381,6 @@ class RecordService {
     }
   }
 
-  // ==================== 其他健康记录 ====================
-
-  Future<List<models.HealthRecord>> getOtherHealthRecords(
-    String petId, {
-    int skip = 0,
-    int size = 10,
-  }) async {
-    _initializeApiClient();
-    _ensureValidAuthToken();
-
-    try {
-      final response = await _petApi!
-          .getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(
-            petId: int.parse(petId),
-            skip: skip,
-            size: size,
-          );
-
-      if (response.data?.code != 200) {
-        throw Exception('获取其他健康记录失败: ${response.data?.msg}');
-      }
-
-      _logApiResponse('Other', response.data);
-      final items = _extractItemsAsMapList(response.data);
-      debugPrint('Extracted items count: ${items.length}');
-      debugPrint('Items: $items');
-      return items
-          .map((record) => _convertOtherHealthRecordToModel(record, petId))
-          .toList();
-    } catch (e) {
-      debugPrint('从API获取其他健康记录失败，使用本地数据: $e');
-      return await _getRecordsFromLocal(
-        petId,
-        models.HealthRecordType.medication,
-      );
-    }
-  }
-
   /// 更新疫苗接种记录
   Future<models.HealthRecord> updateVaccinationRecord(
     models.HealthRecord record,
@@ -564,7 +526,7 @@ class RecordService {
       petId: map['pet_id'] as String,
       type: models.HealthRecordType.values.firstWhere(
         (e) => e.toString() == map['type'],
-        orElse: () => models.HealthRecordType.medication,
+        orElse: () => models.HealthRecordType.vaccination,
       ),
       title: map['title'] as String,
       date: DateTime.parse(map['date'] as String),
@@ -669,28 +631,6 @@ class RecordService {
       date: date,
       notes: record['notes']?.toString(),
       clinic: clinic.isEmpty ? null : clinic,
-      weight: null,
-    );
-  }
-
-  /// 转换其他健康记录
-  models.HealthRecord _convertOtherHealthRecordToModel(
-    Map<String, dynamic> record,
-    String petId,
-  ) {
-    final title = (record['other_type'] ?? record['record_type'] ?? '')
-        .toString();
-    final notes = record.containsKey('details')
-        ? _stringifyDetails(record['details'])
-        : (record['notes']?.toString());
-    return models.HealthRecord(
-      id: record['id'].toString(),
-      petId: petId,
-      type: models.HealthRecordType.medication,
-      title: title,
-      date: _parseDate(record['record_date']),
-      notes: (notes != null && notes.isNotEmpty) ? notes : null,
-      clinic: record['clinic']?.toString(),
       weight: null,
     );
   }

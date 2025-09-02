@@ -7,7 +7,7 @@ import '../../services/user_auth_service.dart';
 import '../../services/pet_service.dart';
 import '../../model/user.dart' as user_model;
 import '../records/records_page.dart';
-import '../records/add_health_record_sheet.dart';
+import '../records/add_health_record_page.dart';
 import 'profile_page.dart';
 import 'settings_page.dart';
 import '../pet/pet_detail_page.dart';
@@ -88,24 +88,22 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         _isLoadingPets = true;
       });
 
-      // 先同步认证Token
+      // 同步认证Token到PetService
       _syncAuthToken();
 
-      // 获取当前用户ID
-      final userId = _currentUser?.userId ?? 'guest';
-
-      // 从API获取宠物列表
-      final pets = await _petService.getUserPets(userId);
+      // 优化：只加载基本信息，避免一次性加载过多数据
+      final pets = await _petService.getUserPets('current_user');
 
       if (mounted) {
         setState(() {
           _pets = pets;
           _isLoadingPets = false;
-          // 确保选中的宠物索引有效
-          if (_pets.isNotEmpty && _selectedPetIndex >= _pets.length) {
-            _selectedPetIndex = 0;
-          }
         });
+      }
+
+      // 延迟加载宠物详细信息（按需加载）
+      if (pets.isNotEmpty) {
+        _loadPetDetailsLazily(pets.first.id);
       }
     } catch (e) {
       debugPrint('加载宠物数据失败: $e');
@@ -114,6 +112,43 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           _isLoadingPets = false;
         });
       }
+    }
+  }
+
+  /// 延迟加载宠物详细信息（按需加载）
+  Future<void> _loadPetDetailsLazily(String petId) async {
+    try {
+      // 延迟1秒后加载详细信息，避免阻塞页面渲染
+      await Future.delayed(const Duration(milliseconds: 1000));
+
+      if (!mounted) return;
+
+      // 按需加载记录数量，只加载用户当前需要的类型
+      final recordCounts = await _petService.getPetRecordCounts(petId);
+
+      if (mounted) {
+        setState(() {
+          // 更新当前宠物的记录数量
+          // 这里可以根据需要更新UI显示
+        });
+      }
+    } catch (e) {
+      debugPrint('延迟加载宠物详细信息失败: $e');
+    }
+  }
+
+  /// 按需加载完整记录数量（当用户需要查看所有类型时）
+  Future<void> _loadFullRecordCounts(String petId) async {
+    try {
+      final fullCounts = await _petService.getFullRecordCounts(petId);
+      if (mounted) {
+        setState(() {
+          // 更新完整的记录数量
+          // 这里可以根据需要更新UI显示
+        });
+      }
+    } catch (e) {
+      debugPrint('加载完整记录数量失败: $e');
     }
   }
 
@@ -418,17 +453,8 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
           ),
           const SizedBox(height: AppTheme.spacingM),
 
-          // 健康记录快捷入口
-          HealthQuickAccess(
-            pet: _pets[_selectedPetIndex],
-            onViewRecords: (type) => _navigateToRecords(filterType: type),
-            onAddRecord: () => _navigateToRecords(openAddSheet: true),
-            recordCounts: _getRecordCounts(),
-          ),
-          const SizedBox(height: AppTheme.spacingL),
-
-          // 快捷操作区域
-          _buildQuickActions(),
+          // 健康记录快捷入口 + 快捷操作（合并为统一容器）
+          _buildQuickCombinedSection(),
           const SizedBox(height: AppTheme.spacingL),
 
           // 宠物详情入口
@@ -552,6 +578,52 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
     );
   }
 
+  // 统一容器：健康记录快捷入口 + 快捷操作
+  Widget _buildQuickCombinedSection() {
+    final pet = _pets[_selectedPetIndex];
+    return Container(
+      margin: EdgeInsets.zero,
+      padding: const EdgeInsets.all(AppTheme.spacingM),
+      decoration: BoxDecoration(
+        color: AppTheme.getSurfaceColor(context),
+        borderRadius: BorderRadius.circular(AppTheme.borderRadiusLarge),
+        border: Border.all(color: AppTheme.getDividerColor(context)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 健康记录快捷入口
+          HealthQuickAccess(
+            pet: pet,
+            onViewRecords: (type) => _navigateToRecords(filterType: type),
+            onAddRecord: () async {
+              await navigateToAddHealthRecordPage(
+                context,
+                pets: _pets,
+                presetPetId: pet.id,
+              );
+            },
+            recordCounts: _getRecordCounts(),
+            embedded: true,
+          ),
+          const SizedBox(height: AppTheme.spacingM),
+          // 分割线让结构更清晰
+          Divider(color: AppTheme.getDividerColor(context), height: 1),
+          const SizedBox(height: AppTheme.spacingM),
+          // 快捷操作
+          _buildQuickActions(),
+        ],
+      ),
+    );
+  }
+
   // 顶部新增宠物按钮
   Widget _buildAddPetButton() {
     return Tooltip(
@@ -617,15 +689,18 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
         child: Container(
-          padding: const EdgeInsets.all(AppTheme.spacingS),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppTheme.spacingM,
+            vertical: AppTheme.spacingS,
+          ),
           decoration: BoxDecoration(
             color: AppTheme.getSurfaceColor(context),
-            borderRadius: BorderRadius.circular(AppTheme.borderRadiusMedium),
-            border: Border.all(color: color.withValues(alpha: 0.2)),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: AppTheme.getDividerColor(context)),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.04),
-                blurRadius: 8,
+                color: Colors.black.withValues(alpha: 0.03),
+                blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -636,22 +711,23 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
+                  color: AppTheme.getSurfaceColor(context),
                   shape: BoxShape.circle,
+                  border: Border.all(color: AppTheme.getDividerColor(context)),
                 ),
-                child: Icon(icon, color: color, size: 20), // 减少图标大小
+                child: Icon(icon, color: color, size: 18),
               ),
-              const SizedBox(height: AppTheme.spacingS), // 减少间距
+              const SizedBox(height: AppTheme.spacingS),
               Text(
                 label,
                 style: TextStyle(
-                  color: color,
-                  fontSize: AppTheme.fontSizeXS, // 减少字体大小
+                  color: AppTheme.getTextPrimaryColor(context),
+                  fontSize: AppTheme.fontSizeS,
                   fontWeight: FontWeight.w600,
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 2), // 减少间距
+              const SizedBox(height: 2),
               Text(
                 subtitle,
                 style: TextStyle(
@@ -978,7 +1054,6 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         'vaccination': 0,
         'weight': 0,
         'vetVisit': 0,
-        'medication': 0,
         'deworming': 0,
         'grooming': 0,
       };
@@ -989,7 +1064,6 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
       'vaccination': 0,
       'weight': 0,
       'vetVisit': 0,
-      'medication': 0,
       'deworming': 0,
       'grooming': 0,
     };
@@ -1002,7 +1076,6 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         'vaccination': 0,
         'weight': 0,
         'vetVisit': 0,
-        'medication': 0,
         'deworming': 0,
         'grooming': 0,
       };
@@ -1017,7 +1090,6 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
         'vaccination': 0,
         'weight': 0,
         'vetVisit': 0,
-        'medication': 0,
         'deworming': 0,
         'grooming': 0,
       };
@@ -1419,7 +1491,7 @@ class _ArchiveProfilePageState extends State<ArchiveProfilePage> {
 
   Future<void> _quickAddHealthRecord() async {
     final pet = _pets[_selectedPetIndex];
-    final rec = await showAddHealthRecordSheet(
+    final rec = await navigateToAddHealthRecordPage(
       context,
       pets: _pets,
       presetPetId: pet.id,

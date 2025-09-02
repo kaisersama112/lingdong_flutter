@@ -1171,6 +1171,7 @@ class HealthQuickAccess extends StatelessWidget {
   final Function(models.HealthRecordType)? onViewRecords;
   final VoidCallback? onAddRecord;
   final Map<String, int>? recordCounts;
+  final bool embedded;
 
   const HealthQuickAccess({
     super.key,
@@ -1178,10 +1179,52 @@ class HealthQuickAccess extends StatelessWidget {
     this.onViewRecords,
     this.onAddRecord,
     this.recordCounts,
+    this.embedded = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final content = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                Icons.health_and_safety,
+                color: AppTheme.primaryColor,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Text(
+              '健康管理',
+              style: TextStyle(
+                fontSize: AppTheme.fontSizeL,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textPrimaryColor,
+              ),
+            ),
+            const Spacer(),
+            if (onAddRecord != null) _buildAddRecordButton(),
+          ],
+        ),
+        const SizedBox(height: AppTheme.spacingL),
+        _buildHealthOverview(context),
+        const SizedBox(height: AppTheme.spacingL),
+        _buildQuickAccessGrid(context),
+      ],
+    );
+
+    if (embedded) {
+      return content;
+    }
+
     return Container(
       margin: EdgeInsets.zero,
       decoration: BoxDecoration(
@@ -1197,46 +1240,7 @@ class HealthQuickAccess extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.all(AppTheme.spacingL),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    Icons.health_and_safety,
-                    color: AppTheme.primaryColor,
-                    size: 20,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                const Text(
-                  '健康管理',
-                  style: TextStyle(
-                    fontSize: AppTheme.fontSizeL,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.textPrimaryColor,
-                  ),
-                ),
-                const Spacer(),
-                if (onAddRecord != null) _buildAddRecordButton(),
-              ],
-            ),
-            const SizedBox(height: AppTheme.spacingL),
-
-            // 健康状态概览
-            _buildHealthOverview(context),
-            const SizedBox(height: AppTheme.spacingL),
-
-            // 快捷功能入口
-            _buildQuickAccessGrid(context),
-          ],
-        ),
+        child: content,
       ),
     );
   }
@@ -1443,32 +1447,25 @@ class HealthQuickAccess extends StatelessWidget {
         onTap: () => onViewRecords?.call(models.HealthRecordType.vaccination),
       ),
       QuickAction(
-        icon: Icons.monitor_weight,
-        label: '体重记录',
-        color: AppTheme.secondaryColor,
-        count: recordCounts?['weight'] ?? 0,
-        onTap: () => onViewRecords?.call(models.HealthRecordType.weight),
-      ),
-      QuickAction(
-        icon: Icons.medical_services,
-        label: '就诊记录',
-        color: AppTheme.warningColor,
-        count: recordCounts?['vetVisit'] ?? 0,
-        onTap: () => onViewRecords?.call(models.HealthRecordType.vetVisit),
-      ),
-      QuickAction(
-        icon: Icons.medication,
-        label: '用药记录',
-        color: AppTheme.errorColor,
-        count: recordCounts?['medication'] ?? 0,
-        onTap: () => onViewRecords?.call(models.HealthRecordType.medication),
-      ),
-      QuickAction(
         icon: Icons.bug_report,
         label: '驱虫记录',
         color: AppTheme.secondaryColor,
         count: recordCounts?['deworming'] ?? 0,
         onTap: () => onViewRecords?.call(models.HealthRecordType.deworming),
+      ),
+      QuickAction(
+        icon: Icons.medical_services,
+        label: '就诊记录（体检）',
+        color: AppTheme.warningColor,
+        count: recordCounts?['vetVisit'] ?? 0,
+        onTap: () => onViewRecords?.call(models.HealthRecordType.vetVisit),
+      ),
+      QuickAction(
+        icon: Icons.monitor_weight,
+        label: '体重记录',
+        color: AppTheme.errorColor,
+        count: recordCounts?['weight'] ?? 0,
+        onTap: () => onViewRecords?.call(models.HealthRecordType.weight),
       ),
       QuickAction(
         icon: Icons.content_cut,
