@@ -6,6 +6,9 @@ import '../modules/wiki/breed_detail_page.dart';
 import '../modules/wiki/training_course_detail_page.dart';
 import '../modules/wiki/behavior_guide_detail_page.dart';
 import '../modules/wiki/social_activity_detail_page.dart';
+import '../modules/tools/lost_pet_page.dart';
+import '../modules/social_page.dart';
+import '../modules/user_profile_page.dart';
 
 class AppRouter {
   static const String contentDetailRoute = '/content_detail';
@@ -13,6 +16,9 @@ class AppRouter {
   static const String trainingCourseDetailRoute = '/training_course_detail';
   static const String behaviorGuideDetailRoute = '/behavior_guide_detail';
   static const String socialActivityDetailRoute = '/social_activity_detail';
+  static const String lostPetRoute = '/lost_pet';
+  static const String socialRoute = '/social';
+  static const String userProfileRoute = '/user_profile';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -73,6 +79,28 @@ class AppRouter {
         }
         return _errorRoute('社交活动参数错误');
 
+      case lostPetRoute:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const LostPetPage(),
+        );
+
+      case socialRoute:
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (_) => const SocialPage(),
+        );
+
+      case userProfileRoute:
+        final args = settings.arguments;
+        if (args is UserProfileArgs) {
+          return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => UserProfilePage(args: args),
+          );
+        }
+        return _errorRoute('用户信息参数错误');
+
       default:
         return null;
     }
@@ -105,5 +133,3 @@ class ContentDetailArgs {
     this.videoThumb,
   });
 }
-
-

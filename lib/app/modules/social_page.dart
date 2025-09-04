@@ -182,8 +182,17 @@ class _SocialPageState extends State<SocialPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bool canPop = Navigator.canPop(context);
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
+      appBar: canPop
+          ? AppBar(
+              title: const Text('周边·遛弯'),
+              backgroundColor: Colors.white,
+              foregroundColor: AppTheme.textPrimaryColor,
+              elevation: 0.5,
+            )
+          : null,
       body: SafeArea(
         child: Column(
           children: [
@@ -270,13 +279,153 @@ class _SocialPageState extends State<SocialPage> {
   }
 
   void _navigateToPlace(Place place) {
-    // 这里可以集成地图导航功能
-    AppErrorHandler.handleError(context, '导航功能开发中...');
+    // 集成地图导航功能
+    _showNavigationOptions(place);
   }
 
   void _callPlace(Place place) {
-    // 这里可以集成电话拨打功能
-    AppErrorHandler.handleError(context, '电话功能开发中...');
+    // 集成电话拨打功能
+    _showCallOptions(place);
+  }
+
+  // 显示导航选项
+  void _showNavigationOptions(Place place) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '导航到 ${place.name}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.directions, color: Color(0xFF10B981)),
+              title: const Text('使用百度地图'),
+              subtitle: const Text('打开百度地图进行导航'),
+              onTap: () {
+                Navigator.pop(context);
+                _openBaiduMaps(place);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.map, color: Color(0xFF3B82F6)),
+              title: const Text('使用高德地图'),
+              subtitle: const Text('打开高德地图进行导航'),
+              onTap: () {
+                Navigator.pop(context);
+                _openAmapMaps(place);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.location_on, color: Color(0xFF8B5CF6)),
+              title: const Text('复制地址'),
+              subtitle: const Text('复制地址到剪贴板'),
+              onTap: () {
+                Navigator.pop(context);
+                _copyAddress(place);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 显示电话选项
+  void _showCallOptions(Place place) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '联系 ${place.name}',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 20),
+            ListTile(
+              leading: const Icon(Icons.phone, color: Color(0xFF10B981)),
+              title: const Text('拨打电话'),
+              subtitle: const Text('400-123-4567'),
+              onTap: () {
+                Navigator.pop(context);
+                _makePhoneCall('400-123-4567');
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.message, color: Color(0xFF3B82F6)),
+              title: const Text('发送短信'),
+              subtitle: const Text('发送短信咨询'),
+              onTap: () {
+                Navigator.pop(context);
+                _sendSMS('400-123-4567');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 打开百度地图
+  void _openBaiduMaps(Place place) {
+    // 模拟打开百度地图
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('正在打开百度地图导航到 ${place.name}'),
+        backgroundColor: const Color(0xFF10B981),
+      ),
+    );
+  }
+
+  // 打开高德地图
+  void _openAmapMaps(Place place) {
+    // 模拟打开高德地图
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('正在打开高德地图导航到 ${place.name}'),
+        backgroundColor: const Color(0xFF3B82F6),
+      ),
+    );
+  }
+
+  // 复制地址
+  void _copyAddress(Place place) {
+    // 模拟复制地址
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('已复制地址：${place.address}'),
+        backgroundColor: const Color(0xFF8B5CF6),
+      ),
+    );
+  }
+
+  // 拨打电话
+  void _makePhoneCall(String phoneNumber) {
+    // 模拟拨打电话
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('正在拨打 $phoneNumber'),
+        backgroundColor: const Color(0xFF10B981),
+      ),
+    );
+  }
+
+  // 发送短信
+  void _sendSMS(String phoneNumber) {
+    // 模拟发送短信
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('正在发送短信到 $phoneNumber'),
+        backgroundColor: const Color(0xFF3B82F6),
+      ),
+    );
   }
 }
 

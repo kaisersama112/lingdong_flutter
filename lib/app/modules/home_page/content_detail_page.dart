@@ -3,6 +3,8 @@ import '../../theme/app_theme.dart';
 import '../../services/feed_service.dart';
 import '../../services/user_auth_service.dart';
 import '../../core/components/optimized_image.dart';
+import '../../routes/app_router.dart';
+import '../user_profile_page.dart';
 
 class ContentDetailPage extends StatefulWidget {
   final String postId;
@@ -31,6 +33,43 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   PostStats? _stats;
   List<FeedComment> _comments = const [];
   bool _loading = true;
+  bool _sendingComment = false;
+  final TextEditingController _commentController = TextEditingController();
+
+  void _openImagePreview(List<String> images, int initialIndex) {
+    final PageController controller = PageController(initialPage: initialIndex);
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withValues(alpha: 0.9),
+      builder: (context) => Stack(
+        children: [
+          PageView.builder(
+            controller: controller,
+            itemCount: images.length,
+            itemBuilder: (_, i) => Center(
+              child: InteractiveViewer(
+                minScale: 0.8,
+                maxScale: 4.0,
+                child: OptimizedThumbnail(
+                  imageUrl: images[i],
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.width * 9 / 16,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 8,
+            right: 12,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   void initState() {
@@ -52,7 +91,17 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
-      appBar: AppBar(title: const Text('内容详情'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('内容详情'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.more_horiz),
+            onPressed: _showMoreActions,
+            tooltip: '更多',
+          ),
+        ],
+      ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : RefreshIndicator(
@@ -84,42 +133,62 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
         boxShadow: AppTheme.subtleShadow,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingL),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 20,
-                  backgroundColor: AppTheme.primaryLightColor,
-                  child: const Icon(Icons.pets, color: AppTheme.primaryColor),
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pushNamed(
+                    AppRouter.userProfileRoute,
+                    arguments: UserProfileArgs(
+                      userId: 'user_${widget.author}',
+                      displayName: widget.author,
+                    ),
+                  ),
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: AppTheme.primaryLightColor,
+                    child: const Icon(Icons.pets, color: AppTheme.primaryColor),
+                  ),
                 ),
                 const SizedBox(width: AppTheme.spacingM),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.author,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                GestureDetector(
+                  onTap: () => Navigator.of(context).pushNamed(
+                    AppRouter.userProfileRoute,
+                    arguments: UserProfileArgs(
+                      userId: 'user_${widget.author}',
+                      displayName: widget.author,
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.author,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 16,
+                        ),
                       ),
-                    ),
-                    Text(
-                      '刚刚',
-                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
-                    ),
-                  ],
+                      Text(
+                        '刚刚',
+                        style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
-            const SizedBox(height: AppTheme.spacingL),
+            const SizedBox(height: 8),
+            const Divider(height: 1, thickness: 0.5, color: Color(0xFFE5E7EB)),
+            const SizedBox(height: 12),
             Text(
               widget.title,
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
             ),
-            const SizedBox(height: AppTheme.spacingS),
+            const SizedBox(height: 8),
             Text(
               widget.content,
               style: const TextStyle(
@@ -137,7 +206,12 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   Widget _buildMedia() {
     if (widget.videoThumb != null) {
       return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
+        padding: const EdgeInsets.fromLTRB(
+          AppTheme.spacingM,
+          0,
+          AppTheme.spacingM,
+          AppTheme.spacingM,
+        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
           child: AspectRatio(
@@ -170,32 +244,51 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
       );
     }
     if (widget.images.isEmpty) return const SizedBox.shrink();
+    final isSingle = widget.images.length == 1;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
+      padding: const EdgeInsets.fromLTRB(
+        AppTheme.spacingM,
+        0,
+        AppTheme.spacingM,
+        AppTheme.spacingM,
+      ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(16),
-        child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: widget.images.length == 1
-                ? 1
-                : (widget.images.length <= 4 ? 2 : 3),
-            crossAxisSpacing: 4,
-            mainAxisSpacing: 4,
-          ),
-          itemCount: widget.images.length,
-          itemBuilder: (context, index) {
-            return Container(
-              color: Colors.grey[200],
-              child: OptimizedThumbnail(
-                imageUrl: widget.images[index],
-                width: 300,
-                height: 300,
+        child: isSingle
+            ? GestureDetector(
+                onTap: () => _openImagePreview(widget.images, 0),
+                child: AspectRatio(
+                  aspectRatio: 4 / 3,
+                  child: OptimizedThumbnail(
+                    imageUrl: widget.images.first,
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.width * 3 / 4,
+                  ),
+                ),
+              )
+            : GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: widget.images.length <= 4 ? 2 : 3,
+                  crossAxisSpacing: 4,
+                  mainAxisSpacing: 4,
+                ),
+                itemCount: widget.images.length,
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () => _openImagePreview(widget.images, index),
+                    child: Container(
+                      color: Colors.grey[200],
+                      child: OptimizedThumbnail(
+                        imageUrl: widget.images[index],
+                        width: 300,
+                        height: 300,
+                      ),
+                    ),
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }
@@ -212,21 +305,18 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
           favoritedByCurrentUser: false,
         );
     return Container(
-      margin: const EdgeInsets.all(AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
+      margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingL),
+        padding: const EdgeInsets.all(12),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _actionChip(
-              icon: stats.likedByCurrentUser
-                  ? Icons.favorite
-                  : Icons.favorite_border,
-              label: '${stats.likes}',
-              color: stats.likedByCurrentUser
-                  ? Colors.red
-                  : AppTheme.textSecondaryColor,
+            const Spacer(),
+            _outlinedCountAction(
+              isActive: stats.likedByCurrentUser,
+              activeColor: Colors.red,
+              activeIcon: Icons.favorite,
+              inactiveIcon: Icons.favorite_border,
+              count: stats.likes,
               onTap: () async {
                 try {
                   final s = await _feedService.toggleLike(widget.postId);
@@ -236,14 +326,14 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                 }
               },
             ),
-            _actionChip(
-              icon: stats.favoritedByCurrentUser
-                  ? Icons.bookmark
-                  : Icons.bookmark_border,
-              label: stats.favoritedByCurrentUser ? '已收藏' : '收藏',
-              color: stats.favoritedByCurrentUser
-                  ? AppTheme.primaryColor
-                  : AppTheme.textSecondaryColor,
+            const SizedBox(width: 12),
+            _outlinedLabelAction(
+              isActive: stats.favoritedByCurrentUser,
+              activeColor: AppTheme.primaryColor,
+              activeIcon: Icons.bookmark,
+              inactiveIcon: Icons.bookmark_border,
+              activeLabel: '已收藏',
+              inactiveLabel: '收藏',
               onTap: () async {
                 try {
                   final s = await _feedService.toggleFavorite(widget.postId);
@@ -253,10 +343,14 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                 }
               },
             ),
-            _actionChip(
-              icon: Icons.share_outlined,
-              label: '转发',
-              color: AppTheme.textSecondaryColor,
+            const SizedBox(width: 12),
+            _outlinedLabelAction(
+              isActive: false,
+              activeColor: AppTheme.textSecondaryColor,
+              activeIcon: Icons.share,
+              inactiveIcon: Icons.share_outlined,
+              activeLabel: '转发',
+              inactiveLabel: '转发',
               onTap: () async {
                 final s = await _feedService.incrementShare(widget.postId);
                 setState(() => _stats = s);
@@ -272,69 +366,11 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     );
   }
 
-  Widget _actionChip({
-    required IconData icon,
-    required String label,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    final bool isActive = color != AppTheme.textSecondaryColor;
-    final Color textColor = isActive
-        ? Colors.white
-        : AppTheme.textSecondaryColor;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-        decoration: BoxDecoration(
-          gradient: isActive ? AppTheme.primaryGradient : null,
-          color: isActive ? null : Colors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: isActive
-              ? null
-              : Border.all(color: AppTheme.dividerColor, width: 1),
-          boxShadow: isActive
-              ? [
-                  BoxShadow(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.25),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ]
-              : const [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 6,
-                    offset: Offset(0, 2),
-                  ),
-                ],
-        ),
-        child: Row(
-          children: [
-            Icon(icon, size: 18, color: textColor),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildCommentsSection() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
-      decoration: AppTheme.cardDecoration,
       child: Padding(
-        padding: const EdgeInsets.all(AppTheme.spacingL),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -354,7 +390,24 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                 ),
               )
             else
-              ..._comments.map((c) => _commentTile(c)).toList(),
+              ..._comments.asMap().entries.map((entry) {
+                final i = entry.key;
+                final c = entry.value;
+                return Column(
+                  children: [
+                    _commentTile(c),
+                    if (i != _comments.length - 1)
+                      Container(
+                        margin: const EdgeInsets.only(left: 48),
+                        child: const Divider(
+                          height: 1,
+                          thickness: 0.5,
+                          color: Color(0xFFE5E7EB),
+                        ),
+                      ),
+                  ],
+                );
+              }).toList(),
           ],
         ),
       ),
@@ -393,13 +446,13 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   }
 
   Widget _buildCommentBar() {
-    final controller = TextEditingController();
     return SafeArea(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: const BoxDecoration(
-          color: Colors.white,
+          color: AppTheme.surfaceColor,
           boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black12)],
+          border: Border(top: BorderSide(color: Color(0xFFE5E7EB), width: 1)),
         ),
         child: Row(
           children: [
@@ -407,33 +460,48 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: const Color(0xFFF3F4F6),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: TextField(
-                  controller: controller,
+                  controller: _commentController,
                   decoration: const InputDecoration(
                     hintText: '优质评论将会被更多人看到',
                     border: InputBorder.none,
                   ),
+                  enabled: !_sendingComment,
                 ),
               ),
             ),
             const SizedBox(width: 8),
             ElevatedButton(
-              onPressed: () async {
-                final text = controller.text.trim();
-                if (text.isEmpty) return;
-                try {
-                  await _feedService.addComment(widget.postId, text);
-                  controller.clear();
-                  await _load();
-                } catch (e) {
-                  _loginTip(e.toString());
-                }
-              },
+              onPressed: _sendingComment
+                  ? null
+                  : () async {
+                      final text = _commentController.text.trim();
+                      if (text.isEmpty) return;
+                      setState(() => _sendingComment = true);
+                      try {
+                        await _feedService.addComment(widget.postId, text);
+                        _commentController.clear();
+                        await _load();
+                      } catch (e) {
+                        _loginTip(e.toString());
+                      } finally {
+                        if (mounted) setState(() => _sendingComment = false);
+                      }
+                    },
               style: AppTheme.primaryButtonStyle,
-              child: const Text('发送'),
+              child: _sendingComment
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(Colors.white),
+                      ),
+                    )
+                  : const Text('发送'),
             ),
           ],
         ),
@@ -459,5 +527,108 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     if (diff.inHours < 1) return '${diff.inMinutes} 分钟前';
     if (diff.inDays < 1) return '${diff.inHours} 小时前';
     return '${diff.inDays} 天前';
+  }
+
+  void _showMoreActions() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.flag, color: Color(0xFFEF4444)),
+              title: const Text('举报'),
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('已提交举报，我们会尽快审核')));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.link, color: Color(0xFF8B5CF6)),
+              title: const Text('复制链接'),
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(const SnackBar(content: Text('链接已复制')));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _outlinedCountAction({
+    required bool isActive,
+    required Color activeColor,
+    required IconData activeIcon,
+    required IconData inactiveIcon,
+    required int count,
+    required VoidCallback onTap,
+  }) {
+    final Color borderColor = isActive ? activeColor : AppTheme.dividerColor;
+    final Color iconColor = isActive
+        ? activeColor
+        : AppTheme.textSecondaryColor;
+    // textColor not needed when using icon-only actions
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: borderColor, width: 1),
+        ),
+        child: Icon(
+          isActive ? activeIcon : inactiveIcon,
+          size: 18,
+          color: iconColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _outlinedLabelAction({
+    required bool isActive,
+    required Color activeColor,
+    required IconData activeIcon,
+    required IconData inactiveIcon,
+    required String activeLabel,
+    required String inactiveLabel,
+    required VoidCallback onTap,
+  }) {
+    final Color borderColor = isActive ? activeColor : AppTheme.dividerColor;
+    final Color iconColor = isActive
+        ? activeColor
+        : AppTheme.textSecondaryColor;
+    // textColor not needed when using icon-only actions
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: borderColor, width: 1),
+        ),
+        child: Icon(
+          isActive ? activeIcon : inactiveIcon,
+          size: 18,
+          color: iconColor,
+        ),
+      ),
+    );
   }
 }

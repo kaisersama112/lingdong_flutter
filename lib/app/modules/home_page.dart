@@ -34,11 +34,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       body: SafeArea(
         child: Column(
           children: [
-            // 简洁的页面头部
-            _buildSimpleHeader(),
+            // 温馨的页面头部
+            _buildWarmHeader(),
 
-            // 简洁的标签栏
-            _buildSimpleTabBar(),
+            // 现代化的标签栏
+            _buildModernTabBar(),
 
             // 标签页内容
             Expanded(
@@ -57,27 +57,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // 简洁的页面头部
-  Widget _buildSimpleHeader() {
+  // 温馨的页面头部
+  Widget _buildWarmHeader() {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppTheme.spacingXS,
-        vertical: AppTheme.spacingXS,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            AppTheme.primaryColor,
-            AppTheme.primaryColor.withValues(alpha: 0.8),
+            Color(0xFF8B5CF6), // 温馨的紫色
+            Color(0xFFA855F7), // 深紫色
           ],
         ),
         boxShadow: [
           BoxShadow(
-            color: AppTheme.primaryColor.withValues(alpha: 0.22),
-            blurRadius: 6,
-            offset: const Offset(0, 1),
+            color: Color(0xFF8B5CF6).withValues(alpha: 0.15),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -87,9 +84,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(4),
+                padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
+                  color: Colors.white.withValues(alpha: 0.25),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: const Icon(Icons.pets, color: Colors.white, size: 18),
@@ -105,13 +102,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
+                      letterSpacing: 0.5,
                     ),
                   ),
                   Text(
                     '让爱宠生活更美好',
                     style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.white.withValues(alpha: 0.8),
+                      fontSize: 11,
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],
@@ -124,7 +123,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           // 快捷工具按钮
           Container(
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
+              color: Colors.white.withValues(alpha: 0.25),
               borderRadius: BorderRadius.circular(12),
             ),
             child: IconButton(
@@ -142,26 +141,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  // 简洁的标签栏
-  Widget _buildSimpleTabBar() {
+  // 现代化的标签栏
+  Widget _buildModernTabBar() {
     return Container(
-      color: Colors.white,
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Color(0xFFE5E7EB), width: 0.5),
+        ),
+      ),
       child: TabBar(
         controller: _tabController,
-        labelColor: AppTheme.primaryColor,
-        unselectedLabelColor: AppTheme.textSecondaryColor,
-        indicatorColor: AppTheme.primaryColor,
-        indicatorWeight: 2,
-        labelPadding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        labelStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+        labelColor: Color(0xFF8B5CF6), // 温馨的紫色
+        unselectedLabelColor: Color(0xFF9CA3AF),
+        indicatorColor: Color(0xFF8B5CF6),
+        indicatorWeight: 2.5,
+        indicatorSize: TabBarIndicatorSize.label,
+        labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+        labelStyle: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.2,
+        ),
         unselectedLabelStyle: const TextStyle(
-          fontSize: 13,
+          fontSize: 12,
           fontWeight: FontWeight.w500,
         ),
         tabs: const [
-          Tab(icon: Icon(Icons.home_outlined, size: 18), text: '推荐'),
-          Tab(icon: Icon(Icons.favorite_outline, size: 18), text: '关注'),
-          Tab(icon: Icon(Icons.auto_stories_outlined, size: 18), text: '百科'),
+          Tab(icon: Icon(Icons.home_outlined, size: 16), text: '推荐'),
+          Tab(icon: Icon(Icons.favorite_outline, size: 16), text: '关注'),
+          Tab(icon: Icon(Icons.auto_stories_outlined, size: 16), text: '百科'),
         ],
       ),
     );

@@ -15,14 +15,9 @@ class NavigationController extends StatefulWidget {
   State<NavigationController> createState() => _NavigationControllerState();
 }
 
-class _NavigationControllerState extends State<NavigationController>
-    with TickerProviderStateMixin {
+class _NavigationControllerState extends State<NavigationController> {
   int _currentIndex = 0;
   final _authService = UserAuthService();
-  AnimationController? _bounceController;
-
-  AnimationController? _pawController;
-  AnimationController? _glowController;
 
   final List<Widget> _pages = <Widget>[
     const HomePage(),
@@ -34,85 +29,42 @@ class _NavigationControllerState extends State<NavigationController>
 
   final List<_NavigationItem> _items = <_NavigationItem>[
     _NavigationItem(
-      icon: Icons.home_rounded,
+      icon: Icons.home_outlined,
+      activeIcon: Icons.home,
       label: '小窝',
-      color: AppTheme.primaryColor,
+      color: Color(0xFFF59E0B), // 温暖的橙色
     ),
     _NavigationItem(
-      icon: Icons.explore_rounded,
-      label: '冒险',
-      color: AppTheme.accentColor,
+      icon: Icons.explore_outlined,
+      activeIcon: Icons.explore,
+      label: '遛弯',
+      color: Color(0xFF10B981), // 清新的绿色
     ),
     _NavigationItem(
-      icon: Icons.add_circle_rounded,
+      icon: Icons.add_circle_outline,
+      activeIcon: Icons.add_circle,
       label: '分享',
-      color: AppTheme.successColor,
+      color: Color(0xFFEF4444), // 热情的红色
     ),
     _NavigationItem(
-      icon: Icons.favorite_rounded,
+      icon: Icons.favorite_outline,
+      activeIcon: Icons.favorite,
       label: '伙伴',
-      color: AppTheme.secondaryColor,
+      color: Color(0xFF8B5CF6), // 温馨的紫色
     ),
     _NavigationItem(
-      icon: Icons.pets_rounded,
-      label: '成长',
-      color: AppTheme.primaryLightColor,
+      icon: Icons.pets_outlined,
+      activeIcon: Icons.pets,
+      label: '我的',
+      color: Color(0xFF6366F1), // 温暖的蓝色
     ),
   ];
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      if (mounted) {
-        _initializeAnimations();
-      }
-    });
-  }
-
-  void _initializeAnimations() {
-    if (!mounted) return;
-
-    setState(() {
-      _bounceController = AnimationController(
-        duration: const Duration(milliseconds: 400),
-        vsync: this,
-      );
-      _pawController = AnimationController(
-        duration: const Duration(milliseconds: 600),
-        vsync: this,
-      );
-      _glowController = AnimationController(
-        duration: const Duration(milliseconds: 2000),
-        vsync: this,
-      );
-
-      // 启动发光动画循环
-      _glowController!.repeat(reverse: true);
-    });
-  }
-
-  @override
-  void dispose() {
-    _bounceController?.dispose();
-    _pawController?.dispose();
-    _glowController?.dispose();
-    super.dispose();
-  }
 
   void _onItemTapped(int index) {
     if (index == _currentIndex) return;
 
     setState(() {
       _currentIndex = index;
-    });
-
-    // 触发动画
-    _bounceController?.forward().then((_) {
-      _bounceController?.reverse();
-    });
-    _pawController?.forward().then((_) {
-      _pawController?.reverse();
     });
   }
 
@@ -164,7 +116,7 @@ class _NavigationControllerState extends State<NavigationController>
       },
       child: Scaffold(
         body: _pages[_currentIndex],
-        bottomNavigationBar: _buildBottomNavigationBar(),
+        bottomNavigationBar: _buildDogCommunityNavigationBar(),
         appBar: _authService.isGuestUser ? _buildGuestAppBar() : null,
       ),
     );
@@ -233,83 +185,124 @@ class _NavigationControllerState extends State<NavigationController>
     );
   }
 
-  Widget _buildBottomNavigationBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      currentIndex: _currentIndex,
-      onTap: _onItemTapped,
-      backgroundColor: AppTheme.getSurfaceColor(
-        context,
-      ).withValues(alpha: 0.96),
-      elevation: 0,
-      selectedItemColor: AppTheme.primaryColor,
-      unselectedItemColor: AppTheme.textSecondaryColor,
-      showUnselectedLabels: true,
-      selectedFontSize: 12,
-      unselectedFontSize: 12,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
-      unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
-      items: _items.map((item) {
-        return BottomNavigationBarItem(
-          label: item.label,
-          icon: Icon(item.icon, color: AppTheme.textSecondaryColor, size: 24),
-          activeIcon: Stack(
-            alignment: Alignment.center,
-            children: [
-              // 渐变柔光圆（提升选中聚焦感）
-              Positioned(
-                child: Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        item.color.withValues(alpha: 0.14),
-                        item.color.withValues(alpha: 0.06),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-              ),
-              // 背景爪印水印（增强可见性）
-              Positioned(
-                child: Transform.rotate(
-                  angle: -0.2,
-                  child: Icon(
-                    Icons.pets,
-                    size: 30,
-                    color: item.color.withValues(alpha: 0.12),
-                  ),
-                ),
-              ),
-              // 主图标（略放大 + 主题色）
-              Transform.scale(
-                scale: 1.12,
-                child: Icon(item.icon, color: item.color, size: 26),
-              ),
-            ],
+  Widget _buildDogCommunityNavigationBar() {
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+    final Color unselectedColor = isDark
+        ? Color(0xFFCBD5E1)
+        : Color(0xFF6B7280);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? Color(0xFF1E293B) : Colors.white,
+        border: Border(
+          top: BorderSide(
+            color: isDark ? Color(0xFF334155) : Color(0xFFE5E7EB),
+            width: 0.5,
           ),
-        );
-      }).toList(),
+        ),
+      ),
+      child: SafeArea(
+        minimum: const EdgeInsets.only(top: 0),
+        child: SizedBox(
+          height: 60,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: _items.asMap().entries.map((entry) {
+              final index = entry.key;
+              final item = entry.value;
+              final isSelected = index == _currentIndex;
+
+              return Expanded(
+                child: _buildDogNavigationItem(
+                  index: index,
+                  item: item,
+                  isSelected: isSelected,
+                  unselectedColor: unselectedColor,
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
     );
   }
 
-  // 已移除 _buildSimpleNavigationItem
+  Widget _buildDogNavigationItem({
+    required int index,
+    required _NavigationItem item,
+    required bool isSelected,
+    required Color unselectedColor,
+  }) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _onItemTapped(index),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          // 图标容器（使用Stack让脚印悬浮在上方）
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              // 图标容器
+              Container(
+                width: isSelected ? 44 : 40,
+                height: isSelected ? 44 : 40,
+                child: Icon(
+                  isSelected ? item.activeIcon : item.icon,
+                  color: isSelected ? item.color : unselectedColor,
+                  size: isSelected ? 26 : 24,
+                ),
+              ),
+
+              // 悬浮的爪子指示器
+              Positioned(
+                top: 15,
+                child: AnimatedOpacity(
+                  opacity: isSelected ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('🐾', style: TextStyle(fontSize: 16)),
+                      const SizedBox(width: 2),
+                      Text('🐾', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          // 标签
+          Text(
+            item.label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isSelected ? item.color : unselectedColor,
+              fontSize: 11,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+              height: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class _NavigationItem {
   final IconData icon;
+  final IconData activeIcon;
   final String label;
   final Color color;
 
   const _NavigationItem({
-    required IconData icon,
-    required String label,
-    required Color color,
-  }) : icon = icon,
-       label = label,
-       color = color;
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.color,
+  });
 }
