@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../services/feed_service.dart';
 import '../../routes/app_router.dart';
 import '../user_profile_page.dart';
+import '../../services/dynamic_service.dart';
+import '../../services/user_auth_service.dart';
 
 class FollowTab extends StatefulWidget {
   const FollowTab({Key? key}) : super(key: key);
@@ -11,34 +12,73 @@ class FollowTab extends StatefulWidget {
 }
 
 class _FollowTabState extends State<FollowTab> {
-  final FeedService _feedService = FeedService();
   // 本地交互状态
   final Map<String, bool> _liked = {};
   final Map<String, bool> _favorited = {};
   final Map<String, int> _likeCounts = {};
   final Map<String, int> _commentCounts = {};
+  final Map<String, int> _favoriteCounts = {};
 
-  void _ensureStatsInitialized(String postId, PostStats stats) {
+  void _ensureStatsInitialized(String postId, DynamicPostStats stats) {
     _liked.putIfAbsent(postId, () => stats.likedByCurrentUser);
     _favorited.putIfAbsent(postId, () => stats.favoritedByCurrentUser);
     _likeCounts.putIfAbsent(postId, () => stats.likes);
     _commentCounts.putIfAbsent(postId, () => stats.comments);
+    _favoriteCounts.putIfAbsent(postId, () => stats.favorites);
   }
 
-  void _toggleLike(String postId) {
+  Future<void> _toggleLike(String postId) async {
+    if (UserAuthService().currentUser == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+      }
+      return;
+    }
     final bool current = _liked[postId] ?? false;
     final int count = _likeCounts[postId] ?? 0;
+    // 乐观更新
     setState(() {
       _liked[postId] = !current;
       _likeCounts[postId] = count + (current ? -1 : 1);
     });
+    // 同步服务端
+    final stats = await DynamicService().toggleLike(postId);
+    setState(() {
+      _liked[postId] = stats.likedByCurrentUser;
+      _likeCounts[postId] = stats.likes;
+      _commentCounts[postId] = stats.comments;
+    });
   }
 
-  void _toggleFavorite(String postId) {
+  Future<void> _toggleFavorite(String postId) async {
+    if (UserAuthService().currentUser == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+      }
+      return;
+    }
     final bool current = _favorited[postId] ?? false;
+    // 乐观更新
+    final optimistic = !current;
     setState(() {
-      _favorited[postId] = !current;
+      _favorited[postId] = optimistic;
+      final curFav = _favoriteCounts[postId] ?? 0;
+      _favoriteCounts[postId] = curFav + (optimistic ? 1 : -1);
     });
+    // 同步服务端
+    final stats = await DynamicService().toggleFavorite(postId);
+    if (stats.favoritedByCurrentUser != current) {
+      setState(() {
+        _favorited[postId] = stats.favoritedByCurrentUser;
+        _favoriteCounts[postId] = stats.favorites;
+        _likeCounts[postId] = stats.likes;
+        _commentCounts[postId] = stats.comments;
+      });
+    }
   }
 
   void _openImagePreview(List<String> images, int initialIndex) {
@@ -133,64 +173,68 @@ class _FollowTabState extends State<FollowTab> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      itemCount: 8,
-      itemBuilder: (context, index) {
-        final List<String> images = List.generate(
-          (index % 9) + 1,
-          (i) => 'https://picsum.photos/seed/follow_${index}_$i/400/400',
-        );
-        final bool isVideo = index % 3 == 0;
-        final String postId = 'follow_$index';
-        return FutureBuilder<PostStats>(
-          future: _feedService.getPostStats(postId),
-          builder: (context, snapshot) {
-            final stats =
-                snapshot.data ??
-                const PostStats(
-                  likes: 0,
-                  favorites: 0,
-                  comments: 0,
-                  shares: 0,
-                  likedByCurrentUser: false,
-                  favoritedByCurrentUser: false,
-                );
-            _ensureStatsInitialized(postId, stats);
-            return GestureDetector(
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  AppRouter.contentDetailRoute,
-                  arguments: ContentDetailArgs(
-                    postId: postId,
-                    title: '分享一个超可爱的宠物日常',
-                    content: '分享一个超可爱的宠物日常，今天带我家小狗狗去公园玩，它特别开心！',
-                    author: '宠物达人',
-                    images: const [
-                      'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1003.jpg',
-                      'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1121.jpg',
-                      'https://images.dog.ceo/breeds/terrier-yorkshire/n02094433_1211.jpg',
-                    ],
+    return FutureBuilder<List<DynamicPost>>(
+      future: DynamicService().getRecommendedDynamics(page: 0, limit: 20),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final posts = snapshot.data ?? [];
+        if (posts.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Text('暂无关注内容', style: TextStyle(color: Color(0xFF9CA3AF))),
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          itemCount: posts.length,
+          itemBuilder: (context, index) {
+            final post = posts[index];
+            return FutureBuilder<DynamicPostStats>(
+              future: DynamicService().getPostStats(post.id),
+              builder: (context, snapshot) {
+                final stats = snapshot.data ?? const DynamicPostStats();
+                _ensureStatsInitialized(post.id, stats);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushNamed(
+                      AppRouter.contentDetailRoute,
+                      arguments: ContentDetailArgs(
+                        postId: post.id,
+                        title: post.title,
+                        content: post.content,
+                        author: post.author,
+                        images: post.images,
+                        videoThumb: null,
+                      ),
+                    );
+                  },
+                  child: _buildContentCard(
+                    context: context,
+                    postId: post.id,
+                    title: post.title,
+                    content: post.content,
+                    author: post.author,
+                    likes: stats.likes,
+                    comments: stats.comments,
+                    isLiked: stats.likedByCurrentUser,
+                    isFavorited: stats.favoritedByCurrentUser,
+                    images: post.images,
                     videoThumb: null,
+                    index: index,
                   ),
                 );
               },
-              child: _buildContentCard(
-                context: context,
-                postId: postId,
-                title: '关注内容  ${index + 1}',
-                content: '这是你关注的人发布的内容，保持关注获取最新动态...',
-                author: '关注用户',
-                likes: stats.likes,
-                comments: stats.comments,
-                isLiked: stats.likedByCurrentUser,
-                isFavorited: stats.favoritedByCurrentUser,
-                images: isVideo ? const [] : images,
-                videoThumb: isVideo
-                    ? 'https://picsum.photos/seed/follow_video_$index/800/450'
-                    : null,
-                index: index,
-              ),
             );
           },
         );
@@ -268,7 +312,11 @@ class _FollowTabState extends State<FollowTab> {
                         ),
                       ),
                       Text(
-                        '${(index % 3) + 1}小时前',
+                        _timeAgo(
+                          DateTime.now().subtract(
+                            Duration(hours: (index % 3) + 1),
+                          ),
+                        ),
                         style: const TextStyle(
                           fontSize: 11,
                           color: Color(0xFF9CA3AF),
@@ -472,5 +520,13 @@ class _FollowTabState extends State<FollowTab> {
         },
       ),
     );
+  }
+
+  String _timeAgo(DateTime time) {
+    final diff = DateTime.now().difference(time);
+    if (diff.inMinutes < 1) return '刚刚';
+    if (diff.inHours < 1) return '${diff.inMinutes} 分钟前';
+    if (diff.inDays < 1) return '${diff.inHours} 小时前';
+    return '${diff.inDays} 天前';
   }
 }

@@ -3,6 +3,8 @@ import 'dart:async';
 import '../../theme/app_theme.dart';
 import '../../routes/app_router.dart';
 import '../user_profile_page.dart';
+import '../../services/dynamic_service.dart';
+import '../../services/user_auth_service.dart';
 
 class RecommendTab extends StatefulWidget {
   const RecommendTab({super.key});
@@ -17,36 +19,87 @@ class _RecommendTabState extends State<RecommendTab> {
   bool _userInteractingCarousel = false;
   late int _initialHeroPage;
 
+  // 推荐动态数据
+  List<DynamicPost> _recommendedPosts = [];
+  bool _loadingRecommended = false;
+  int _currentPage = 0;
+  final ScrollController _scrollController = ScrollController();
+
   // 本地交互状态（推荐列表）
-  final Map<int, bool> _liked = {};
-  final Map<int, bool> _favorited = {};
-  final Map<int, int> _likeCounts = {};
-  final Map<int, int> _commentCounts = {};
+  final Map<String, bool> _liked = {};
+  final Map<String, bool> _favorited = {};
+  final Map<String, int> _likeCounts = {};
+  final Map<String, int> _commentCounts = {};
+  final Map<String, int> _favoriteCounts = {};
 
-  void _ensureRecStatsInitialized(int id) {
-    _liked.putIfAbsent(id, () => false);
-    _favorited.putIfAbsent(id, () => false);
-    _likeCounts.putIfAbsent(id, () => (id + 1) * 12);
-    _commentCounts.putIfAbsent(id, () => (id + 1) * 3);
+  void _ensureRecStatsInitialized(String postId, DynamicPost post) {
+    _liked.putIfAbsent(postId, () => post.likedByCurrentUser);
+    _favorited.putIfAbsent(postId, () => post.favoritedByCurrentUser);
+    _likeCounts.putIfAbsent(postId, () => post.likes);
+    _commentCounts.putIfAbsent(postId, () => post.comments);
+    _favoriteCounts.putIfAbsent(postId, () => post.favorites);
   }
 
-  void _toggleRecLike(int id) {
-    final current = _liked[id] ?? false;
-    final count = _likeCounts[id] ?? 0;
+  Future<void> _toggleRecLike(String postId) async {
+    if (UserAuthService().currentUser == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+      }
+      return;
+    }
+    // 乐观更新
+    final current = _liked[postId] ?? false;
+    final count = _likeCounts[postId] ?? 0;
     setState(() {
-      _liked[id] = !current;
-      _likeCounts[id] = count + (current ? -1 : 1);
+      _liked[postId] = !current;
+      _likeCounts[postId] = count + (current ? -1 : 1);
     });
+    // 同步服务端状态
+    final stats = await DynamicService().toggleLike(postId);
+    // 若服务端返回与点击前相同，保留乐观状态，避免回滚体验
+    if (stats.likedByCurrentUser != current) {
+      setState(() {
+        _liked[postId] = stats.likedByCurrentUser;
+        _likeCounts[postId] = stats.likes;
+        _commentCounts[postId] = stats.comments;
+        _favoriteCounts[postId] = stats.favorites;
+      });
+    }
   }
 
-  void _toggleRecFavorite(int id) {
-    final current = _favorited[id] ?? false;
+  Future<void> _toggleRecFavorite(String postId) async {
+    if (UserAuthService().currentUser == null) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('请先登录后再进行操作')));
+      }
+      return;
+    }
+    // 乐观更新
+    final current = _favorited[postId] ?? false;
+    final optimistic = !current;
     setState(() {
-      _favorited[id] = !current;
+      _favorited[postId] = optimistic;
+      final curFav = _favoriteCounts[postId] ?? 0;
+      _favoriteCounts[postId] = curFav + (optimistic ? 1 : -1);
     });
+    // 同步服务端状态
+    final stats = await DynamicService().toggleFavorite(postId);
+    // 若服务端返回与点击前相同，保留乐观状态；否则以服务端为准
+    if (stats.favoritedByCurrentUser != current) {
+      setState(() {
+        _favorited[postId] = stats.favoritedByCurrentUser;
+        _favoriteCounts[postId] = stats.favorites;
+        _likeCounts[postId] = stats.likes;
+        _commentCounts[postId] = stats.comments;
+      });
+    }
   }
 
-  void _showRecMoreActions(int id) {
+  void _showRecMoreActions(String postId) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -196,13 +249,64 @@ class _RecommendTabState extends State<RecommendTab> {
       initialPage: _initialHeroPage,
     );
     _startHeroAutoPlay();
+    _loadRecommendedPosts();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _heroTimer?.cancel();
     _heroController.dispose();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      _loadMoreRecommendedPosts();
+    }
+  }
+
+  Future<void> _loadRecommendedPosts() async {
+    if (_loadingRecommended) return;
+    setState(() => _loadingRecommended = true);
+    try {
+      // 测试API连接
+      await DynamicService().testApiConnection();
+      final posts = await DynamicService().getRecommendedDynamics(
+        page: 0,
+        limit: 10,
+      );
+      setState(() {
+        _recommendedPosts = posts;
+        _currentPage = 0;
+      });
+      debugPrint('成功加载 ${posts.length} 条推荐动态');
+    } catch (e) {
+      debugPrint('加载推荐动态失败: $e');
+    } finally {
+      setState(() => _loadingRecommended = false);
+    }
+  }
+
+  Future<void> _loadMoreRecommendedPosts() async {
+    if (_loadingRecommended) return;
+    setState(() => _loadingRecommended = true);
+    try {
+      final posts = await DynamicService().getRecommendedDynamics(
+        page: _currentPage + 1,
+        limit: 10,
+      );
+      setState(() {
+        _recommendedPosts.addAll(posts);
+        _currentPage++;
+      });
+    } catch (e) {
+      debugPrint('加载更多推荐动态失败: $e');
+    } finally {
+      setState(() => _loadingRecommended = false);
+    }
   }
 
   // 处理英雄卡片点击
@@ -239,19 +343,15 @@ class _RecommendTabState extends State<RecommendTab> {
   }
 
   // 处理内容卡片点击
-  void _handleContentCardTap(int index) {
+  void _handleContentCardTap(DynamicPost post) {
     Navigator.of(context).pushNamed(
       AppRouter.contentDetailRoute,
       arguments: ContentDetailArgs(
-        postId: 'post_$index',
-        title: '分享一个超可爱的宠物日常',
-        content: '分享一个超可爱的宠物日常，今天带我家小狗狗去公园玩，它特别开心！',
-        author: '宠物达人',
-        images: [
-          'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1003.jpg',
-          'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1121.jpg',
-          'https://images.dog.ceo/breeds/terrier-yorkshire/n02094433_1211.jpg',
-        ],
+        postId: post.id,
+        title: post.title,
+        content: post.content,
+        author: post.author,
+        images: post.images,
         videoThumb: null,
       ),
     );
@@ -320,27 +420,31 @@ class _RecommendTabState extends State<RecommendTab> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      children: [
-        // 英雄轮播区域
-        _buildHeroSection(),
+    return RefreshIndicator(
+      onRefresh: _loadRecommendedPosts,
+      child: ListView(
+        controller: _scrollController,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        children: [
+          // 英雄轮播区域
+          _buildHeroSection(),
 
-        const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-        // 快速操作区域
-        _buildQuickActionsSection(),
+          // 快速操作区域
+          _buildQuickActionsSection(),
 
-        const SizedBox(height: 20),
+          const SizedBox(height: 20),
 
-        // 分类筛选区域
-        _buildCategoryFilterSection(),
+          // 分类筛选区域
+          _buildCategoryFilterSection(),
 
-        const SizedBox(height: 16),
+          const SizedBox(height: 16),
 
-        // 推荐内容区域
-        _buildRecommendContentSection(),
-      ],
+          // 推荐内容区域
+          _buildRecommendContentSection(),
+        ],
+      ),
     );
   }
 
@@ -562,208 +666,261 @@ class _RecommendTabState extends State<RecommendTab> {
           ),
         ),
         const SizedBox(height: 12),
-        ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: 5,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () => _handleContentCardTap(index),
-              child: Container(
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Color(0xFFE5E7EB), width: 0.5),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 头部
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.of(context).pushNamed(
-                              AppRouter.userProfileRoute,
-                              arguments: const UserProfileArgs(
-                                userId: 'user_rec',
-                                displayName: '宠物达人',
-                                avatarUrl: null,
-                                bio: '分享萌宠日常与养宠心得',
+        if (_loadingRecommended && _recommendedPosts.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: CircularProgressIndicator(),
+            ),
+          )
+        else if (_recommendedPosts.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20),
+              child: Text('暂无推荐内容', style: TextStyle(color: Color(0xFF9CA3AF))),
+            ),
+          )
+        else
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _recommendedPosts.length + (_loadingRecommended ? 1 : 0),
+            itemBuilder: (context, index) {
+              if (index >= _recommendedPosts.length) {
+                return const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: CircularProgressIndicator(),
+                  ),
+                );
+              }
+              final post = _recommendedPosts[index];
+              return GestureDetector(
+                onTap: () => _handleContentCardTap(post),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Color(0xFFE5E7EB), width: 0.5),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 头部
+                      Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.of(context).pushNamed(
+                                AppRouter.userProfileRoute,
+                                arguments: UserProfileArgs(
+                                  userId: post.authorId,
+                                  displayName: post.author,
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: 16,
+                                backgroundColor: const Color(
+                                  0xFF8B5CF6,
+                                ).withValues(alpha: 0.1),
+                                child: const Text(
+                                  '🐕',
+                                  style: TextStyle(fontSize: 16),
+                                ),
                               ),
                             ),
-                            child: CircleAvatar(
-                              radius: 16,
-                              backgroundColor: const Color(
-                                0xFF8B5CF6,
-                              ).withValues(alpha: 0.1),
-                              child: const Text(
-                                '🐕',
-                                style: TextStyle(fontSize: 16),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    post.author,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w600,
+                                      color: Color(0xFF1F2937),
+                                    ),
+                                  ),
+                                  Text(
+                                    _timeAgo(post.createdAt),
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF9CA3AF),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Divider(
+                        height: 1,
+                        thickness: 0.5,
+                        color: Color(0xFFE5E7EB),
+                      ),
+                      // 正文
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 12,
+                        ),
+                        child: Text(
+                          post.content,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Color(0xFF374151),
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                      // 媒体
+                      if (post.images.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: AspectRatio(
+                              aspectRatio: 16 / 9,
+                              child: GestureDetector(
+                                onTap: () => _openImagePreview(post.images, 0),
+                                child: Image.network(
+                                  post.images.first,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    color: const Color(0xFFF3F4F6),
+                                    alignment: Alignment.center,
+                                    child: const Icon(
+                                      Icons.broken_image,
+                                      color: Color(0xFF9CA3AF),
+                                    ),
+                                  ),
+                                  loadingBuilder: (context, child, progress) {
+                                    if (progress == null) return child;
+                                    return const Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                        const SizedBox(height: 8),
+                      ],
+                      const Divider(
+                        height: 1,
+                        thickness: 0.5,
+                        color: Color(0xFFE5E7EB),
+                      ),
+                      // 操作栏
+                      Builder(
+                        builder: (_) {
+                          _ensureRecStatsInitialized(post.id, post);
+                          return Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
                               children: [
-                                const Text(
-                                  '宠物达人',
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF1F2937),
+                                const Spacer(),
+                                // 点赞
+                                IconButton(
+                                  icon: Icon(
+                                    (_liked[post.id] ?? post.likedByCurrentUser)
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    size: 18,
+                                    color:
+                                        (_liked[post.id] ??
+                                            post.likedByCurrentUser)
+                                        ? Colors.red
+                                        : const Color(0xFF9CA3AF),
                                   ),
+                                  onPressed: () => _toggleRecLike(post.id),
                                 ),
                                 Text(
-                                  '${index + 1} 小时前',
+                                  '${_likeCounts[post.id] ?? post.likes}',
                                   style: const TextStyle(
-                                    fontSize: 11,
+                                    fontSize: 12,
                                     color: Color(0xFF9CA3AF),
                                   ),
                                 ),
+                                const SizedBox(width: 8),
+                                // 评论占位
+                                const IconButton(
+                                  onPressed: null,
+                                  icon: Icon(
+                                    Icons.chat_bubble_outline,
+                                    size: 18,
+                                    color: Color(0xFF9CA3AF),
+                                  ),
+                                ),
+                                Text(
+                                  '${_commentCounts[post.id] ?? post.comments}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF9CA3AF),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                // 收藏
+                                IconButton(
+                                  icon: Icon(
+                                    (_favorited[post.id] ??
+                                            post.favoritedByCurrentUser)
+                                        ? Icons.bookmark
+                                        : Icons.bookmark_border,
+                                    size: 18,
+                                    color:
+                                        (_favorited[post.id] ??
+                                            post.favoritedByCurrentUser)
+                                        ? const Color(0xFF8B5CF6)
+                                        : const Color(0xFF9CA3AF),
+                                  ),
+                                  onPressed: () => _toggleRecFavorite(post.id),
+                                ),
+                                Text(
+                                  '${_favoriteCounts[post.id] ?? post.favorites}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF9CA3AF),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                // 更多
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.more_horiz,
+                                    size: 18,
+                                    color: Color(0xFF9CA3AF),
+                                  ),
+                                  onPressed: () => _showRecMoreActions(post.id),
+                                ),
                               ],
                             ),
-                          ),
-                        ],
+                          );
+                        },
                       ),
-                    ),
-                    const Divider(
-                      height: 1,
-                      thickness: 0.5,
-                      color: Color(0xFFE5E7EB),
-                    ),
-                    // 正文
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 12,
-                      ),
-                      child: const Text(
-                        '分享一个超可爱的宠物日常，今天带我家小狗狗去公园玩，它特别开心！',
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Color(0xFF374151),
-                          height: 1.4,
-                        ),
-                      ),
-                    ),
-                    // 媒体（示例图片，支持预览）
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: GestureDetector(
-                            onTap: () => _openImagePreview([
-                              'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1003.jpg',
-                              'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1121.jpg',
-                              'https://images.dog.ceo/breeds/terrier-yorkshire/n02094433_1211.jpg',
-                            ], 0),
-                            child: Image.network(
-                              'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1003.jpg',
-                              fit: BoxFit.cover,
-                              errorBuilder: (_, __, ___) => Container(
-                                color: const Color(0xFFF3F4F6),
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.broken_image,
-                                  color: Color(0xFF9CA3AF),
-                                ),
-                              ),
-                              loadingBuilder: (context, child, progress) {
-                                if (progress == null) return child;
-                                return const Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Divider(
-                      height: 1,
-                      thickness: 0.5,
-                      color: Color(0xFFE5E7EB),
-                    ),
-                    // 操作栏
-                    Builder(
-                      builder: (_) {
-                        final id = index;
-                        _ensureRecStatsInitialized(id);
-                        return Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              const Spacer(),
-                              // 点赞
-                              IconButton(
-                                icon: Icon(
-                                  (_liked[id] ?? false)
-                                      ? Icons.favorite
-                                      : Icons.favorite_border,
-                                  size: 18,
-                                  color: (_liked[id] ?? false)
-                                      ? Colors.red
-                                      : const Color(0xFF9CA3AF),
-                                ),
-                                onPressed: () => _toggleRecLike(id),
-                              ),
-                              const SizedBox(width: 8),
-                              // 评论占位
-                              const IconButton(
-                                onPressed: null,
-                                icon: Icon(
-                                  Icons.chat_bubble_outline,
-                                  size: 18,
-                                  color: Color(0xFF9CA3AF),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              // 收藏
-                              IconButton(
-                                icon: Icon(
-                                  (_favorited[id] ?? false)
-                                      ? Icons.bookmark
-                                      : Icons.bookmark_border,
-                                  size: 18,
-                                  color: (_favorited[id] ?? false)
-                                      ? const Color(0xFF8B5CF6)
-                                      : const Color(0xFF9CA3AF),
-                                ),
-                                onPressed: () => _toggleRecFavorite(id),
-                              ),
-                              const SizedBox(width: 8),
-                              // 更多
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.more_horiz,
-                                  size: 18,
-                                  color: Color(0xFF9CA3AF),
-                                ),
-                                onPressed: () => _showRecMoreActions(id),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
+              );
+            },
+          ),
       ],
     );
+  }
+
+  String _timeAgo(DateTime time) {
+    final diff = DateTime.now().difference(time);
+    if (diff.inMinutes < 1) return '刚刚';
+    if (diff.inHours < 1) return '${diff.inMinutes} 分钟前';
+    if (diff.inDays < 1) return '${diff.inHours} 小时前';
+    return '${diff.inDays} 天前';
   }
 }
 

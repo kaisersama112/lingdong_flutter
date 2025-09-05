@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
-import '../../services/feed_service.dart';
 import '../../services/user_auth_service.dart';
 import '../../core/components/optimized_image.dart';
+import '../../services/dynamic_service.dart';
 import '../../routes/app_router.dart';
 import '../user_profile_page.dart';
 
@@ -29,9 +29,8 @@ class ContentDetailPage extends StatefulWidget {
 }
 
 class _ContentDetailPageState extends State<ContentDetailPage> {
-  final FeedService _feedService = FeedService();
-  PostStats? _stats;
-  List<FeedComment> _comments = const [];
+  DynamicPostStats? _stats;
+  List<DynamicComment> _comments = const [];
   bool _loading = true;
   bool _sendingComment = false;
   final TextEditingController _commentController = TextEditingController();
@@ -78,8 +77,8 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   }
 
   Future<void> _load() async {
-    final stats = await _feedService.getPostStats(widget.postId);
-    final comments = await _feedService.getComments(widget.postId);
+    final stats = await DynamicService().getPostStats(widget.postId);
+    final comments = await DynamicService().getComments(widget.postId);
     setState(() {
       _stats = stats;
       _comments = comments;
@@ -294,16 +293,7 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   }
 
   Widget _buildActions() {
-    final stats =
-        _stats ??
-        const PostStats(
-          likes: 0,
-          favorites: 0,
-          comments: 0,
-          shares: 0,
-          likedByCurrentUser: false,
-          favoritedByCurrentUser: false,
-        );
+    final stats = _stats ?? const DynamicPostStats();
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
       child: Padding(
@@ -318,12 +308,8 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
               inactiveIcon: Icons.favorite_border,
               count: stats.likes,
               onTap: () async {
-                try {
-                  final s = await _feedService.toggleLike(widget.postId);
-                  setState(() => _stats = s);
-                } catch (e) {
-                  _loginTip(e.toString());
-                }
+                final s = await DynamicService().toggleLike(widget.postId);
+                setState(() => _stats = s);
               },
             ),
             const SizedBox(width: 12),
@@ -335,12 +321,8 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
               activeLabel: '已收藏',
               inactiveLabel: '收藏',
               onTap: () async {
-                try {
-                  final s = await _feedService.toggleFavorite(widget.postId);
-                  setState(() => _stats = s);
-                } catch (e) {
-                  _loginTip(e.toString());
-                }
+                final s = await DynamicService().toggleFavorite(widget.postId);
+                setState(() => _stats = s);
               },
             ),
             const SizedBox(width: 12),
@@ -352,7 +334,7 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
               activeLabel: '转发',
               inactiveLabel: '转发',
               onTap: () async {
-                final s = await _feedService.incrementShare(widget.postId);
+                final s = await DynamicService().incrementShare(widget.postId);
                 setState(() => _stats = s);
                 if (!mounted) return;
                 ScaffoldMessenger.of(
@@ -414,7 +396,7 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
     );
   }
 
-  Widget _commentTile(FeedComment c) {
+  Widget _commentTile(DynamicComment c) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: Row(
@@ -430,12 +412,42 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                   '用户 ${c.userId.substring(0, 6)}',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 4),
-                Text(c.content),
-                const SizedBox(height: 4),
-                Text(
-                  _timeAgo(c.createdAt),
-                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                const SizedBox(height: 6),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9FAFB),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: const Color(0xFFE5E7EB),
+                      width: 0.5,
+                    ),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 8,
+                  ),
+                  child: _buildRichCommentContent(c.content),
+                ),
+                const SizedBox(height: 6),
+                Row(
+                  children: [
+                    Text(
+                      _timeAgo(c.createdAt),
+                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    ),
+                    const Spacer(),
+                    Icon(
+                      Icons.thumb_up_alt_outlined,
+                      size: 14,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                    const SizedBox(width: 8),
+                    Icon(
+                      Icons.reply_outlined,
+                      size: 14,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -448,65 +460,71 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   Widget _buildCommentBar() {
     return SafeArea(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         decoration: const BoxDecoration(
           color: AppTheme.surfaceColor,
-          boxShadow: [BoxShadow(blurRadius: 6, color: Colors.black12)],
-          border: Border(top: BorderSide(color: Color(0xFFE5E7EB), width: 1)),
+          border: Border(top: BorderSide(color: Color(0xFFECEFF1), width: 1)),
         ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF3F4F6),
-                  borderRadius: BorderRadius.circular(20),
-                ),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF7F8FA),
+            borderRadius: BorderRadius.circular(22),
+            border: Border.all(color: const Color(0xFFE6E8EB), width: 1),
+          ),
+          child: Row(
+            children: [
+              Expanded(
                 child: TextField(
                   controller: _commentController,
                   decoration: const InputDecoration(
-                    hintText: '优质评论将会被更多人看到',
+                    hintText: '友善发言，理性讨论',
+                    isDense: true,
                     border: InputBorder.none,
                   ),
                   enabled: !_sendingComment,
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (v) =>
+                      _sendingComment ? null : _submitCommentFromInput(),
                 ),
               ),
-            ),
-            const SizedBox(width: 8),
-            ElevatedButton(
-              onPressed: _sendingComment
-                  ? null
-                  : () async {
-                      final text = _commentController.text.trim();
-                      if (text.isEmpty) return;
-                      setState(() => _sendingComment = true);
-                      try {
-                        await _feedService.addComment(widget.postId, text);
-                        _commentController.clear();
-                        await _load();
-                      } catch (e) {
-                        _loginTip(e.toString());
-                      } finally {
-                        if (mounted) setState(() => _sendingComment = false);
-                      }
-                    },
-              style: AppTheme.primaryButtonStyle,
-              child: _sendingComment
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
-                  : const Text('发送'),
-            ),
-          ],
+              const SizedBox(width: 6),
+              InkWell(
+                onTap: _sendingComment ? null : _showAttachSheet,
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(6),
+                  child: Icon(
+                    Icons.image_outlined,
+                    size: 16,
+                    color: const Color(0xFF9CA3AF),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  void _submitCommentFromInput() async {
+    final text = _commentController.text.trim();
+    if (text.isEmpty) return;
+    setState(() => _sendingComment = true);
+    try {
+      // 使用真实接口创建顶级评论
+      await DynamicService().createParentComment(
+        postId: widget.postId,
+        content: text,
+      );
+      _commentController.clear();
+      await _load();
+    } catch (e) {
+      _loginTip(e.toString());
+    } finally {
+      if (mounted) setState(() => _sendingComment = false);
+    }
   }
 
   void _loginTip(String message) {
@@ -557,6 +575,122 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(const SnackBar(content: Text('链接已复制')));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // --- Comments rich content helpers ---
+  Widget _buildRichCommentContent(String content) {
+    final parts = content.split(RegExp(r"\s+"));
+    final widgets = <Widget>[];
+    for (final part in parts) {
+      if (_isImageUrl(part)) {
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: Image.network(
+                part,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => Container(
+                  height: 120,
+                  color: const Color(0xFFF3F4F6),
+                  alignment: Alignment.center,
+                  child: const Icon(
+                    Icons.broken_image,
+                    color: Color(0xFF9CA3AF),
+                  ),
+                ),
+                loadingBuilder: (ctx, child, progress) => progress == null
+                    ? child
+                    : const SizedBox(
+                        height: 120,
+                        child: Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
+                      ),
+              ),
+            ),
+          ),
+        );
+      } else if (_isVideoUrl(part)) {
+        widgets.add(
+          Padding(
+            padding: const EdgeInsets.only(bottom: 6),
+            child: AspectRatio(
+              aspectRatio: 16 / 9,
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Container(color: const Color(0xFF111827)),
+                  const Center(
+                    child: CircleAvatar(
+                      radius: 22,
+                      backgroundColor: Colors.white70,
+                      child: Icon(Icons.play_arrow, color: Colors.black87),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      } else {
+        // Basic emoji support: no parsing needed, Flutter Text supports Unicode emojis
+        widgets.add(Text(part + ' '));
+      }
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: widgets,
+    );
+  }
+
+  bool _isImageUrl(String s) {
+    return s.startsWith('http') &&
+        (s.endsWith('.jpg') ||
+            s.endsWith('.jpeg') ||
+            s.endsWith('.png') ||
+            s.endsWith('.gif'));
+  }
+
+  bool _isVideoUrl(String s) {
+    return s.startsWith('http') && (s.endsWith('.mp4') || s.endsWith('.mov'));
+  }
+
+  void _showAttachSheet() {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.image, color: Color(0xFF8B5CF6)),
+              title: const Text('添加图片（粘贴图片链接）'),
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('暂不支持本地选取，请直接粘贴图片链接到评论')),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.videocam, color: Color(0xFF10B981)),
+              title: const Text('添加视频（粘贴视频链接）'),
+              onTap: () {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('暂不支持本地选取，请直接粘贴视频链接到评论')),
+                );
               },
             ),
           ],
