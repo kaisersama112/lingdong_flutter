@@ -22,12 +22,13 @@ part 'consultation_response.g.dart';
 /// * [diagnosis] - Diagnosis，诊断结果
 /// * [treatmentPlan] - Treatment Plan，治疗方案
 /// * [medications] - Medications，药物清单
-/// * [doctorName] 
-/// * [doctorPhone] 
-/// * [doctorEmail] 
+/// * [doctorName]
+/// * [doctorPhone]
+/// * [doctorEmail]
 /// * [id] - Id，记录ID
 @BuiltValue()
-abstract class ConsultationResponse implements Built<ConsultationResponse, ConsultationResponseBuilder> {
+abstract class ConsultationResponse
+    implements Built<ConsultationResponse, ConsultationResponseBuilder> {
   /// Pet Id，宠物ID
   @BuiltValueField(wireName: r'pet_id')
   int get petId;
@@ -75,18 +76,24 @@ abstract class ConsultationResponse implements Built<ConsultationResponse, Consu
 
   ConsultationResponse._();
 
-  factory ConsultationResponse([void updates(ConsultationResponseBuilder b)]) = _$ConsultationResponse;
+  factory ConsultationResponse([void updates(ConsultationResponseBuilder b)]) =
+      _$ConsultationResponse;
 
   @BuiltValueHook(initializeBuilder: true)
   static void _defaults(ConsultationResponseBuilder b) => b;
 
   @BuiltValueSerializer(custom: true)
-  static Serializer<ConsultationResponse> get serializer => _$ConsultationResponseSerializer();
+  static Serializer<ConsultationResponse> get serializer =>
+      _$ConsultationResponseSerializer();
 }
 
-class _$ConsultationResponseSerializer implements PrimitiveSerializer<ConsultationResponse> {
+class _$ConsultationResponseSerializer
+    implements PrimitiveSerializer<ConsultationResponse> {
   @override
-  final Iterable<Type> types = const [ConsultationResponse, _$ConsultationResponse];
+  final Iterable<Type> types = const [
+    ConsultationResponse,
+    _$ConsultationResponse
+  ];
 
   @override
   final String wireName = r'ConsultationResponse';
@@ -170,7 +177,9 @@ class _$ConsultationResponseSerializer implements PrimitiveSerializer<Consultati
     ConsultationResponse object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
+    return _serializeProperties(serializers, object,
+            specifiedType: specifiedType)
+        .toList();
   }
 
   void _deserializeProperties(
@@ -300,4 +309,3 @@ class _$ConsultationResponseSerializer implements PrimitiveSerializer<Consultati
     return result.build();
   }
 }
-

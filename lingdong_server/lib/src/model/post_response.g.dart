@@ -26,7 +26,7 @@ class _$PostResponse extends PostResponse {
   @override
   final DateTime? updatedAt;
   @override
-  final BuiltList<MediaResponse>? medias;
+  final BuiltList<MediaOut>? medias;
   @override
   final int? likeCount;
   @override
@@ -195,10 +195,10 @@ class PostResponseBuilder
   DateTime? get updatedAt => _$this._updatedAt;
   set updatedAt(DateTime? updatedAt) => _$this._updatedAt = updatedAt;
 
-  ListBuilder<MediaResponse>? _medias;
-  ListBuilder<MediaResponse> get medias =>
-      _$this._medias ??= ListBuilder<MediaResponse>();
-  set medias(ListBuilder<MediaResponse>? medias) => _$this._medias = medias;
+  ListBuilder<MediaOut>? _medias;
+  ListBuilder<MediaOut> get medias =>
+      _$this._medias ??= ListBuilder<MediaOut>();
+  set medias(ListBuilder<MediaOut>? medias) => _$this._medias = medias;
 
   int? _likeCount;
   int? get likeCount => _$this._likeCount;

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:lingdong_server/lingdong_server.dart' as server;
+import 'package:built_value/json_object.dart';
 
 import 'user_auth_service.dart';
 
@@ -187,8 +188,8 @@ class DynamicService {
         final images = <String>[];
         if (data.medias != null) {
           for (final media in data.medias!) {
-            if (media.media.url.isNotEmpty) {
-              images.add(media.media.url);
+            if (media.url.isNotEmpty) {
+              images.add(media.url);
             }
           }
         }
@@ -294,8 +295,8 @@ class DynamicService {
           final images = <String>[];
           if (item.medias != null) {
             for (final media in item.medias!) {
-              if (media.media.url.isNotEmpty) {
-                images.add(media.media.url);
+              if (media.url.isNotEmpty) {
+                images.add(media.url);
               }
             }
           }
@@ -396,25 +397,152 @@ class DynamicService {
             limit: limit,
           );
       final code = resp.data?.code ?? resp.statusCode ?? 500;
-      if (code != 200) return const [];
+      if (code != 200) {
+        if (kDebugMode) {
+          debugPrint('DynamicService.getComments: 响应码 $code');
+        }
+        return const [];
+      }
+
       final data = resp.data?.data;
-      final list = _get(data, ['items'], []);
-      if (list is List) {
-        return list.map((e) {
-          final uid = _get(e, ['user_id'], 'user');
-          final content = _get(e, ['content'], '');
-          final createdAt =
-              DateTime.tryParse(_get(e, ['created_at'], '') ?? '') ??
-              DateTime.now();
-          return DynamicComment(
-            userId: '$uid',
-            content: '$content',
-            createdAt: createdAt,
-          );
-        }).toList();
+      if (kDebugMode) {
+        debugPrint('DynamicService.getComments 响应数据: $data');
+      }
+
+      // 解析 GenericResponseDict 的 data 字段
+      if (data != null) {
+        // 尝试从不同的路径获取评论列表
+        List<dynamic>? list;
+
+        // 处理 BuiltMap 类型的数据
+        if (data.runtimeType.toString().contains('BuiltMap')) {
+          final dataMap = data.toMap();
+          if (kDebugMode) {
+            debugPrint(
+              'DynamicService.getComments BuiltMap keys: ${dataMap.keys.toList()}',
+            );
+          }
+
+          // 尝试不同的字段名
+          final items = dataMap['items'] as dynamic;
+          final comments = dataMap['comments'] as dynamic;
+          final dataList = dataMap['data'] as dynamic;
+
+          if (items is List) {
+            list = items;
+          } else if (comments is List) {
+            list = comments;
+          } else if (dataList is List) {
+            list = dataList;
+          } else if (items is JsonObject && items.value is List) {
+            list = items.value as List<dynamic>;
+          } else if (comments is JsonObject && comments.value is List) {
+            list = comments.value as List<dynamic>;
+          } else if (dataList is JsonObject && dataList.value is List) {
+            list = dataList.value as List<dynamic>;
+          }
+        } else {
+          // 使用 _get 函数来安全地获取数据
+          final items = _get(data, ['items'], null);
+          final comments = _get(data, ['comments'], null);
+          final dataList = _get(data, ['data'], null);
+
+          if (items is List) {
+            list = items;
+          } else if (comments is List) {
+            list = comments;
+          } else if (dataList is List) {
+            list = dataList;
+          } else if (items != null &&
+              items is JsonObject &&
+              items.value is List) {
+            list = items.value as List<dynamic>;
+          } else if (comments != null &&
+              comments is JsonObject &&
+              comments.value is List) {
+            list = comments.value as List<dynamic>;
+          } else if (dataList != null &&
+              dataList is JsonObject &&
+              dataList.value is List) {
+            list = dataList.value as List<dynamic>;
+          } else {
+            // 如果 _get 函数没有工作，尝试直接访问
+            if (data is Map) {
+              final directItems = data['items'] as dynamic;
+              final directComments = data['comments'] as dynamic;
+              final directData = data['data'] as dynamic;
+
+              if (directItems is List) {
+                list = directItems;
+              } else if (directComments is List) {
+                list = directComments;
+              } else if (directData is List) {
+                list = directData;
+              } else if (directItems is JsonObject &&
+                  directItems.value is List) {
+                list = directItems.value as List<dynamic>;
+              } else if (directComments is JsonObject &&
+                  directComments.value is List) {
+                list = directComments.value as List<dynamic>;
+              } else if (directData is JsonObject && directData.value is List) {
+                list = directData.value as List<dynamic>;
+              }
+            }
+          }
+        }
+
+        if (kDebugMode) {
+          debugPrint('DynamicService.getComments 解析到 ${list?.length ?? 0} 条评论');
+        }
+
+        if (list != null) {
+          return list.map((e) {
+            if (kDebugMode) {
+              debugPrint('DynamicService.getComments 解析评论项: $e');
+            }
+
+            final id = _get(e, ['id'], 0);
+            final uid = _get(e, ['user_id'], 'user');
+            final username = _get(e, ['username'], '用户${uid}');
+            final userAvatar = _get(e, ['user_avatar'], null);
+            final content = _get(e, ['content'], '');
+            final createdAt =
+                DateTime.tryParse(_get(e, ['created_at'], '') ?? '') ??
+                DateTime.now();
+            final likeCount = _safeInt(_get(e, ['like_count'], 0));
+            final isLiked = _safeBool(_get(e, ['is_liked'], false));
+
+            // 解析媒体文件
+            final medias = _get(e, ['medias'], []);
+            final images = <String>[];
+            if (medias is List) {
+              for (final media in medias) {
+                final url = _get(media, ['url'], '');
+                if (url.isNotEmpty) {
+                  images.add(url);
+                }
+              }
+            }
+
+            return DynamicComment(
+              id: '$id',
+              userId: '$uid',
+              username: '$username',
+              userAvatar: userAvatar != null ? '$userAvatar' : null,
+              content: '$content',
+              createdAt: createdAt,
+              likeCount: likeCount,
+              isLiked: isLiked,
+              images: images,
+            );
+          }).toList();
+        }
       }
       return const [];
     } catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.getComments 失败: $e');
+      }
       return const [];
     }
   }
@@ -586,13 +714,25 @@ class DynamicPost {
 }
 
 class DynamicComment {
+  final String id;
   final String userId;
+  final String username;
+  final String? userAvatar;
   final String content;
   final DateTime createdAt;
+  final int likeCount;
+  final bool isLiked;
+  final List<String> images;
 
   const DynamicComment({
+    required this.id,
     required this.userId,
+    required this.username,
+    this.userAvatar,
     required this.content,
     required this.createdAt,
+    this.likeCount = 0,
+    this.isLiked = false,
+    this.images = const [],
   });
 }

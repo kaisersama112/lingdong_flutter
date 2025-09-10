@@ -77,13 +77,24 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   }
 
   Future<void> _load() async {
-    final stats = await DynamicService().getPostStats(widget.postId);
-    final comments = await DynamicService().getComments(widget.postId);
-    setState(() {
-      _stats = stats;
-      _comments = comments;
-      _loading = false;
-    });
+    try {
+      final stats = await DynamicService().getPostStats(widget.postId);
+      final comments = await DynamicService().getComments(widget.postId);
+      if (mounted) {
+        setState(() {
+          _stats = stats;
+          _comments = comments;
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+        _loginTip('加载失败: $e');
+      }
+    }
   }
 
   @override
@@ -351,101 +362,219 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
   Widget _buildCommentsSection() {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: AppTheme.spacingM),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              '评论',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            if (_comments.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24),
-                child: Center(
-                  child: Text(
-                    '还没有评论，来说点什么吧～',
-                    style: TextStyle(color: Colors.grey[500]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Text(
+                '评论',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF333333),
+                ),
+              ),
+              if (_comments.isNotEmpty) ...[
+                const SizedBox(width: 8),
+                Text(
+                  '${_comments.length}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF999999),
                   ),
                 ),
-              )
-            else
-              ..._comments.asMap().entries.map((entry) {
-                final i = entry.key;
-                final c = entry.value;
-                return Column(
-                  children: [
-                    _commentTile(c),
-                    if (i != _comments.length - 1)
-                      Container(
-                        margin: const EdgeInsets.only(left: 48),
-                        child: const Divider(
-                          height: 1,
-                          thickness: 0.5,
-                          color: Color(0xFFE5E7EB),
-                        ),
-                      ),
-                  ],
-                );
-              }).toList(),
-          ],
-        ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 16),
+          if (_loading)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24),
+              child: Center(child: CircularProgressIndicator()),
+            )
+          else if (_comments.isEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24),
+              child: Center(
+                child: Text(
+                  '还没有评论，来说点什么吧～',
+                  style: TextStyle(color: Colors.grey[500], fontSize: 14),
+                ),
+              ),
+            )
+          else
+            ..._comments.map((c) => _commentTile(c)).toList(),
+        ],
       ),
     );
   }
 
   Widget _commentTile(DynamicComment c) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const CircleAvatar(radius: 16, child: Icon(Icons.person, size: 16)),
-          const SizedBox(width: 10),
+          // 用户头像
+          c.userAvatar != null && c.userAvatar!.isNotEmpty
+              ? OptimizedAvatar(
+                  imageUrl: c.userAvatar!,
+                  size: 36,
+                  backgroundColor: const Color(0xFFF5F5F5),
+                  fallback: Text(
+                    c.username.isNotEmpty ? c.username[0].toUpperCase() : 'U',
+                    style: const TextStyle(
+                      color: Color(0xFF666666),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                )
+              : Container(
+                  width: 36,
+                  height: 36,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFFF5F5F5),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      c.username.isNotEmpty ? c.username[0].toUpperCase() : 'U',
+                      style: const TextStyle(
+                        color: Color(0xFF666666),
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
+          const SizedBox(width: 12),
+          // 评论内容区域
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '用户 ${c.userId.substring(0, 6)}',
-                  style: const TextStyle(fontWeight: FontWeight.w600),
-                ),
-                const SizedBox(height: 6),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9FAFB),
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFFE5E7EB),
-                      width: 0.5,
-                    ),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 8,
-                  ),
-                  child: _buildRichCommentContent(c.content),
-                ),
-                const SizedBox(height: 6),
+                // 用户名和时间
                 Row(
                   children: [
                     Text(
-                      _timeAgo(c.createdAt),
-                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
-                    ),
-                    const Spacer(),
-                    Icon(
-                      Icons.thumb_up_alt_outlined,
-                      size: 14,
-                      color: Color(0xFF9CA3AF),
+                      c.username,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14,
+                        color: Color(0xFF333333),
+                      ),
                     ),
                     const SizedBox(width: 8),
-                    Icon(
-                      Icons.reply_outlined,
-                      size: 14,
-                      color: Color(0xFF9CA3AF),
+                    Text(
+                      _timeAgo(c.createdAt),
+                      style: const TextStyle(
+                        color: Color(0xFF999999),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 6),
+                // 评论内容
+                Text(
+                  c.content,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF333333),
+                    height: 1.4,
+                  ),
+                ),
+                // 显示评论中的图片
+                if (c.images.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: c.images.map((imageUrl) {
+                      return GestureDetector(
+                        onTap: () => _openImagePreview(
+                          c.images,
+                          c.images.indexOf(imageUrl),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Image.network(
+                            imageUrl,
+                            width: 60,
+                            height: 60,
+                            fit: BoxFit.cover,
+                            errorBuilder: (_, __, ___) => Container(
+                              width: 60,
+                              height: 60,
+                              color: const Color(0xFFF5F5F5),
+                              child: const Icon(
+                                Icons.broken_image,
+                                color: Color(0xFFCCCCCC),
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ],
+                const SizedBox(height: 8),
+                // 操作按钮
+                Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () => _likeComment(c.id),
+                      child: Row(
+                        children: [
+                          Icon(
+                            c.isLiked
+                                ? Icons.thumb_up
+                                : Icons.thumb_up_alt_outlined,
+                            size: 16,
+                            color: c.isLiked
+                                ? const Color(0xFF1976D2)
+                                : const Color(0xFF999999),
+                          ),
+                          if (c.likeCount > 0) ...[
+                            const SizedBox(width: 4),
+                            Text(
+                              '${c.likeCount}',
+                              style: TextStyle(
+                                color: c.isLiked
+                                    ? const Color(0xFF1976D2)
+                                    : const Color(0xFF999999),
+                                fontSize: 12,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 20),
+                    GestureDetector(
+                      onTap: () {
+                        // TODO: 实现回复功能
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.reply_outlined,
+                            size: 16,
+                            color: const Color(0xFF999999),
+                          ),
+                          const SizedBox(width: 4),
+                          const Text(
+                            '回复',
+                            style: TextStyle(
+                              color: Color(0xFF999999),
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -462,15 +591,14 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
       child: Container(
         padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         decoration: const BoxDecoration(
-          color: AppTheme.surfaceColor,
-          border: Border(top: BorderSide(color: Color(0xFFECEFF1), width: 1)),
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Color(0xFFE5E5E5), width: 0.5)),
         ),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFF7F8FA),
-            borderRadius: BorderRadius.circular(22),
-            border: Border.all(color: const Color(0xFFE6E8EB), width: 1),
+            color: const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
             children: [
@@ -479,8 +607,13 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                   controller: _commentController,
                   decoration: const InputDecoration(
                     hintText: '友善发言，理性讨论',
+                    hintStyle: TextStyle(
+                      color: Color(0xFF999999),
+                      fontSize: 14,
+                    ),
                     isDense: true,
                     border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(vertical: 6),
                   ),
                   enabled: !_sendingComment,
                   textInputAction: TextInputAction.send,
@@ -497,7 +630,7 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
                   child: Icon(
                     Icons.image_outlined,
                     size: 16,
-                    color: const Color(0xFF9CA3AF),
+                    color: const Color(0xFF999999),
                   ),
                 ),
               ),
@@ -524,6 +657,17 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
       _loginTip(e.toString());
     } finally {
       if (mounted) setState(() => _sendingComment = false);
+    }
+  }
+
+  void _likeComment(String commentId) async {
+    try {
+      // TODO: 实现评论点赞功能
+      // 这里可以调用 DynamicService 的评论点赞方法
+      // await DynamicService().likeComment(commentId);
+      // await _load(); // 重新加载评论以更新点赞状态
+    } catch (e) {
+      _loginTip(e.toString());
     }
   }
 
@@ -581,86 +725,6 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
         ),
       ),
     );
-  }
-
-  // --- Comments rich content helpers ---
-  Widget _buildRichCommentContent(String content) {
-    final parts = content.split(RegExp(r"\s+"));
-    final widgets = <Widget>[];
-    for (final part in parts) {
-      if (_isImageUrl(part)) {
-        widgets.add(
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                part,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) => Container(
-                  height: 120,
-                  color: const Color(0xFFF3F4F6),
-                  alignment: Alignment.center,
-                  child: const Icon(
-                    Icons.broken_image,
-                    color: Color(0xFF9CA3AF),
-                  ),
-                ),
-                loadingBuilder: (ctx, child, progress) => progress == null
-                    ? child
-                    : const SizedBox(
-                        height: 120,
-                        child: Center(
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        );
-      } else if (_isVideoUrl(part)) {
-        widgets.add(
-          Padding(
-            padding: const EdgeInsets.only(bottom: 6),
-            child: AspectRatio(
-              aspectRatio: 16 / 9,
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(color: const Color(0xFF111827)),
-                  const Center(
-                    child: CircleAvatar(
-                      radius: 22,
-                      backgroundColor: Colors.white70,
-                      child: Icon(Icons.play_arrow, color: Colors.black87),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      } else {
-        // Basic emoji support: no parsing needed, Flutter Text supports Unicode emojis
-        widgets.add(Text(part + ' '));
-      }
-    }
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: widgets,
-    );
-  }
-
-  bool _isImageUrl(String s) {
-    return s.startsWith('http') &&
-        (s.endsWith('.jpg') ||
-            s.endsWith('.jpeg') ||
-            s.endsWith('.png') ||
-            s.endsWith('.gif'));
-  }
-
-  bool _isVideoUrl(String s) {
-    return s.startsWith('http') && (s.endsWith('.mp4') || s.endsWith('.mov'));
   }
 
   void _showAttachSheet() {
