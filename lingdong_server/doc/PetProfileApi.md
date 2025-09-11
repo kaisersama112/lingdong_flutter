@@ -738,7 +738,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet**
-> GenericResponseDict getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseConsultationResponse getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取就诊记录列表（分页）
 
@@ -771,7 +771,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseConsultationResponse**](GenericResponsePaginationResponseConsultationResponse.md)
 
 ### Authorization
 
@@ -828,7 +828,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet**
-> GenericResponseDict getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseDewormingRecordResponse getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取驱虫记录列表（分页）
 
@@ -861,7 +861,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseDewormingRecordResponse**](GenericResponsePaginationResponseDewormingRecordResponse.md)
 
 ### Authorization
 
@@ -918,7 +918,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet**
-> GenericResponseDict getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseExaminationRecordResponse getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取体检记录列表（分页）
 
@@ -951,7 +951,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseExaminationRecordResponse**](GenericResponsePaginationResponseExaminationRecordResponse.md)
 
 ### Authorization
 
@@ -1008,7 +1008,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet**
-> GenericResponseDict getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseBeautificationRecordResponse getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取美容养护记录列表（分页）
 
@@ -1041,7 +1041,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseBeautificationRecordResponse**](GenericResponsePaginationResponseBeautificationRecordResponse.md)
 
 ### Authorization
 
@@ -1098,7 +1098,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet**
-> GenericResponseDict getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseOtherHealthRecordResponse getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取其他健康记录列表（分页）
 
@@ -1131,7 +1131,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseOtherHealthRecordResponse**](GenericResponsePaginationResponseOtherHealthRecordResponse.md)
 
 ### Authorization
 
@@ -1145,7 +1145,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet**
-> GenericResponseDict getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseVaccinationRecordResponse getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取疫苗接种记录列表（分页）
 
@@ -1178,7 +1178,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseVaccinationRecordResponse**](GenericResponsePaginationResponseVaccinationRecordResponse.md)
 
 ### Authorization
 
@@ -1235,7 +1235,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet**
-> GenericResponseDict getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(petId, skip, size)
+> GenericResponsePaginationResponseWeightRecordResponse getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(petId, skip, size)
 
 根据宠物ID获取体重记录列表（分页）
 
@@ -1268,7 +1268,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePaginationResponseWeightRecordResponse**](GenericResponsePaginationResponseWeightRecordResponse.md)
 
 ### Authorization
 

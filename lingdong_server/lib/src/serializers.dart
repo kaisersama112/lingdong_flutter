@@ -84,6 +84,13 @@ import 'package:lingdong_server/src/model/generic_response_media_out.dart';
 import 'package:lingdong_server/src/model/generic_response_other_health_record_response.dart';
 import 'package:lingdong_server/src/model/generic_response_paged_response_dog_behavior_guide_out.dart';
 import 'package:lingdong_server/src/model/generic_response_paged_response_dog_care_guide_out.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_beautification_record_response.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_consultation_response.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_deworming_record_response.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_examination_record_response.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_other_health_record_response.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_vaccination_record_response.dart';
+import 'package:lingdong_server/src/model/generic_response_pagination_response_weight_record_response.dart';
 import 'package:lingdong_server/src/model/generic_response_parent_comment.dart';
 import 'package:lingdong_server/src/model/generic_response_personality_response.dart';
 import 'package:lingdong_server/src/model/generic_response_pet_list_response.dart';
@@ -117,6 +124,13 @@ import 'package:lingdong_server/src/model/other_health_record_response.dart';
 import 'package:lingdong_server/src/model/paged_response_dog_behavior_guide_out.dart';
 import 'package:lingdong_server/src/model/paged_response_dog_care_guide_out.dart';
 import 'package:lingdong_server/src/model/pagination_params.dart';
+import 'package:lingdong_server/src/model/pagination_response_beautification_record_response.dart';
+import 'package:lingdong_server/src/model/pagination_response_consultation_response.dart';
+import 'package:lingdong_server/src/model/pagination_response_deworming_record_response.dart';
+import 'package:lingdong_server/src/model/pagination_response_examination_record_response.dart';
+import 'package:lingdong_server/src/model/pagination_response_other_health_record_response.dart';
+import 'package:lingdong_server/src/model/pagination_response_vaccination_record_response.dart';
+import 'package:lingdong_server/src/model/pagination_response_weight_record_response.dart';
 import 'package:lingdong_server/src/model/parent_comment.dart';
 import 'package:lingdong_server/src/model/parent_comment_create.dart';
 import 'package:lingdong_server/src/model/personality_create.dart';
@@ -141,6 +155,7 @@ import 'package:lingdong_server/src/model/role_update.dart';
 import 'package:lingdong_server/src/model/send_code_request.dart';
 import 'package:lingdong_server/src/model/send_code_response.dart';
 import 'package:lingdong_server/src/model/set_password_by_code_request.dart';
+import 'package:lingdong_server/src/model/tag.dart';
 import 'package:lingdong_server/src/model/tag_create.dart';
 import 'package:lingdong_server/src/model/tag_list_response.dart';
 import 'package:lingdong_server/src/model/tag_response.dart';
@@ -227,6 +242,13 @@ part 'serializers.g.dart';
   GenericResponseOtherHealthRecordResponse,
   GenericResponsePagedResponseDogBehaviorGuideOut,
   GenericResponsePagedResponseDogCareGuideOut,
+  GenericResponsePaginationResponseBeautificationRecordResponse,
+  GenericResponsePaginationResponseConsultationResponse,
+  GenericResponsePaginationResponseDewormingRecordResponse,
+  GenericResponsePaginationResponseExaminationRecordResponse,
+  GenericResponsePaginationResponseOtherHealthRecordResponse,
+  GenericResponsePaginationResponseVaccinationRecordResponse,
+  GenericResponsePaginationResponseWeightRecordResponse,
   GenericResponseParentComment,
   GenericResponsePersonalityResponse,
   GenericResponsePetListResponse,
@@ -260,6 +282,13 @@ part 'serializers.g.dart';
   PagedResponseDogBehaviorGuideOut,
   PagedResponseDogCareGuideOut,
   PaginationParams,
+  PaginationResponseBeautificationRecordResponse,
+  PaginationResponseConsultationResponse,
+  PaginationResponseDewormingRecordResponse,
+  PaginationResponseExaminationRecordResponse,
+  PaginationResponseOtherHealthRecordResponse,
+  PaginationResponseVaccinationRecordResponse,
+  PaginationResponseWeightRecordResponse,
   ParentComment,
   ParentCommentCreate,
   PersonalityCreate,
@@ -284,6 +313,7 @@ part 'serializers.g.dart';
   SendCodeRequest,
   SendCodeResponse,
   SetPasswordByCodeRequest,
+  Tag,
   TagCreate,
   TagListResponse,
   TagResponse,

@@ -16,11 +16,17 @@ class _$Reply extends Reply {
   @override
   final int parentCommentId;
   @override
-  final int userId;
+  final int? replyToReplyId;
+  @override
+  final BuiltMap<String, JsonObject?> replier;
+  @override
+  final BuiltMap<String, JsonObject?>? replyTo;
   @override
   final DateTime createdAt;
   @override
   final DateTime? updatedAt;
+  @override
+  final BuiltList<Reply>? replies;
 
   factory _$Reply([void Function(ReplyBuilder)? updates]) =>
       (ReplyBuilder()..update(updates))._build();
@@ -30,9 +36,12 @@ class _$Reply extends Reply {
       this.medias,
       required this.id,
       required this.parentCommentId,
-      required this.userId,
+      this.replyToReplyId,
+      required this.replier,
+      this.replyTo,
       required this.createdAt,
-      this.updatedAt})
+      this.updatedAt,
+      this.replies})
       : super._();
   @override
   Reply rebuild(void Function(ReplyBuilder) updates) =>
@@ -49,9 +58,12 @@ class _$Reply extends Reply {
         medias == other.medias &&
         id == other.id &&
         parentCommentId == other.parentCommentId &&
-        userId == other.userId &&
+        replyToReplyId == other.replyToReplyId &&
+        replier == other.replier &&
+        replyTo == other.replyTo &&
         createdAt == other.createdAt &&
-        updatedAt == other.updatedAt;
+        updatedAt == other.updatedAt &&
+        replies == other.replies;
   }
 
   @override
@@ -61,9 +73,12 @@ class _$Reply extends Reply {
     _$hash = $jc(_$hash, medias.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, parentCommentId.hashCode);
-    _$hash = $jc(_$hash, userId.hashCode);
+    _$hash = $jc(_$hash, replyToReplyId.hashCode);
+    _$hash = $jc(_$hash, replier.hashCode);
+    _$hash = $jc(_$hash, replyTo.hashCode);
     _$hash = $jc(_$hash, createdAt.hashCode);
     _$hash = $jc(_$hash, updatedAt.hashCode);
+    _$hash = $jc(_$hash, replies.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -75,9 +90,12 @@ class _$Reply extends Reply {
           ..add('medias', medias)
           ..add('id', id)
           ..add('parentCommentId', parentCommentId)
-          ..add('userId', userId)
+          ..add('replyToReplyId', replyToReplyId)
+          ..add('replier', replier)
+          ..add('replyTo', replyTo)
           ..add('createdAt', createdAt)
-          ..add('updatedAt', updatedAt))
+          ..add('updatedAt', updatedAt)
+          ..add('replies', replies))
         .toString();
   }
 }
@@ -103,9 +121,22 @@ class ReplyBuilder implements Builder<Reply, ReplyBuilder> {
   set parentCommentId(int? parentCommentId) =>
       _$this._parentCommentId = parentCommentId;
 
-  int? _userId;
-  int? get userId => _$this._userId;
-  set userId(int? userId) => _$this._userId = userId;
+  int? _replyToReplyId;
+  int? get replyToReplyId => _$this._replyToReplyId;
+  set replyToReplyId(int? replyToReplyId) =>
+      _$this._replyToReplyId = replyToReplyId;
+
+  MapBuilder<String, JsonObject?>? _replier;
+  MapBuilder<String, JsonObject?> get replier =>
+      _$this._replier ??= MapBuilder<String, JsonObject?>();
+  set replier(MapBuilder<String, JsonObject?>? replier) =>
+      _$this._replier = replier;
+
+  MapBuilder<String, JsonObject?>? _replyTo;
+  MapBuilder<String, JsonObject?> get replyTo =>
+      _$this._replyTo ??= MapBuilder<String, JsonObject?>();
+  set replyTo(MapBuilder<String, JsonObject?>? replyTo) =>
+      _$this._replyTo = replyTo;
 
   DateTime? _createdAt;
   DateTime? get createdAt => _$this._createdAt;
@@ -114,6 +145,10 @@ class ReplyBuilder implements Builder<Reply, ReplyBuilder> {
   DateTime? _updatedAt;
   DateTime? get updatedAt => _$this._updatedAt;
   set updatedAt(DateTime? updatedAt) => _$this._updatedAt = updatedAt;
+
+  ListBuilder<Reply>? _replies;
+  ListBuilder<Reply> get replies => _$this._replies ??= ListBuilder<Reply>();
+  set replies(ListBuilder<Reply>? replies) => _$this._replies = replies;
 
   ReplyBuilder() {
     Reply._defaults(this);
@@ -126,9 +161,12 @@ class ReplyBuilder implements Builder<Reply, ReplyBuilder> {
       _medias = $v.medias?.toBuilder();
       _id = $v.id;
       _parentCommentId = $v.parentCommentId;
-      _userId = $v.userId;
+      _replyToReplyId = $v.replyToReplyId;
+      _replier = $v.replier.toBuilder();
+      _replyTo = $v.replyTo?.toBuilder();
       _createdAt = $v.createdAt;
       _updatedAt = $v.updatedAt;
+      _replies = $v.replies?.toBuilder();
       _$v = null;
     }
     return this;
@@ -158,17 +196,27 @@ class ReplyBuilder implements Builder<Reply, ReplyBuilder> {
             id: BuiltValueNullFieldError.checkNotNull(id, r'Reply', 'id'),
             parentCommentId: BuiltValueNullFieldError.checkNotNull(
                 parentCommentId, r'Reply', 'parentCommentId'),
-            userId: BuiltValueNullFieldError.checkNotNull(
-                userId, r'Reply', 'userId'),
+            replyToReplyId: replyToReplyId,
+            replier: replier.build(),
+            replyTo: _replyTo?.build(),
             createdAt: BuiltValueNullFieldError.checkNotNull(
                 createdAt, r'Reply', 'createdAt'),
             updatedAt: updatedAt,
+            replies: _replies?.build(),
           );
     } catch (_) {
       late String _$failedField;
       try {
         _$failedField = 'medias';
         _medias?.build();
+
+        _$failedField = 'replier';
+        replier.build();
+        _$failedField = 'replyTo';
+        _replyTo?.build();
+
+        _$failedField = 'replies';
+        _replies?.build();
       } catch (e) {
         throw BuiltValueNestedFieldError(r'Reply', _$failedField, e.toString());
       }

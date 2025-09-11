@@ -8,15 +8,26 @@ part of 'weight_record_response.dart';
 
 class _$WeightRecordResponse extends WeightRecordResponse {
   @override
-  final num weightValue;
+  final int petId;
+  @override
+  final num? weightValue;
   @override
   final int id;
+  @override
+  final Date? createdAt;
+  @override
+  final Date? recordDate;
 
   factory _$WeightRecordResponse(
           [void Function(WeightRecordResponseBuilder)? updates]) =>
       (WeightRecordResponseBuilder()..update(updates))._build();
 
-  _$WeightRecordResponse._({required this.weightValue, required this.id})
+  _$WeightRecordResponse._(
+      {required this.petId,
+      this.weightValue,
+      required this.id,
+      this.createdAt,
+      this.recordDate})
       : super._();
   @override
   WeightRecordResponse rebuild(
@@ -31,15 +42,21 @@ class _$WeightRecordResponse extends WeightRecordResponse {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is WeightRecordResponse &&
+        petId == other.petId &&
         weightValue == other.weightValue &&
-        id == other.id;
+        id == other.id &&
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
+    _$hash = $jc(_$hash, petId.hashCode);
     _$hash = $jc(_$hash, weightValue.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -47,8 +64,11 @@ class _$WeightRecordResponse extends WeightRecordResponse {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'WeightRecordResponse')
+          ..add('petId', petId)
           ..add('weightValue', weightValue)
-          ..add('id', id))
+          ..add('id', id)
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -56,6 +76,10 @@ class _$WeightRecordResponse extends WeightRecordResponse {
 class WeightRecordResponseBuilder
     implements Builder<WeightRecordResponse, WeightRecordResponseBuilder> {
   _$WeightRecordResponse? _$v;
+
+  int? _petId;
+  int? get petId => _$this._petId;
+  set petId(int? petId) => _$this._petId = petId;
 
   num? _weightValue;
   num? get weightValue => _$this._weightValue;
@@ -65,6 +89,14 @@ class WeightRecordResponseBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
+  Date? _createdAt;
+  Date? get createdAt => _$this._createdAt;
+  set createdAt(Date? createdAt) => _$this._createdAt = createdAt;
+
+  Date? _recordDate;
+  Date? get recordDate => _$this._recordDate;
+  set recordDate(Date? recordDate) => _$this._recordDate = recordDate;
+
   WeightRecordResponseBuilder() {
     WeightRecordResponse._defaults(this);
   }
@@ -72,8 +104,11 @@ class WeightRecordResponseBuilder
   WeightRecordResponseBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _petId = $v.petId;
       _weightValue = $v.weightValue;
       _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -95,10 +130,13 @@ class WeightRecordResponseBuilder
   _$WeightRecordResponse _build() {
     final _$result = _$v ??
         _$WeightRecordResponse._(
-          weightValue: BuiltValueNullFieldError.checkNotNull(
-              weightValue, r'WeightRecordResponse', 'weightValue'),
+          petId: BuiltValueNullFieldError.checkNotNull(
+              petId, r'WeightRecordResponse', 'petId'),
+          weightValue: weightValue,
           id: BuiltValueNullFieldError.checkNotNull(
               id, r'WeightRecordResponse', 'id'),
+          createdAt: createdAt,
+          recordDate: recordDate,
         );
     replace(_$result);
     return _$result;

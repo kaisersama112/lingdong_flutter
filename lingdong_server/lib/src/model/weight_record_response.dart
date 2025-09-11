@@ -3,6 +3,7 @@
 //
 
 // ignore_for_file: unused_element
+import 'package:lingdong_server/src/model/date.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -11,17 +12,29 @@ part 'weight_record_response.g.dart';
 /// WeightRecordResponse
 ///
 /// Properties:
-/// * [weightValue] - Weight Value，体重值
+/// * [petId] - Pet Id，宠物ID
+/// * [weightValue] 
 /// * [id] - Id，记录ID
+/// * [createdAt] 
+/// * [recordDate] 
 @BuiltValue()
 abstract class WeightRecordResponse implements Built<WeightRecordResponse, WeightRecordResponseBuilder> {
-  /// Weight Value，体重值
+  /// Pet Id，宠物ID
+  @BuiltValueField(wireName: r'pet_id')
+  int get petId;
+
   @BuiltValueField(wireName: r'weight_value')
-  num get weightValue;
+  num? get weightValue;
 
   /// Id，记录ID
   @BuiltValueField(wireName: r'id')
   int get id;
+
+  @BuiltValueField(wireName: r'created_at')
+  Date? get createdAt;
+
+  @BuiltValueField(wireName: r'record_date')
+  Date? get recordDate;
 
   WeightRecordResponse._();
 
@@ -46,15 +59,30 @@ class _$WeightRecordResponseSerializer implements PrimitiveSerializer<WeightReco
     WeightRecordResponse object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
-    yield r'weight_value';
+    yield r'pet_id';
     yield serializers.serialize(
+      object.petId,
+      specifiedType: const FullType(int),
+    );
+    yield r'weight_value';
+    yield object.weightValue == null ? null : serializers.serialize(
       object.weightValue,
-      specifiedType: const FullType(num),
+      specifiedType: const FullType.nullable(num),
     );
     yield r'id';
     yield serializers.serialize(
       object.id,
       specifiedType: const FullType(int),
+    );
+    yield r'created_at';
+    yield object.createdAt == null ? null : serializers.serialize(
+      object.createdAt,
+      specifiedType: const FullType.nullable(Date),
+    );
+    yield r'record_date';
+    yield object.recordDate == null ? null : serializers.serialize(
+      object.recordDate,
+      specifiedType: const FullType.nullable(Date),
     );
   }
 
@@ -79,11 +107,19 @@ class _$WeightRecordResponseSerializer implements PrimitiveSerializer<WeightReco
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
+        case r'pet_id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.petId = valueDes;
+          break;
         case r'weight_value':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(num),
-          ) as num;
+            specifiedType: const FullType.nullable(num),
+          ) as num?;
+          if (valueDes == null) continue;
           result.weightValue = valueDes;
           break;
         case r'id':
@@ -92,6 +128,22 @@ class _$WeightRecordResponseSerializer implements PrimitiveSerializer<WeightReco
             specifiedType: const FullType(int),
           ) as int;
           result.id = valueDes;
+          break;
+        case r'created_at':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(Date),
+          ) as Date?;
+          if (valueDes == null) continue;
+          result.createdAt = valueDes;
+          break;
+        case r'record_date':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(Date),
+          ) as Date?;
+          if (valueDes == null) continue;
+          result.recordDate = valueDes;
           break;
         default:
           unhandled.add(key);

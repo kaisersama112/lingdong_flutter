@@ -27,6 +27,10 @@ class _$BeautificationRecordResponse extends BeautificationRecordResponse {
   final Date? nextGroomingDate;
   @override
   final int id;
+  @override
+  final String createdAt;
+  @override
+  final String recordDate;
 
   factory _$BeautificationRecordResponse(
           [void Function(BeautificationRecordResponseBuilder)? updates]) =>
@@ -42,7 +46,9 @@ class _$BeautificationRecordResponse extends BeautificationRecordResponse {
       this.productsUsed,
       this.notes,
       this.nextGroomingDate,
-      required this.id})
+      required this.id,
+      required this.createdAt,
+      required this.recordDate})
       : super._();
   @override
   BeautificationRecordResponse rebuild(
@@ -66,7 +72,9 @@ class _$BeautificationRecordResponse extends BeautificationRecordResponse {
         productsUsed == other.productsUsed &&
         notes == other.notes &&
         nextGroomingDate == other.nextGroomingDate &&
-        id == other.id;
+        id == other.id &&
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
@@ -82,6 +90,8 @@ class _$BeautificationRecordResponse extends BeautificationRecordResponse {
     _$hash = $jc(_$hash, notes.hashCode);
     _$hash = $jc(_$hash, nextGroomingDate.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -98,7 +108,9 @@ class _$BeautificationRecordResponse extends BeautificationRecordResponse {
           ..add('productsUsed', productsUsed)
           ..add('notes', notes)
           ..add('nextGroomingDate', nextGroomingDate)
-          ..add('id', id))
+          ..add('id', id)
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -154,6 +166,14 @@ class BeautificationRecordResponseBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
+  String? _createdAt;
+  String? get createdAt => _$this._createdAt;
+  set createdAt(String? createdAt) => _$this._createdAt = createdAt;
+
+  String? _recordDate;
+  String? get recordDate => _$this._recordDate;
+  set recordDate(String? recordDate) => _$this._recordDate = recordDate;
+
   BeautificationRecordResponseBuilder() {
     BeautificationRecordResponse._defaults(this);
   }
@@ -171,6 +191,8 @@ class BeautificationRecordResponseBuilder
       _notes = $v.notes;
       _nextGroomingDate = $v.nextGroomingDate;
       _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -211,6 +233,10 @@ class BeautificationRecordResponseBuilder
             nextGroomingDate: nextGroomingDate,
             id: BuiltValueNullFieldError.checkNotNull(
                 id, r'BeautificationRecordResponse', 'id'),
+            createdAt: BuiltValueNullFieldError.checkNotNull(
+                createdAt, r'BeautificationRecordResponse', 'createdAt'),
+            recordDate: BuiltValueNullFieldError.checkNotNull(
+                recordDate, r'BeautificationRecordResponse', 'recordDate'),
           );
     } catch (_) {
       late String _$failedField;

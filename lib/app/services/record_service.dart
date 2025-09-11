@@ -70,24 +70,64 @@ class RecordService {
 
   // ==================== 响应解析辅助 ====================
 
-  List<Map<String, dynamic>> _extractItemsAsMapList(
-    server.GenericResponseDict? resp,
-  ) {
+  List<Map<String, dynamic>> _extractItemsAsMapList(dynamic resp) {
     try {
-      final dataMap = resp?.data;
-      if (dataMap == null) return [];
-      final itemsDynamic = dataMap['items']?.value;
-      if (itemsDynamic is List) {
-        return itemsDynamic
-            .map<Map<String, dynamic>>((element) {
-              if (element is Map<String, dynamic>) return element;
-              if (element is Map) {
-                return element.map((k, v) => MapEntry(k.toString(), v));
-              }
-              return <String, dynamic>{};
-            })
-            .where((m) => m.isNotEmpty)
-            .toList();
+      // 处理不同的响应类型
+      if (resp
+          is server.GenericResponsePaginationResponseVaccinationRecordResponse) {
+        final data = resp.data;
+        if (data?.items != null) {
+          return data!.items!
+              .map((item) => _vaccinationRecordToMap(item))
+              .toList();
+        }
+      } else if (resp
+          is server.GenericResponsePaginationResponseDewormingRecordResponse) {
+        final data = resp.data;
+        if (data?.items != null) {
+          return data!.items!
+              .map((item) => _dewormingRecordToMap(item))
+              .toList();
+        }
+      } else if (resp
+          is server.GenericResponsePaginationResponseExaminationRecordResponse) {
+        final data = resp.data;
+        if (data?.items != null) {
+          return data!.items!
+              .map((item) => _examinationRecordToMap(item))
+              .toList();
+        }
+      } else if (resp
+          is server.GenericResponsePaginationResponseWeightRecordResponse) {
+        final data = resp.data;
+        if (data?.items != null) {
+          return data!.items!.map((item) => _weightRecordToMap(item)).toList();
+        }
+      } else if (resp
+          is server.GenericResponsePaginationResponseBeautificationRecordResponse) {
+        final data = resp.data;
+        if (data?.items != null) {
+          return data!.items!
+              .map((item) => _beautificationRecordToMap(item))
+              .toList();
+        }
+      } else if (resp is server.GenericResponseDict) {
+        // 处理旧的通用响应格式
+        final dataMap = resp.data;
+        if (dataMap == null) return [];
+        final itemsDynamic = dataMap['items']?.value;
+        if (itemsDynamic is List) {
+          return itemsDynamic
+              .map<Map<String, dynamic>>((element) {
+                if (element is Map<String, dynamic>) return element;
+                if (element is Map) {
+                  return element.map((k, v) => MapEntry(k.toString(), v));
+                }
+                return <String, dynamic>{};
+              })
+              .where((m) => m.isNotEmpty)
+              .toList();
+        }
       }
       return [];
     } catch (e) {
@@ -96,29 +136,82 @@ class RecordService {
     }
   }
 
-  void _logApiResponse(String label, server.GenericResponseDict? resp) {
+  void _logApiResponse(String label, dynamic resp) {
     debugPrint('=== [$label] API Response ===');
-    debugPrint('code: ${resp?.code}');
-    debugPrint('msg: ${resp?.msg}');
-    debugPrint('data keys: ${resp?.data?.keys.toList()}');
-    if (resp?.data != null) {
-      resp!.data!.forEach((key, value) {
-        debugPrint('  $key: ${value?.value}');
-      });
+    if (resp is server.GenericResponseDict) {
+      debugPrint('code: ${resp.code}');
+      debugPrint('msg: ${resp.msg}');
+      debugPrint('data keys: ${resp.data?.keys.toList()}');
+      if (resp.data != null) {
+        resp.data!.forEach((key, value) {
+          debugPrint('  $key: ${value?.value}');
+        });
+      }
+    } else {
+      debugPrint('code: ${resp?.code}');
+      debugPrint('msg: ${resp?.msg}');
     }
     debugPrint('========================');
   }
 
-  void _logParsedRecords(String label, List<models.HealthRecord> records) {
-    debugPrint('=== [$label] Parsed Records ===');
-    debugPrint('count: ${records.length}');
-    for (int i = 0; i < records.length; i++) {
-      final r = records[i];
-      debugPrint(
-        '  [$i] id:${r.id}, title:${r.title}, date:${r.date.toIso8601String()}, clinic:${r.clinic ?? "null"}, weight:${r.weight ?? "null"}',
-      );
-    }
-    debugPrint('========================');
+  // 转换方法
+  Map<String, dynamic> _vaccinationRecordToMap(
+    server.VaccinationRecordResponse record,
+  ) {
+    return {
+      'id': record.id,
+      'vaccine_name': record.vaccineName,
+      'vaccination_type': record.vaccinationType,
+      'location': record.location,
+      'next_due_date': record.nextDueDate?.toDateTime().toIso8601String(),
+      'validity_period': record.validityPeriod,
+    };
+  }
+
+  Map<String, dynamic> _dewormingRecordToMap(
+    server.DewormingRecordResponse record,
+  ) {
+    return {
+      'id': record.id,
+      'deworming_type': record.dewormingType,
+      'deworming_location': record.dewormingLocation,
+      'deworming_next_date': record.dewormingNextDate
+          ?.toDateTime()
+          .toIso8601String(),
+      'deworming_medicine_name': record.dewormingMedicineName,
+    };
+  }
+
+  Map<String, dynamic> _examinationRecordToMap(
+    server.ExaminationRecordResponse record,
+  ) {
+    return {
+      'id': record.id,
+      'test_type': record.testType,
+      'test_date': record.testDate.toDateTime().toIso8601String(),
+      'test_institution': record.testInstitution,
+      'doctor_comments': record.doctorComments,
+    };
+  }
+
+  Map<String, dynamic> _weightRecordToMap(server.WeightRecordResponse record) {
+    return {
+      'id': record.id,
+      'weight_value': record.weightValue,
+      'weight_date': record.recordDate?.toDateTime().toIso8601String(),
+    };
+  }
+
+  Map<String, dynamic> _beautificationRecordToMap(
+    server.BeautificationRecordResponse record,
+  ) {
+    return {
+      'id': record.id,
+      'grooming_type': record.groomingType,
+      'grooming_date': record.groomingDate.toDateTime().toIso8601String(),
+      'grooming_establishment': record.groomingEstablishment,
+      'notes': record.notes,
+    };
   }
 
   DateTime _parseDate(dynamic value) {
@@ -137,21 +230,6 @@ class RecordService {
       }
     } catch (_) {}
     return DateTime.now();
-  }
-
-  String _stringifyDetails(dynamic details) {
-    if (details is Map) {
-      final entries = <String>[];
-      details.forEach((k, v) {
-        if (v is List) {
-          entries.add('$k: ${v.join(', ')}');
-        } else {
-          entries.add('$k: $v');
-        }
-      });
-      return entries.join(' | ');
-    }
-    return details?.toString() ?? '';
   }
 
   // ==================== 疫苗接种记录 ====================

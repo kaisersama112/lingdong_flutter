@@ -7,6 +7,12 @@ void main() {
   // TODO add properties to the builder and call build()
 
   group(ConsultationResponse, () {
+    // Id，记录ID
+    // int id
+    test('to test the property `id`', () async {
+      // TODO
+    });
+
     // Pet Id，宠物ID
     // int petId
     test('to test the property `petId`', () async {
@@ -70,9 +76,15 @@ void main() {
       // TODO
     });
 
-    // Id，记录ID
-    // int id
-    test('to test the property `id`', () async {
+    // Created At，创建时间
+    // DateTime createdAt
+    test('to test the property `createdAt`', () async {
+      // TODO
+    });
+
+    // Record Date，记录日期
+    // Date recordDate
+    test('to test the property `recordDate`', () async {
       // TODO
     });
 

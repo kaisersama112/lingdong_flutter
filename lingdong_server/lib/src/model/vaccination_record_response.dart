@@ -21,6 +21,8 @@ part 'vaccination_record_response.g.dart';
 /// * [validityPeriod] 
 /// * [nextDueDate] 
 /// * [id] - Id，记录ID
+/// * [createdAt] - Created At，创建时间
+/// * [recordDate] - Record Date，记录日期
 @BuiltValue()
 abstract class VaccinationRecordResponse implements Built<VaccinationRecordResponse, VaccinationRecordResponseBuilder> {
   /// Pet Id，宠物ID
@@ -52,6 +54,14 @@ abstract class VaccinationRecordResponse implements Built<VaccinationRecordRespo
   /// Id，记录ID
   @BuiltValueField(wireName: r'id')
   int get id;
+
+  /// Created At，创建时间
+  @BuiltValueField(wireName: r'created_at')
+  String get createdAt;
+
+  /// Record Date，记录日期
+  @BuiltValueField(wireName: r'record_date')
+  String get recordDate;
 
   VaccinationRecordResponse._();
 
@@ -132,6 +142,16 @@ class _$VaccinationRecordResponseSerializer implements PrimitiveSerializer<Vacci
     yield serializers.serialize(
       object.id,
       specifiedType: const FullType(int),
+    );
+    yield r'created_at';
+    yield serializers.serialize(
+      object.createdAt,
+      specifiedType: const FullType(String),
+    );
+    yield r'record_date';
+    yield serializers.serialize(
+      object.recordDate,
+      specifiedType: const FullType(String),
     );
   }
 
@@ -224,6 +244,20 @@ class _$VaccinationRecordResponseSerializer implements PrimitiveSerializer<Vacci
             specifiedType: const FullType(int),
           ) as int;
           result.id = valueDes;
+          break;
+        case r'created_at':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.createdAt = valueDes;
+          break;
+        case r'record_date':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.recordDate = valueDes;
           break;
         default:
           unhandled.add(key);

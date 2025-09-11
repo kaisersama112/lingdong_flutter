@@ -57,7 +57,7 @@ void main() {
     });
 
     // Medias，媒体文件列表
-    // BuiltList<MediaResponse> medias (default value: ListBuilder())
+    // BuiltList<MediaOut> medias (default value: ListBuilder())
     test('to test the property `medias`', () async {
       // TODO
     });

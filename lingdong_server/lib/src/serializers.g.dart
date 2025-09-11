@@ -77,6 +77,17 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(GenericResponseOtherHealthRecordResponse.serializer)
       ..add(GenericResponsePagedResponseDogBehaviorGuideOut.serializer)
       ..add(GenericResponsePagedResponseDogCareGuideOut.serializer)
+      ..add(GenericResponsePaginationResponseBeautificationRecordResponse
+          .serializer)
+      ..add(GenericResponsePaginationResponseConsultationResponse.serializer)
+      ..add(GenericResponsePaginationResponseDewormingRecordResponse.serializer)
+      ..add(
+          GenericResponsePaginationResponseExaminationRecordResponse.serializer)
+      ..add(
+          GenericResponsePaginationResponseOtherHealthRecordResponse.serializer)
+      ..add(
+          GenericResponsePaginationResponseVaccinationRecordResponse.serializer)
+      ..add(GenericResponsePaginationResponseWeightRecordResponse.serializer)
       ..add(GenericResponseParentComment.serializer)
       ..add(GenericResponsePersonalityResponse.serializer)
       ..add(GenericResponsePetListResponse.serializer)
@@ -110,6 +121,13 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(PagedResponseDogBehaviorGuideOut.serializer)
       ..add(PagedResponseDogCareGuideOut.serializer)
       ..add(PaginationParams.serializer)
+      ..add(PaginationResponseBeautificationRecordResponse.serializer)
+      ..add(PaginationResponseConsultationResponse.serializer)
+      ..add(PaginationResponseDewormingRecordResponse.serializer)
+      ..add(PaginationResponseExaminationRecordResponse.serializer)
+      ..add(PaginationResponseOtherHealthRecordResponse.serializer)
+      ..add(PaginationResponseVaccinationRecordResponse.serializer)
+      ..add(PaginationResponseWeightRecordResponse.serializer)
       ..add(ParentComment.serializer)
       ..add(ParentCommentCreate.serializer)
       ..add(PersonalityCreate.serializer)
@@ -134,6 +152,7 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(SendCodeRequest.serializer)
       ..add(SendCodeResponse.serializer)
       ..add(SetPasswordByCodeRequest.serializer)
+      ..add(Tag.serializer)
       ..add(TagCreate.serializer)
       ..add(TagListResponse.serializer)
       ..add(TagResponse.serializer)
@@ -148,6 +167,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(WeightRecordResponse.serializer)
       ..addBuilderFactory(
           const FullType(
+              BuiltList, const [const FullType(BeautificationRecordResponse)]),
+          () => ListBuilder<BeautificationRecordResponse>())
+      ..addBuilderFactory(
+          const FullType(
               BuiltList, const [const FullType(BehaviorStyleResponse)]),
           () => ListBuilder<BehaviorStyleResponse>())
       ..addBuilderFactory(
@@ -157,6 +180,14 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(CommunityResponse)]),
           () => ListBuilder<CommunityResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ConsultationResponse)]),
+          () => ListBuilder<ConsultationResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(DewormingRecordResponse)]),
+          () => ListBuilder<DewormingRecordResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(DogAgeStageOut)]),
           () => ListBuilder<DogAgeStageOut>())
@@ -170,6 +201,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(DogCareGuideOut)]),
           () => ListBuilder<DogCareGuideOut>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ExaminationRecordResponse)]),
+          () => ListBuilder<ExaminationRecordResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(LocationInner)]),
           () => ListBuilder<LocationInner>())
@@ -192,8 +227,8 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(MediaOut)]),
           () => ListBuilder<MediaOut>())
       ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(MediaResponse)]),
-          () => ListBuilder<MediaResponse>())
+          const FullType(BuiltList, const [const FullType(MediaOut)]),
+          () => ListBuilder<MediaOut>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(MediaResponse)]),
           () => ListBuilder<MediaResponse>())
@@ -203,12 +238,31 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(MediaResponse)]),
           () => ListBuilder<MediaResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
+            const FullType.nullable(JsonObject)
+          ]),
+          () => MapBuilder<String, JsonObject?>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap, const [
+            const FullType(String),
+            const FullType.nullable(JsonObject)
+          ]),
+          () => MapBuilder<String, JsonObject?>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Reply)]),
+          () => ListBuilder<Reply>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Medication)]),
           () => ListBuilder<Medication>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Medication)]),
           () => ListBuilder<Medication>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(OtherHealthRecordResponse)]),
+          () => ListBuilder<OtherHealthRecordResponse>())
       ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(PersonalityResponse)]),
@@ -258,8 +312,16 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(TaskTypeResponse)]),
           () => ListBuilder<TaskTypeResponse>())
       ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(VaccinationRecordResponse)]),
+          () => ListBuilder<VaccinationRecordResponse>())
+      ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(ValidationError)]),
           () => ListBuilder<ValidationError>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(WeightRecordResponse)]),
+          () => ListBuilder<WeightRecordResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(int)]),
           () => ListBuilder<int>())

@@ -23,6 +23,12 @@ class RelatedTypeEnum extends EnumClass {
   /// RelatedTypeEnum
   @BuiltValueEnumConst(wireNumber: 4)
   static const RelatedTypeEnum number4 = _$number4;
+  /// RelatedTypeEnum
+  @BuiltValueEnumConst(wireNumber: 5)
+  static const RelatedTypeEnum number5 = _$number5;
+  /// RelatedTypeEnum
+  @BuiltValueEnumConst(wireNumber: 6)
+  static const RelatedTypeEnum number6 = _$number6;
 
   static Serializer<RelatedTypeEnum> get serializer => _$relatedTypeEnumSerializer;
 

@@ -132,9 +132,9 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**createPlaceApiExplorePlacesPost**](doc/DefaultApi.md#createplaceapiexploreplacespost) | **POST** /api/explore/places | 创建宠物友好场所
 [*DefaultApi*](doc/DefaultApi.md) | [**createPlaceApiExplorePlacesPost_0**](doc/DefaultApi.md#createplaceapiexploreplacespost_0) | **POST** /api/explore/places | 创建宠物友好场所
 [*DefaultApi*](doc/DefaultApi.md) | [**createPlaceApiExplorePlacesPost_1**](doc/DefaultApi.md#createplaceapiexploreplacespost_1) | **POST** /api/explore/places | 创建宠物友好场所
-[*DefaultApi*](doc/DefaultApi.md) | [**createReplyApiDynamicsCommentsParentIdRepliesPost**](doc/DefaultApi.md#createreplyapidynamicscommentsparentidrepliespost) | **POST** /api/dynamics/comments/{parent_id}/replies | 创建回复
-[*DefaultApi*](doc/DefaultApi.md) | [**createReplyApiDynamicsCommentsParentIdRepliesPost_0**](doc/DefaultApi.md#createreplyapidynamicscommentsparentidrepliespost_0) | **POST** /api/dynamics/comments/{parent_id}/replies | 创建回复
-[*DefaultApi*](doc/DefaultApi.md) | [**createReplyApiDynamicsCommentsParentIdRepliesPost_1**](doc/DefaultApi.md#createreplyapidynamicscommentsparentidrepliespost_1) | **POST** /api/dynamics/comments/{parent_id}/replies | 创建回复
+[*DefaultApi*](doc/DefaultApi.md) | [**createReplyApiDynamicsCommentsRepliesPost**](doc/DefaultApi.md#createreplyapidynamicscommentsrepliespost) | **POST** /api/dynamics/comments/replies | 创建回复
+[*DefaultApi*](doc/DefaultApi.md) | [**createReplyApiDynamicsCommentsRepliesPost_0**](doc/DefaultApi.md#createreplyapidynamicscommentsrepliespost_0) | **POST** /api/dynamics/comments/replies | 创建回复
+[*DefaultApi*](doc/DefaultApi.md) | [**createReplyApiDynamicsCommentsRepliesPost_1**](doc/DefaultApi.md#createreplyapidynamicscommentsrepliespost_1) | **POST** /api/dynamics/comments/replies | 创建回复
 [*DefaultApi*](doc/DefaultApi.md) | [**createStageApiBreedAgeStagesPost**](doc/DefaultApi.md#createstageapibreedagestagespost) | **POST** /api/breed/age_stages/ | 创建年龄阶段
 [*DefaultApi*](doc/DefaultApi.md) | [**createStageApiBreedAgeStagesPost_0**](doc/DefaultApi.md#createstageapibreedagestagespost_0) | **POST** /api/breed/age_stages/ | 创建年龄阶段
 [*DefaultApi*](doc/DefaultApi.md) | [**createStageApiBreedAgeStagesPost_1**](doc/DefaultApi.md#createstageapibreedagestagespost_1) | **POST** /api/breed/age_stages/ | 创建年龄阶段
@@ -187,9 +187,9 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete**](doc/DefaultApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete_0**](doc/DefaultApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete_0) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete_1**](doc/DefaultApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete_1) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
-[*DefaultApi*](doc/DefaultApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDelete**](doc/DefaultApi.md#deletereplyapidynamicsrepliesreplyiddelete) | **DELETE** /api/dynamics/replies/{reply_id} | 删除回复
-[*DefaultApi*](doc/DefaultApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDelete_0**](doc/DefaultApi.md#deletereplyapidynamicsrepliesreplyiddelete_0) | **DELETE** /api/dynamics/replies/{reply_id} | 删除回复
-[*DefaultApi*](doc/DefaultApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDelete_1**](doc/DefaultApi.md#deletereplyapidynamicsrepliesreplyiddelete_1) | **DELETE** /api/dynamics/replies/{reply_id} | 删除回复
+[*DefaultApi*](doc/DefaultApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDeletePost**](doc/DefaultApi.md#deletereplyapidynamicsrepliesreplyiddeletepost) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
+[*DefaultApi*](doc/DefaultApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDeletePost_0**](doc/DefaultApi.md#deletereplyapidynamicsrepliesreplyiddeletepost_0) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
+[*DefaultApi*](doc/DefaultApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDeletePost_1**](doc/DefaultApi.md#deletereplyapidynamicsrepliesreplyiddeletepost_1) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteStageApiBreedAgeStagesDeleteAgeStagePost**](doc/DefaultApi.md#deletestageapibreedagestagesdeleteagestagepost) | **POST** /api/breed/age_stages/delete_age_stage | 删除年龄阶段
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteStageApiBreedAgeStagesDeleteAgeStagePost_0**](doc/DefaultApi.md#deletestageapibreedagestagesdeleteagestagepost_0) | **POST** /api/breed/age_stages/delete_age_stage | 删除年龄阶段
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteStageApiBreedAgeStagesDeleteAgeStagePost_1**](doc/DefaultApi.md#deletestageapibreedagestagesdeleteagestagepost_1) | **POST** /api/breed/age_stages/delete_age_stage | 删除年龄阶段
@@ -203,6 +203,9 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteWeightRecordApiPetDeleteWeightRecordRecordIdPost**](doc/DefaultApi.md#deleteweightrecordapipetdeleteweightrecordrecordidpost) | **POST** /api/pet/delete_weight_record/{record_id} | 删除体重记录
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteWeightRecordApiPetDeleteWeightRecordRecordIdPost_0**](doc/DefaultApi.md#deleteweightrecordapipetdeleteweightrecordrecordidpost_0) | **POST** /api/pet/delete_weight_record/{record_id} | 删除体重记录
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteWeightRecordApiPetDeleteWeightRecordRecordIdPost_1**](doc/DefaultApi.md#deleteweightrecordapipetdeleteweightrecordrecordidpost_1) | **POST** /api/pet/delete_weight_record/{record_id} | 删除体重记录
+[*DefaultApi*](doc/DefaultApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**](doc/DefaultApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
+[*DefaultApi*](doc/DefaultApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet_0**](doc/DefaultApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget_0) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
+[*DefaultApi*](doc/DefaultApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet_1**](doc/DefaultApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget_1) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
 [*DefaultApi*](doc/DefaultApi.md) | [**getCommunitiesApiCommunityCommunitiesGet**](doc/DefaultApi.md#getcommunitiesapicommunitycommunitiesget) | **GET** /api/community/communities | 获取社群列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getCommunitiesApiCommunityCommunitiesGet_0**](doc/DefaultApi.md#getcommunitiesapicommunitycommunitiesget_0) | **GET** /api/community/communities | 获取社群列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getCommunitiesApiCommunityCommunitiesGet_1**](doc/DefaultApi.md#getcommunitiesapicommunitycommunitiesget_1) | **GET** /api/community/communities | 获取社群列表
@@ -257,6 +260,9 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getPlacesApiExplorePlacesGet**](doc/DefaultApi.md#getplacesapiexploreplacesget) | **GET** /api/explore/places | 获取宠物友好场所列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getPlacesApiExplorePlacesGet_0**](doc/DefaultApi.md#getplacesapiexploreplacesget_0) | **GET** /api/explore/places | 获取宠物友好场所列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getPlacesApiExplorePlacesGet_1**](doc/DefaultApi.md#getplacesapiexploreplacesget_1) | **GET** /api/explore/places | 获取宠物友好场所列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](doc/DefaultApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
+[*DefaultApi*](doc/DefaultApi.md) | [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet_0**](doc/DefaultApi.md#getpostcommentscountapidynamicspostspostidcommentscountget_0) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
+[*DefaultApi*](doc/DefaultApi.md) | [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet_1**](doc/DefaultApi.md#getpostcommentscountapidynamicspostspostidcommentscountget_1) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [*DefaultApi*](doc/DefaultApi.md) | [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](doc/DefaultApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [*DefaultApi*](doc/DefaultApi.md) | [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet_0**](doc/DefaultApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget_0) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [*DefaultApi*](doc/DefaultApi.md) | [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet_1**](doc/DefaultApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget_1) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
@@ -501,11 +507,13 @@ Class | Method | HTTP request | Description
 [*DogBreedsApi*](doc/DogBreedsApi.md) | [**updateStageApiBreedAgeStagesUpdateAgeStagePost**](doc/DogBreedsApi.md#updatestageapibreedagestagesupdateagestagepost) | **POST** /api/breed/age_stages/update_age_stage | 更新年龄阶段
 [*DynamicsApi*](doc/DynamicsApi.md) | [**createDynamicApiDynamicsCreateDynamicPost**](doc/DynamicsApi.md#createdynamicapidynamicscreatedynamicpost) | **POST** /api/dynamics/create_dynamic | 创建广场动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**createParentCommentApiDynamicsPostsRepliesPost**](doc/DynamicsApi.md#createparentcommentapidynamicspostsrepliespost) | **POST** /api/dynamics/posts/replies | 创建顶级评论
-[*DynamicsApi*](doc/DynamicsApi.md) | [**createReplyApiDynamicsCommentsParentIdRepliesPost**](doc/DynamicsApi.md#createreplyapidynamicscommentsparentidrepliespost) | **POST** /api/dynamics/comments/{parent_id}/replies | 创建回复
+[*DynamicsApi*](doc/DynamicsApi.md) | [**createReplyApiDynamicsCommentsRepliesPost**](doc/DynamicsApi.md#createreplyapidynamicscommentsrepliespost) | **POST** /api/dynamics/comments/replies | 创建回复
 [*DynamicsApi*](doc/DynamicsApi.md) | [**deleteDynamicApiDynamicsPostIdDeleteDynamicPost**](doc/DynamicsApi.md#deletedynamicapidynamicspostiddeletedynamicpost) | **POST** /api/dynamics/{post_id}/delete_dynamic | 删除动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete**](doc/DynamicsApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
-[*DynamicsApi*](doc/DynamicsApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDelete**](doc/DynamicsApi.md#deletereplyapidynamicsrepliesreplyiddelete) | **DELETE** /api/dynamics/replies/{reply_id} | 删除回复
+[*DynamicsApi*](doc/DynamicsApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDeletePost**](doc/DynamicsApi.md#deletereplyapidynamicsrepliesreplyiddeletepost) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
+[*DynamicsApi*](doc/DynamicsApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**](doc/DynamicsApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getDynamicDetailApiDynamicsPostIdGet**](doc/DynamicsApi.md#getdynamicdetailapidynamicspostidget) | **GET** /api/dynamics/{post_id} | 获取动态详情
+[*DynamicsApi*](doc/DynamicsApi.md) | [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](doc/DynamicsApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](doc/DynamicsApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](doc/DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost**](doc/DynamicsApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
@@ -670,6 +678,13 @@ Class | Method | HTTP request | Description
  - [GenericResponseOtherHealthRecordResponse](doc/GenericResponseOtherHealthRecordResponse.md)
  - [GenericResponsePagedResponseDogBehaviorGuideOut](doc/GenericResponsePagedResponseDogBehaviorGuideOut.md)
  - [GenericResponsePagedResponseDogCareGuideOut](doc/GenericResponsePagedResponseDogCareGuideOut.md)
+ - [GenericResponsePaginationResponseBeautificationRecordResponse](doc/GenericResponsePaginationResponseBeautificationRecordResponse.md)
+ - [GenericResponsePaginationResponseConsultationResponse](doc/GenericResponsePaginationResponseConsultationResponse.md)
+ - [GenericResponsePaginationResponseDewormingRecordResponse](doc/GenericResponsePaginationResponseDewormingRecordResponse.md)
+ - [GenericResponsePaginationResponseExaminationRecordResponse](doc/GenericResponsePaginationResponseExaminationRecordResponse.md)
+ - [GenericResponsePaginationResponseOtherHealthRecordResponse](doc/GenericResponsePaginationResponseOtherHealthRecordResponse.md)
+ - [GenericResponsePaginationResponseVaccinationRecordResponse](doc/GenericResponsePaginationResponseVaccinationRecordResponse.md)
+ - [GenericResponsePaginationResponseWeightRecordResponse](doc/GenericResponsePaginationResponseWeightRecordResponse.md)
  - [GenericResponseParentComment](doc/GenericResponseParentComment.md)
  - [GenericResponsePersonalityResponse](doc/GenericResponsePersonalityResponse.md)
  - [GenericResponsePetListResponse](doc/GenericResponsePetListResponse.md)
@@ -703,6 +718,13 @@ Class | Method | HTTP request | Description
  - [PagedResponseDogBehaviorGuideOut](doc/PagedResponseDogBehaviorGuideOut.md)
  - [PagedResponseDogCareGuideOut](doc/PagedResponseDogCareGuideOut.md)
  - [PaginationParams](doc/PaginationParams.md)
+ - [PaginationResponseBeautificationRecordResponse](doc/PaginationResponseBeautificationRecordResponse.md)
+ - [PaginationResponseConsultationResponse](doc/PaginationResponseConsultationResponse.md)
+ - [PaginationResponseDewormingRecordResponse](doc/PaginationResponseDewormingRecordResponse.md)
+ - [PaginationResponseExaminationRecordResponse](doc/PaginationResponseExaminationRecordResponse.md)
+ - [PaginationResponseOtherHealthRecordResponse](doc/PaginationResponseOtherHealthRecordResponse.md)
+ - [PaginationResponseVaccinationRecordResponse](doc/PaginationResponseVaccinationRecordResponse.md)
+ - [PaginationResponseWeightRecordResponse](doc/PaginationResponseWeightRecordResponse.md)
  - [ParentComment](doc/ParentComment.md)
  - [ParentCommentCreate](doc/ParentCommentCreate.md)
  - [PersonalityCreate](doc/PersonalityCreate.md)
@@ -727,6 +749,7 @@ Class | Method | HTTP request | Description
  - [SendCodeRequest](doc/SendCodeRequest.md)
  - [SendCodeResponse](doc/SendCodeResponse.md)
  - [SetPasswordByCodeRequest](doc/SetPasswordByCodeRequest.md)
+ - [Tag](doc/Tag.md)
  - [TagCreate](doc/TagCreate.md)
  - [TagListResponse](doc/TagListResponse.md)
  - [TagResponse](doc/TagResponse.md)

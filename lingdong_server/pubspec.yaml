@@ -1,7 +1,7 @@
 name: lingdong_server
 version: 1.0.0
 description: OpenAPI API client
-homepage: homepage
+homepage: lingdong_server
 
 
 environment:

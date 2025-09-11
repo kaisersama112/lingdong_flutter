@@ -5,6 +5,7 @@
 // ignore_for_file: unused_element
 import 'package:built_collection/built_collection.dart';
 import 'package:lingdong_server/src/model/media_response.dart';
+import 'package:built_value/json_object.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
@@ -17,9 +18,12 @@ part 'reply.g.dart';
 /// * [medias] 
 /// * [id] - Id，回复ID
 /// * [parentCommentId] - Parent Comment Id，顶级评论ID
-/// * [userId] - User Id，用户ID
+/// * [replyToReplyId] 
+/// * [replier] - Replier，回复人信息
+/// * [replyTo] 
 /// * [createdAt] - Created At，创建时间
 /// * [updatedAt] 
+/// * [replies] 
 @BuiltValue()
 abstract class Reply implements Built<Reply, ReplyBuilder> {
   /// Content，回复内容
@@ -37,9 +41,15 @@ abstract class Reply implements Built<Reply, ReplyBuilder> {
   @BuiltValueField(wireName: r'parent_comment_id')
   int get parentCommentId;
 
-  /// User Id，用户ID
-  @BuiltValueField(wireName: r'user_id')
-  int get userId;
+  @BuiltValueField(wireName: r'reply_to_reply_id')
+  int? get replyToReplyId;
+
+  /// Replier，回复人信息
+  @BuiltValueField(wireName: r'replier')
+  BuiltMap<String, JsonObject?> get replier;
+
+  @BuiltValueField(wireName: r'reply_to')
+  BuiltMap<String, JsonObject?>? get replyTo;
 
   /// Created At，创建时间
   @BuiltValueField(wireName: r'created_at')
@@ -47,6 +57,9 @@ abstract class Reply implements Built<Reply, ReplyBuilder> {
 
   @BuiltValueField(wireName: r'updated_at')
   DateTime? get updatedAt;
+
+  @BuiltValueField(wireName: r'replies')
+  BuiltList<Reply>? get replies;
 
   Reply._();
 
@@ -93,11 +106,25 @@ class _$ReplySerializer implements PrimitiveSerializer<Reply> {
       object.parentCommentId,
       specifiedType: const FullType(int),
     );
-    yield r'user_id';
+    if (object.replyToReplyId != null) {
+      yield r'reply_to_reply_id';
+      yield serializers.serialize(
+        object.replyToReplyId,
+        specifiedType: const FullType.nullable(int),
+      );
+    }
+    yield r'replier';
     yield serializers.serialize(
-      object.userId,
-      specifiedType: const FullType(int),
+      object.replier,
+      specifiedType: const FullType(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
     );
+    if (object.replyTo != null) {
+      yield r'reply_to';
+      yield serializers.serialize(
+        object.replyTo,
+        specifiedType: const FullType.nullable(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
+      );
+    }
     yield r'created_at';
     yield serializers.serialize(
       object.createdAt,
@@ -108,6 +135,13 @@ class _$ReplySerializer implements PrimitiveSerializer<Reply> {
       yield serializers.serialize(
         object.updatedAt,
         specifiedType: const FullType.nullable(DateTime),
+      );
+    }
+    if (object.replies != null) {
+      yield r'replies';
+      yield serializers.serialize(
+        object.replies,
+        specifiedType: const FullType.nullable(BuiltList, [FullType(Reply)]),
       );
     }
   }
@@ -162,12 +196,28 @@ class _$ReplySerializer implements PrimitiveSerializer<Reply> {
           ) as int;
           result.parentCommentId = valueDes;
           break;
-        case r'user_id':
+        case r'reply_to_reply_id':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(int),
-          ) as int;
-          result.userId = valueDes;
+            specifiedType: const FullType.nullable(int),
+          ) as int?;
+          if (valueDes == null) continue;
+          result.replyToReplyId = valueDes;
+          break;
+        case r'replier':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
+          ) as BuiltMap<String, JsonObject?>;
+          result.replier.replace(valueDes);
+          break;
+        case r'reply_to':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(BuiltMap, [FullType(String), FullType.nullable(JsonObject)]),
+          ) as BuiltMap<String, JsonObject?>?;
+          if (valueDes == null) continue;
+          result.replyTo.replace(valueDes);
           break;
         case r'created_at':
           final valueDes = serializers.deserialize(
@@ -183,6 +233,14 @@ class _$ReplySerializer implements PrimitiveSerializer<Reply> {
           ) as DateTime?;
           if (valueDes == null) continue;
           result.updatedAt = valueDes;
+          break;
+        case r'replies':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(BuiltList, [FullType(Reply)]),
+          ) as BuiltList<Reply>?;
+          if (valueDes == null) continue;
+          result.replies.replace(valueDes);
           break;
         default:
           unhandled.add(key);

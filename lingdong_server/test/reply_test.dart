@@ -30,9 +30,19 @@ void main() {
       // TODO
     });
 
-    // User Id，用户ID
-    // int userId
-    test('to test the property `userId`', () async {
+    // int replyToReplyId
+    test('to test the property `replyToReplyId`', () async {
+      // TODO
+    });
+
+    // Replier，回复人信息
+    // BuiltMap<String, JsonObject> replier
+    test('to test the property `replier`', () async {
+      // TODO
+    });
+
+    // BuiltMap<String, JsonObject> replyTo
+    test('to test the property `replyTo`', () async {
       // TODO
     });
 
@@ -44,6 +54,11 @@ void main() {
 
     // DateTime updatedAt
     test('to test the property `updatedAt`', () async {
+      // TODO
+    });
+
+    // BuiltList<Reply> replies
+    test('to test the property `replies`', () async {
       // TODO
     });
 

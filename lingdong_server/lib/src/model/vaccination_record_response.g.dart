@@ -25,6 +25,10 @@ class _$VaccinationRecordResponse extends VaccinationRecordResponse {
   final Date? nextDueDate;
   @override
   final int id;
+  @override
+  final String createdAt;
+  @override
+  final String recordDate;
 
   factory _$VaccinationRecordResponse(
           [void Function(VaccinationRecordResponseBuilder)? updates]) =>
@@ -39,7 +43,9 @@ class _$VaccinationRecordResponse extends VaccinationRecordResponse {
       this.location,
       this.validityPeriod,
       this.nextDueDate,
-      required this.id})
+      required this.id,
+      required this.createdAt,
+      required this.recordDate})
       : super._();
   @override
   VaccinationRecordResponse rebuild(
@@ -62,7 +68,9 @@ class _$VaccinationRecordResponse extends VaccinationRecordResponse {
         location == other.location &&
         validityPeriod == other.validityPeriod &&
         nextDueDate == other.nextDueDate &&
-        id == other.id;
+        id == other.id &&
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
@@ -77,6 +85,8 @@ class _$VaccinationRecordResponse extends VaccinationRecordResponse {
     _$hash = $jc(_$hash, validityPeriod.hashCode);
     _$hash = $jc(_$hash, nextDueDate.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -92,7 +102,9 @@ class _$VaccinationRecordResponse extends VaccinationRecordResponse {
           ..add('location', location)
           ..add('validityPeriod', validityPeriod)
           ..add('nextDueDate', nextDueDate)
-          ..add('id', id))
+          ..add('id', id)
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -142,6 +154,14 @@ class VaccinationRecordResponseBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
+  String? _createdAt;
+  String? get createdAt => _$this._createdAt;
+  set createdAt(String? createdAt) => _$this._createdAt = createdAt;
+
+  String? _recordDate;
+  String? get recordDate => _$this._recordDate;
+  set recordDate(String? recordDate) => _$this._recordDate = recordDate;
+
   VaccinationRecordResponseBuilder() {
     VaccinationRecordResponse._defaults(this);
   }
@@ -158,6 +178,8 @@ class VaccinationRecordResponseBuilder
       _validityPeriod = $v.validityPeriod;
       _nextDueDate = $v.nextDueDate;
       _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -191,6 +213,10 @@ class VaccinationRecordResponseBuilder
           nextDueDate: nextDueDate,
           id: BuiltValueNullFieldError.checkNotNull(
               id, r'VaccinationRecordResponse', 'id'),
+          createdAt: BuiltValueNullFieldError.checkNotNull(
+              createdAt, r'VaccinationRecordResponse', 'createdAt'),
+          recordDate: BuiltValueNullFieldError.checkNotNull(
+              recordDate, r'VaccinationRecordResponse', 'recordDate'),
         );
     replace(_$result);
     return _$result;

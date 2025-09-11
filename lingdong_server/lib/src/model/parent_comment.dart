@@ -15,12 +15,14 @@ part 'parent_comment.g.dart';
 /// Properties:
 /// * [id] - Id，评论ID
 /// * [content] - Content，评论内容
-/// * [medias] 
 /// * [postId] - Post Id，动态ID
 /// * [userId] - User Id，用户ID
+/// * [username] - Username，用户名
+/// * [userAvatar] 
 /// * [replyToUserId] 
 /// * [createdAt] - Created At，创建时间
 /// * [updatedAt] 
+/// * [medias] 
 /// * [likeCount] - Like Count，点赞数量
 /// * [isLiked] - Is Liked，当前用户是否点赞
 @BuiltValue()
@@ -33,9 +35,6 @@ abstract class ParentComment implements Built<ParentComment, ParentCommentBuilde
   @BuiltValueField(wireName: r'content')
   String get content;
 
-  @BuiltValueField(wireName: r'medias')
-  BuiltList<MediaResponse>? get medias;
-
   /// Post Id，动态ID
   @BuiltValueField(wireName: r'post_id')
   int get postId;
@@ -43,6 +42,13 @@ abstract class ParentComment implements Built<ParentComment, ParentCommentBuilde
   /// User Id，用户ID
   @BuiltValueField(wireName: r'user_id')
   int get userId;
+
+  /// Username，用户名
+  @BuiltValueField(wireName: r'username')
+  String get username;
+
+  @BuiltValueField(wireName: r'user_avatar')
+  String? get userAvatar;
 
   @BuiltValueField(wireName: r'reply_to_user_id')
   int? get replyToUserId;
@@ -53,6 +59,9 @@ abstract class ParentComment implements Built<ParentComment, ParentCommentBuilde
 
   @BuiltValueField(wireName: r'updated_at')
   DateTime? get updatedAt;
+
+  @BuiltValueField(wireName: r'medias')
+  BuiltList<MediaResponse>? get medias;
 
   /// Like Count，点赞数量
   @BuiltValueField(wireName: r'like_count')
@@ -97,13 +106,6 @@ class _$ParentCommentSerializer implements PrimitiveSerializer<ParentComment> {
       object.content,
       specifiedType: const FullType(String),
     );
-    if (object.medias != null) {
-      yield r'medias';
-      yield serializers.serialize(
-        object.medias,
-        specifiedType: const FullType.nullable(BuiltList, [FullType(MediaResponse)]),
-      );
-    }
     yield r'post_id';
     yield serializers.serialize(
       object.postId,
@@ -114,6 +116,18 @@ class _$ParentCommentSerializer implements PrimitiveSerializer<ParentComment> {
       object.userId,
       specifiedType: const FullType(int),
     );
+    yield r'username';
+    yield serializers.serialize(
+      object.username,
+      specifiedType: const FullType(String),
+    );
+    if (object.userAvatar != null) {
+      yield r'user_avatar';
+      yield serializers.serialize(
+        object.userAvatar,
+        specifiedType: const FullType.nullable(String),
+      );
+    }
     if (object.replyToUserId != null) {
       yield r'reply_to_user_id';
       yield serializers.serialize(
@@ -131,6 +145,13 @@ class _$ParentCommentSerializer implements PrimitiveSerializer<ParentComment> {
       yield serializers.serialize(
         object.updatedAt,
         specifiedType: const FullType.nullable(DateTime),
+      );
+    }
+    if (object.medias != null) {
+      yield r'medias';
+      yield serializers.serialize(
+        object.medias,
+        specifiedType: const FullType.nullable(BuiltList, [FullType(MediaResponse)]),
       );
     }
     if (object.likeCount != null) {
@@ -184,14 +205,6 @@ class _$ParentCommentSerializer implements PrimitiveSerializer<ParentComment> {
           ) as String;
           result.content = valueDes;
           break;
-        case r'medias':
-          final valueDes = serializers.deserialize(
-            value,
-            specifiedType: const FullType.nullable(BuiltList, [FullType(MediaResponse)]),
-          ) as BuiltList<MediaResponse>?;
-          if (valueDes == null) continue;
-          result.medias.replace(valueDes);
-          break;
         case r'post_id':
           final valueDes = serializers.deserialize(
             value,
@@ -205,6 +218,21 @@ class _$ParentCommentSerializer implements PrimitiveSerializer<ParentComment> {
             specifiedType: const FullType(int),
           ) as int;
           result.userId = valueDes;
+          break;
+        case r'username':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.username = valueDes;
+          break;
+        case r'user_avatar':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(String),
+          ) as String?;
+          if (valueDes == null) continue;
+          result.userAvatar = valueDes;
           break;
         case r'reply_to_user_id':
           final valueDes = serializers.deserialize(
@@ -228,6 +256,14 @@ class _$ParentCommentSerializer implements PrimitiveSerializer<ParentComment> {
           ) as DateTime?;
           if (valueDes == null) continue;
           result.updatedAt = valueDes;
+          break;
+        case r'medias':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(BuiltList, [FullType(MediaResponse)]),
+          ) as BuiltList<MediaResponse>?;
+          if (valueDes == null) continue;
+          result.medias.replace(valueDes);
           break;
         case r'like_count':
           final valueDes = serializers.deserialize(

@@ -12,17 +12,21 @@ class _$ParentComment extends ParentComment {
   @override
   final String content;
   @override
-  final BuiltList<MediaResponse>? medias;
-  @override
   final int postId;
   @override
   final int userId;
+  @override
+  final String username;
+  @override
+  final String? userAvatar;
   @override
   final int? replyToUserId;
   @override
   final DateTime createdAt;
   @override
   final DateTime? updatedAt;
+  @override
+  final BuiltList<MediaResponse>? medias;
   @override
   final int? likeCount;
   @override
@@ -34,12 +38,14 @@ class _$ParentComment extends ParentComment {
   _$ParentComment._(
       {required this.id,
       required this.content,
-      this.medias,
       required this.postId,
       required this.userId,
+      required this.username,
+      this.userAvatar,
       this.replyToUserId,
       required this.createdAt,
       this.updatedAt,
+      this.medias,
       this.likeCount,
       this.isLiked})
       : super._();
@@ -56,12 +62,14 @@ class _$ParentComment extends ParentComment {
     return other is ParentComment &&
         id == other.id &&
         content == other.content &&
-        medias == other.medias &&
         postId == other.postId &&
         userId == other.userId &&
+        username == other.username &&
+        userAvatar == other.userAvatar &&
         replyToUserId == other.replyToUserId &&
         createdAt == other.createdAt &&
         updatedAt == other.updatedAt &&
+        medias == other.medias &&
         likeCount == other.likeCount &&
         isLiked == other.isLiked;
   }
@@ -71,12 +79,14 @@ class _$ParentComment extends ParentComment {
     var _$hash = 0;
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, content.hashCode);
-    _$hash = $jc(_$hash, medias.hashCode);
     _$hash = $jc(_$hash, postId.hashCode);
     _$hash = $jc(_$hash, userId.hashCode);
+    _$hash = $jc(_$hash, username.hashCode);
+    _$hash = $jc(_$hash, userAvatar.hashCode);
     _$hash = $jc(_$hash, replyToUserId.hashCode);
     _$hash = $jc(_$hash, createdAt.hashCode);
     _$hash = $jc(_$hash, updatedAt.hashCode);
+    _$hash = $jc(_$hash, medias.hashCode);
     _$hash = $jc(_$hash, likeCount.hashCode);
     _$hash = $jc(_$hash, isLiked.hashCode);
     _$hash = $jf(_$hash);
@@ -88,12 +98,14 @@ class _$ParentComment extends ParentComment {
     return (newBuiltValueToStringHelper(r'ParentComment')
           ..add('id', id)
           ..add('content', content)
-          ..add('medias', medias)
           ..add('postId', postId)
           ..add('userId', userId)
+          ..add('username', username)
+          ..add('userAvatar', userAvatar)
           ..add('replyToUserId', replyToUserId)
           ..add('createdAt', createdAt)
           ..add('updatedAt', updatedAt)
+          ..add('medias', medias)
           ..add('likeCount', likeCount)
           ..add('isLiked', isLiked))
         .toString();
@@ -112,11 +124,6 @@ class ParentCommentBuilder
   String? get content => _$this._content;
   set content(String? content) => _$this._content = content;
 
-  ListBuilder<MediaResponse>? _medias;
-  ListBuilder<MediaResponse> get medias =>
-      _$this._medias ??= ListBuilder<MediaResponse>();
-  set medias(ListBuilder<MediaResponse>? medias) => _$this._medias = medias;
-
   int? _postId;
   int? get postId => _$this._postId;
   set postId(int? postId) => _$this._postId = postId;
@@ -124,6 +131,14 @@ class ParentCommentBuilder
   int? _userId;
   int? get userId => _$this._userId;
   set userId(int? userId) => _$this._userId = userId;
+
+  String? _username;
+  String? get username => _$this._username;
+  set username(String? username) => _$this._username = username;
+
+  String? _userAvatar;
+  String? get userAvatar => _$this._userAvatar;
+  set userAvatar(String? userAvatar) => _$this._userAvatar = userAvatar;
 
   int? _replyToUserId;
   int? get replyToUserId => _$this._replyToUserId;
@@ -137,6 +152,11 @@ class ParentCommentBuilder
   DateTime? _updatedAt;
   DateTime? get updatedAt => _$this._updatedAt;
   set updatedAt(DateTime? updatedAt) => _$this._updatedAt = updatedAt;
+
+  ListBuilder<MediaResponse>? _medias;
+  ListBuilder<MediaResponse> get medias =>
+      _$this._medias ??= ListBuilder<MediaResponse>();
+  set medias(ListBuilder<MediaResponse>? medias) => _$this._medias = medias;
 
   int? _likeCount;
   int? get likeCount => _$this._likeCount;
@@ -155,12 +175,14 @@ class ParentCommentBuilder
     if ($v != null) {
       _id = $v.id;
       _content = $v.content;
-      _medias = $v.medias?.toBuilder();
       _postId = $v.postId;
       _userId = $v.userId;
+      _username = $v.username;
+      _userAvatar = $v.userAvatar;
       _replyToUserId = $v.replyToUserId;
       _createdAt = $v.createdAt;
       _updatedAt = $v.updatedAt;
+      _medias = $v.medias?.toBuilder();
       _likeCount = $v.likeCount;
       _isLiked = $v.isLiked;
       _$v = null;
@@ -190,15 +212,18 @@ class ParentCommentBuilder
                 id, r'ParentComment', 'id'),
             content: BuiltValueNullFieldError.checkNotNull(
                 content, r'ParentComment', 'content'),
-            medias: _medias?.build(),
             postId: BuiltValueNullFieldError.checkNotNull(
                 postId, r'ParentComment', 'postId'),
             userId: BuiltValueNullFieldError.checkNotNull(
                 userId, r'ParentComment', 'userId'),
+            username: BuiltValueNullFieldError.checkNotNull(
+                username, r'ParentComment', 'username'),
+            userAvatar: userAvatar,
             replyToUserId: replyToUserId,
             createdAt: BuiltValueNullFieldError.checkNotNull(
                 createdAt, r'ParentComment', 'createdAt'),
             updatedAt: updatedAt,
+            medias: _medias?.build(),
             likeCount: likeCount,
             isLiked: isLiked,
           );

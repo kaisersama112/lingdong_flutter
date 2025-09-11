@@ -13,12 +13,17 @@ class _$ReplyCreate extends ReplyCreate {
   final BuiltList<MediaCreate>? medias;
   @override
   final int parentCommentId;
+  @override
+  final int? replyToReplyId;
 
   factory _$ReplyCreate([void Function(ReplyCreateBuilder)? updates]) =>
       (ReplyCreateBuilder()..update(updates))._build();
 
   _$ReplyCreate._(
-      {required this.content, this.medias, required this.parentCommentId})
+      {required this.content,
+      this.medias,
+      required this.parentCommentId,
+      this.replyToReplyId})
       : super._();
   @override
   ReplyCreate rebuild(void Function(ReplyCreateBuilder) updates) =>
@@ -33,7 +38,8 @@ class _$ReplyCreate extends ReplyCreate {
     return other is ReplyCreate &&
         content == other.content &&
         medias == other.medias &&
-        parentCommentId == other.parentCommentId;
+        parentCommentId == other.parentCommentId &&
+        replyToReplyId == other.replyToReplyId;
   }
 
   @override
@@ -42,6 +48,7 @@ class _$ReplyCreate extends ReplyCreate {
     _$hash = $jc(_$hash, content.hashCode);
     _$hash = $jc(_$hash, medias.hashCode);
     _$hash = $jc(_$hash, parentCommentId.hashCode);
+    _$hash = $jc(_$hash, replyToReplyId.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -51,7 +58,8 @@ class _$ReplyCreate extends ReplyCreate {
     return (newBuiltValueToStringHelper(r'ReplyCreate')
           ..add('content', content)
           ..add('medias', medias)
-          ..add('parentCommentId', parentCommentId))
+          ..add('parentCommentId', parentCommentId)
+          ..add('replyToReplyId', replyToReplyId))
         .toString();
   }
 }
@@ -73,6 +81,11 @@ class ReplyCreateBuilder implements Builder<ReplyCreate, ReplyCreateBuilder> {
   set parentCommentId(int? parentCommentId) =>
       _$this._parentCommentId = parentCommentId;
 
+  int? _replyToReplyId;
+  int? get replyToReplyId => _$this._replyToReplyId;
+  set replyToReplyId(int? replyToReplyId) =>
+      _$this._replyToReplyId = replyToReplyId;
+
   ReplyCreateBuilder() {
     ReplyCreate._defaults(this);
   }
@@ -83,6 +96,7 @@ class ReplyCreateBuilder implements Builder<ReplyCreate, ReplyCreateBuilder> {
       _content = $v.content;
       _medias = $v.medias?.toBuilder();
       _parentCommentId = $v.parentCommentId;
+      _replyToReplyId = $v.replyToReplyId;
       _$v = null;
     }
     return this;
@@ -111,6 +125,7 @@ class ReplyCreateBuilder implements Builder<ReplyCreate, ReplyCreateBuilder> {
             medias: _medias?.build(),
             parentCommentId: BuiltValueNullFieldError.checkNotNull(
                 parentCommentId, r'ReplyCreate', 'parentCommentId'),
+            replyToReplyId: replyToReplyId,
           );
     } catch (_) {
       late String _$failedField;

@@ -324,6 +324,22 @@ class _ContentDetailPageState extends State<ContentDetailPage> {
               },
             ),
             const SizedBox(width: 12),
+            _outlinedCountAction(
+              isActive: false,
+              activeColor: AppTheme.textSecondaryColor,
+              activeIcon: Icons.chat_bubble,
+              inactiveIcon: Icons.chat_bubble_outline,
+              count: stats.comments,
+              onTap: () {
+                // 滚动到评论区域
+                Scrollable.ensureVisible(
+                  context,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                );
+              },
+            ),
+            const SizedBox(width: 12),
             _outlinedLabelAction(
               isActive: stats.favoritedByCurrentUser,
               activeColor: AppTheme.primaryColor,

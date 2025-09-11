@@ -15,6 +15,10 @@ class _$OtherHealthRecordResponse extends OtherHealthRecordResponse {
   final BuiltMap<String, JsonObject?> details;
   @override
   final int id;
+  @override
+  final String createdAt;
+  @override
+  final String recordDate;
 
   factory _$OtherHealthRecordResponse(
           [void Function(OtherHealthRecordResponseBuilder)? updates]) =>
@@ -24,7 +28,9 @@ class _$OtherHealthRecordResponse extends OtherHealthRecordResponse {
       {required this.petId,
       required this.otherType,
       required this.details,
-      required this.id})
+      required this.id,
+      required this.createdAt,
+      required this.recordDate})
       : super._();
   @override
   OtherHealthRecordResponse rebuild(
@@ -42,7 +48,9 @@ class _$OtherHealthRecordResponse extends OtherHealthRecordResponse {
         petId == other.petId &&
         otherType == other.otherType &&
         details == other.details &&
-        id == other.id;
+        id == other.id &&
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
@@ -52,6 +60,8 @@ class _$OtherHealthRecordResponse extends OtherHealthRecordResponse {
     _$hash = $jc(_$hash, otherType.hashCode);
     _$hash = $jc(_$hash, details.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -62,7 +72,9 @@ class _$OtherHealthRecordResponse extends OtherHealthRecordResponse {
           ..add('petId', petId)
           ..add('otherType', otherType)
           ..add('details', details)
-          ..add('id', id))
+          ..add('id', id)
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -90,6 +102,14 @@ class OtherHealthRecordResponseBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
+  String? _createdAt;
+  String? get createdAt => _$this._createdAt;
+  set createdAt(String? createdAt) => _$this._createdAt = createdAt;
+
+  String? _recordDate;
+  String? get recordDate => _$this._recordDate;
+  set recordDate(String? recordDate) => _$this._recordDate = recordDate;
+
   OtherHealthRecordResponseBuilder() {
     OtherHealthRecordResponse._defaults(this);
   }
@@ -101,6 +121,8 @@ class OtherHealthRecordResponseBuilder
       _otherType = $v.otherType;
       _details = $v.details.toBuilder();
       _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -131,6 +153,10 @@ class OtherHealthRecordResponseBuilder
             details: details.build(),
             id: BuiltValueNullFieldError.checkNotNull(
                 id, r'OtherHealthRecordResponse', 'id'),
+            createdAt: BuiltValueNullFieldError.checkNotNull(
+                createdAt, r'OtherHealthRecordResponse', 'createdAt'),
+            recordDate: BuiltValueNullFieldError.checkNotNull(
+                recordDate, r'OtherHealthRecordResponse', 'recordDate'),
           );
     } catch (_) {
       late String _$failedField;

@@ -850,21 +850,23 @@ class _RecommendTabState extends State<RecommendTab> {
                                   ),
                                 ),
                                 const SizedBox(width: 8),
-                                // 评论占位
-                                const IconButton(
-                                  onPressed: null,
-                                  icon: Icon(
-                                    Icons.chat_bubble_outline,
-                                    size: 18,
-                                    color: Color(0xFF9CA3AF),
-                                  ),
-                                ),
-                                Text(
-                                  '${_commentCounts[post.id] ?? post.comments}',
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    color: Color(0xFF9CA3AF),
-                                  ),
+                                // 评论
+                                Row(
+                                  children: [
+                                    const Icon(
+                                      Icons.chat_bubble_outline,
+                                      size: 18,
+                                      color: Color(0xFF9CA3AF),
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${_commentCounts[post.id] ?? post.comments}',
+                                      style: const TextStyle(
+                                        fontSize: 12,
+                                        color: Color(0xFF9CA3AF),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(width: 8),
                                 // 收藏

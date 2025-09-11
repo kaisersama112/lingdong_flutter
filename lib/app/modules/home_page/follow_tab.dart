@@ -446,13 +446,22 @@ class _FollowTabState extends State<FollowTab> {
                   onPressed: () => _toggleLike(postId),
                 ),
                 const SizedBox(width: 8),
-                const IconButton(
-                  onPressed: null,
-                  icon: Icon(
-                    Icons.chat_bubble_outline,
-                    size: 18,
-                    color: Color(0xFF9CA3AF),
-                  ),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.chat_bubble_outline,
+                      size: 18,
+                      color: Color(0xFF9CA3AF),
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      '${_commentCounts[postId] ?? comments}',
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Color(0xFF9CA3AF),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 8),
                 IconButton(

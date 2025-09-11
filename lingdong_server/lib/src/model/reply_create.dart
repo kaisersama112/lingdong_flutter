@@ -16,6 +16,7 @@ part 'reply_create.g.dart';
 /// * [content] - Content，回复内容
 /// * [medias] 
 /// * [parentCommentId] - Parent Comment Id，顶级评论ID
+/// * [replyToReplyId] 
 @BuiltValue()
 abstract class ReplyCreate implements Built<ReplyCreate, ReplyCreateBuilder> {
   /// Content，回复内容
@@ -28,6 +29,9 @@ abstract class ReplyCreate implements Built<ReplyCreate, ReplyCreateBuilder> {
   /// Parent Comment Id，顶级评论ID
   @BuiltValueField(wireName: r'parent_comment_id')
   int get parentCommentId;
+
+  @BuiltValueField(wireName: r'reply_to_reply_id')
+  int? get replyToReplyId;
 
   ReplyCreate._();
 
@@ -69,6 +73,13 @@ class _$ReplyCreateSerializer implements PrimitiveSerializer<ReplyCreate> {
       object.parentCommentId,
       specifiedType: const FullType(int),
     );
+    if (object.replyToReplyId != null) {
+      yield r'reply_to_reply_id';
+      yield serializers.serialize(
+        object.replyToReplyId,
+        specifiedType: const FullType.nullable(int),
+      );
+    }
   }
 
   @override
@@ -113,6 +124,14 @@ class _$ReplyCreateSerializer implements PrimitiveSerializer<ReplyCreate> {
             specifiedType: const FullType(int),
           ) as int;
           result.parentCommentId = valueDes;
+          break;
+        case r'reply_to_reply_id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(int),
+          ) as int?;
+          if (valueDes == null) continue;
+          result.replyToReplyId = valueDes;
           break;
         default:
           unhandled.add(key);

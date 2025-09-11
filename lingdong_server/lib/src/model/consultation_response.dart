@@ -14,6 +14,7 @@ part 'consultation_response.g.dart';
 /// ConsultationResponse
 ///
 /// Properties:
+/// * [id] - Id，记录ID
 /// * [petId] - Pet Id，宠物ID
 /// * [consultationType] - Consultation Type，就诊类型
 /// * [hospitalName] - Hospital Name，医院名称
@@ -22,13 +23,17 @@ part 'consultation_response.g.dart';
 /// * [diagnosis] - Diagnosis，诊断结果
 /// * [treatmentPlan] - Treatment Plan，治疗方案
 /// * [medications] - Medications，药物清单
-/// * [doctorName]
-/// * [doctorPhone]
-/// * [doctorEmail]
-/// * [id] - Id，记录ID
+/// * [doctorName] 
+/// * [doctorPhone] 
+/// * [doctorEmail] 
+/// * [createdAt] - Created At，创建时间
+/// * [recordDate] - Record Date，记录日期
 @BuiltValue()
-abstract class ConsultationResponse
-    implements Built<ConsultationResponse, ConsultationResponseBuilder> {
+abstract class ConsultationResponse implements Built<ConsultationResponse, ConsultationResponseBuilder> {
+  /// Id，记录ID
+  @BuiltValueField(wireName: r'id')
+  int get id;
+
   /// Pet Id，宠物ID
   @BuiltValueField(wireName: r'pet_id')
   int get petId;
@@ -70,30 +75,28 @@ abstract class ConsultationResponse
   @BuiltValueField(wireName: r'doctor_email')
   String? get doctorEmail;
 
-  /// Id，记录ID
-  @BuiltValueField(wireName: r'id')
-  int get id;
+  /// Created At，创建时间
+  @BuiltValueField(wireName: r'created_at')
+  DateTime get createdAt;
+
+  /// Record Date，记录日期
+  @BuiltValueField(wireName: r'record_date')
+  Date get recordDate;
 
   ConsultationResponse._();
 
-  factory ConsultationResponse([void updates(ConsultationResponseBuilder b)]) =
-      _$ConsultationResponse;
+  factory ConsultationResponse([void updates(ConsultationResponseBuilder b)]) = _$ConsultationResponse;
 
   @BuiltValueHook(initializeBuilder: true)
   static void _defaults(ConsultationResponseBuilder b) => b;
 
   @BuiltValueSerializer(custom: true)
-  static Serializer<ConsultationResponse> get serializer =>
-      _$ConsultationResponseSerializer();
+  static Serializer<ConsultationResponse> get serializer => _$ConsultationResponseSerializer();
 }
 
-class _$ConsultationResponseSerializer
-    implements PrimitiveSerializer<ConsultationResponse> {
+class _$ConsultationResponseSerializer implements PrimitiveSerializer<ConsultationResponse> {
   @override
-  final Iterable<Type> types = const [
-    ConsultationResponse,
-    _$ConsultationResponse
-  ];
+  final Iterable<Type> types = const [ConsultationResponse, _$ConsultationResponse];
 
   @override
   final String wireName = r'ConsultationResponse';
@@ -103,6 +106,11 @@ class _$ConsultationResponseSerializer
     ConsultationResponse object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
+    yield r'id';
+    yield serializers.serialize(
+      object.id,
+      specifiedType: const FullType(int),
+    );
     yield r'pet_id';
     yield serializers.serialize(
       object.petId,
@@ -164,10 +172,15 @@ class _$ConsultationResponseSerializer
         specifiedType: const FullType.nullable(String),
       );
     }
-    yield r'id';
+    yield r'created_at';
     yield serializers.serialize(
-      object.id,
-      specifiedType: const FullType(int),
+      object.createdAt,
+      specifiedType: const FullType(DateTime),
+    );
+    yield r'record_date';
+    yield serializers.serialize(
+      object.recordDate,
+      specifiedType: const FullType(Date),
     );
   }
 
@@ -177,9 +190,7 @@ class _$ConsultationResponseSerializer
     ConsultationResponse object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object,
-            specifiedType: specifiedType)
-        .toList();
+    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
   }
 
   void _deserializeProperties(
@@ -194,6 +205,13 @@ class _$ConsultationResponseSerializer
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
+        case r'id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.id = valueDes;
+          break;
         case r'pet_id':
           final valueDes = serializers.deserialize(
             value,
@@ -274,12 +292,19 @@ class _$ConsultationResponseSerializer
           if (valueDes == null) continue;
           result.doctorEmail = valueDes;
           break;
-        case r'id':
+        case r'created_at':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(int),
-          ) as int;
-          result.id = valueDes;
+            specifiedType: const FullType(DateTime),
+          ) as DateTime;
+          result.createdAt = valueDes;
+          break;
+        case r'record_date':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(Date),
+          ) as Date;
+          result.recordDate = valueDes;
           break;
         default:
           unhandled.add(key);
@@ -309,3 +334,4 @@ class _$ConsultationResponseSerializer
     return result.build();
   }
 }
+

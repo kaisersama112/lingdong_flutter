@@ -84,11 +84,6 @@ class PetService {
     }
   }
 
-  /// 设置认证Token（内部方法）
-  void _setAuthToken(String token) {
-    setAuthToken(token);
-  }
-
   /// 刷新认证Token
   void _refreshAuthToken() {
     if (_dio == null) return;
@@ -383,7 +378,7 @@ class PetService {
               );
           if (response.data?.code == 200) {
             final data = response.data?.data;
-            return data?['total'] as int? ?? 0;
+            return data?.total ?? 0;
           }
           break;
 
@@ -396,7 +391,7 @@ class PetService {
               );
           if (response.data?.code == 200) {
             final data = response.data?.data;
-            return data?['total'] as int? ?? 0;
+            return data?.total ?? 0;
           }
           break;
 
@@ -409,7 +404,7 @@ class PetService {
               );
           if (response.data?.code == 200) {
             final data = response.data?.data;
-            return data?['total'] as int? ?? 0;
+            return data?.total ?? 0;
           }
           break;
 
@@ -422,7 +417,7 @@ class PetService {
               );
           if (response.data?.code == 200) {
             final data = response.data?.data;
-            return data?['total'] as int? ?? 0;
+            return data?.total ?? 0;
           }
           break;
 
@@ -435,7 +430,7 @@ class PetService {
               );
           if (response.data?.code == 200) {
             final data = response.data?.data;
-            return data?['total'] as int? ?? 0;
+            return data?.total ?? 0;
           }
           break;
       }
@@ -685,11 +680,10 @@ class PetService {
 
 /// 简单的信号量实现，用于限制并发请求数量
 class _Semaphore {
-  final int _maxCount;
   int _currentCount;
   final List<Completer<void>> _waiters = [];
 
-  _Semaphore(this._maxCount) : _currentCount = _maxCount;
+  _Semaphore(int maxCount) : _currentCount = maxCount;
 
   Future<void> acquire() async {
     if (_currentCount > 0) {

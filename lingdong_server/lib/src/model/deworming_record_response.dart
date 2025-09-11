@@ -12,6 +12,7 @@ part 'deworming_record_response.g.dart';
 /// DewormingRecordResponse
 ///
 /// Properties:
+/// * [id] - Id，记录ID
 /// * [petId] - Pet Id，宠物ID
 /// * [dewormingType] - Deworming Type，驱虫类型
 /// * [dewormingMedicineName] 
@@ -19,9 +20,14 @@ part 'deworming_record_response.g.dart';
 /// * [dewormingLocation] 
 /// * [dewormingValidity] 
 /// * [dewormingNextDate] 
-/// * [id] - Id，记录ID
+/// * [createdAt] - Created At，创建时间
+/// * [recordDate] - Record Date，记录日期
 @BuiltValue()
 abstract class DewormingRecordResponse implements Built<DewormingRecordResponse, DewormingRecordResponseBuilder> {
+  /// Id，记录ID
+  @BuiltValueField(wireName: r'id')
+  int get id;
+
   /// Pet Id，宠物ID
   @BuiltValueField(wireName: r'pet_id')
   int get petId;
@@ -45,9 +51,13 @@ abstract class DewormingRecordResponse implements Built<DewormingRecordResponse,
   @BuiltValueField(wireName: r'deworming_next_date')
   Date? get dewormingNextDate;
 
-  /// Id，记录ID
-  @BuiltValueField(wireName: r'id')
-  int get id;
+  /// Created At，创建时间
+  @BuiltValueField(wireName: r'created_at')
+  String get createdAt;
+
+  /// Record Date，记录日期
+  @BuiltValueField(wireName: r'record_date')
+  String get recordDate;
 
   DewormingRecordResponse._();
 
@@ -72,6 +82,11 @@ class _$DewormingRecordResponseSerializer implements PrimitiveSerializer<Dewormi
     DewormingRecordResponse object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
+    yield r'id';
+    yield serializers.serialize(
+      object.id,
+      specifiedType: const FullType(int),
+    );
     yield r'pet_id';
     yield serializers.serialize(
       object.petId,
@@ -117,10 +132,15 @@ class _$DewormingRecordResponseSerializer implements PrimitiveSerializer<Dewormi
         specifiedType: const FullType.nullable(Date),
       );
     }
-    yield r'id';
+    yield r'created_at';
     yield serializers.serialize(
-      object.id,
-      specifiedType: const FullType(int),
+      object.createdAt,
+      specifiedType: const FullType(String),
+    );
+    yield r'record_date';
+    yield serializers.serialize(
+      object.recordDate,
+      specifiedType: const FullType(String),
     );
   }
 
@@ -145,6 +165,13 @@ class _$DewormingRecordResponseSerializer implements PrimitiveSerializer<Dewormi
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
+        case r'id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.id = valueDes;
+          break;
         case r'pet_id':
           final valueDes = serializers.deserialize(
             value,
@@ -199,12 +226,19 @@ class _$DewormingRecordResponseSerializer implements PrimitiveSerializer<Dewormi
           if (valueDes == null) continue;
           result.dewormingNextDate = valueDes;
           break;
-        case r'id':
+        case r'created_at':
           final valueDes = serializers.deserialize(
             value,
-            specifiedType: const FullType(int),
-          ) as int;
-          result.id = valueDes;
+            specifiedType: const FullType(String),
+          ) as String;
+          result.createdAt = valueDes;
+          break;
+        case r'record_date':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(String),
+          ) as String;
+          result.recordDate = valueDes;
           break;
         default:
           unhandled.add(key);

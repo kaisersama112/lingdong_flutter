@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **validityPeriod** | **String** |  | [optional] 
 **nextDueDate** | [**Date**](Date.md) |  | [optional] 
 **id** | **int** | Id，记录ID | 
+**createdAt** | **String** | Created At，创建时间 | 
+**recordDate** | **String** | Record Date，记录日期 | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

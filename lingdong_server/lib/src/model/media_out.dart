@@ -26,7 +26,7 @@ part 'media_out.g.dart';
 abstract class MediaOut implements Built<MediaOut, MediaOutBuilder> {
   @BuiltValueField(wireName: r'related_type')
   RelatedTypeEnum get relatedType;
-  // enum relatedTypeEnum {  1,  2,  3,  4,  };
+  // enum relatedTypeEnum {  1,  2,  3,  4,  5,  6,  };
 
   /// Related Id
   @BuiltValueField(wireName: r'related_id')

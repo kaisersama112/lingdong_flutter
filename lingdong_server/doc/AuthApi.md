@@ -127,7 +127,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getAuthApi();
-final LoginRequest loginRequest = ; // LoginRequest | 
+final LoginRequest loginRequest = {"identifier":"string","password":"string"}; // LoginRequest | 
 
 try {
     final response = api.loginForAccessTokenApiAuthLoginPost(loginRequest);
@@ -170,7 +170,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getAuthApi();
-final LoginRequest loginRequest = ; // LoginRequest | 
+final LoginRequest loginRequest = {"identifier":"string","password":"string"}; // LoginRequest | 
 
 try {
     final response = api.loginForAccessTokenApiAuthLoginPost_0(loginRequest);
@@ -213,7 +213,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getAuthApi();
-final PhoneCodeLoginRequest phoneCodeLoginRequest = ; // PhoneCodeLoginRequest | 
+final PhoneCodeLoginRequest phoneCodeLoginRequest = {"phone":"string","code":"string"}; // PhoneCodeLoginRequest | 
 
 try {
     final response = api.phoneCodeLoginApiAuthPhoneCodeLoginPost(phoneCodeLoginRequest);
@@ -256,7 +256,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getAuthApi();
-final PhoneCodeLoginRequest phoneCodeLoginRequest = ; // PhoneCodeLoginRequest | 
+final PhoneCodeLoginRequest phoneCodeLoginRequest = {"phone":"string","code":"string"}; // PhoneCodeLoginRequest | 
 
 try {
     final response = api.phoneCodeLoginApiAuthPhoneCodeLoginPost_0(phoneCodeLoginRequest);

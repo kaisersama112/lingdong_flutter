@@ -16,12 +16,12 @@ part 'post_response.g.dart';
 /// * [id] - Id
 /// * [userId] - User Id
 /// * [username] - Username，发布者用户名
-/// * [userAvatar]
-/// * [communityId]
-/// * [communityName]
+/// * [userAvatar] 
+/// * [communityId] 
+/// * [communityName] 
 /// * [content] - Content
-/// * [createdAt]
-/// * [updatedAt]
+/// * [createdAt] 
+/// * [updatedAt] 
 /// * [medias] - Medias，媒体文件列表
 /// * [likeCount] - Like Count，点赞数
 /// * [commentCount] - Comment Count，评论数
@@ -29,12 +29,11 @@ part 'post_response.g.dart';
 /// * [shareCount] - Share Count，分享数
 /// * [isLiked] - Is Liked，当前用户是否已点赞
 /// * [isFavorited] - Is Favorited，当前用户是否已收藏
-/// * [tags]
+/// * [tags] 
 /// * [visibility] - Visibility，可见性
-/// * [location]
+/// * [location] 
 @BuiltValue()
-abstract class PostResponse
-    implements Built<PostResponse, PostResponseBuilder> {
+abstract class PostResponse implements Built<PostResponse, PostResponseBuilder> {
   /// Id
   @BuiltValueField(wireName: r'id')
   int get id;
@@ -110,14 +109,14 @@ abstract class PostResponse
 
   @BuiltValueHook(initializeBuilder: true)
   static void _defaults(PostResponseBuilder b) => b
-    ..medias = ListBuilder()
-    ..likeCount = 0
-    ..commentCount = 0
-    ..favoriteCount = 0
-    ..shareCount = 0
-    ..isLiked = false
-    ..isFavorited = false
-    ..visibility = 2;
+      ..medias = ListBuilder()
+      ..likeCount = 0
+      ..commentCount = 0
+      ..favoriteCount = 0
+      ..shareCount = 0
+      ..isLiked = false
+      ..isFavorited = false
+      ..visibility = 2;
 
   @BuiltValueSerializer(custom: true)
   static Serializer<PostResponse> get serializer => _$PostResponseSerializer();
@@ -158,12 +157,10 @@ class _$PostResponseSerializer implements PrimitiveSerializer<PostResponse> {
       );
     }
     yield r'community_id';
-    yield object.communityId == null
-        ? null
-        : serializers.serialize(
-            object.communityId,
-            specifiedType: const FullType.nullable(int),
-          );
+    yield object.communityId == null ? null : serializers.serialize(
+      object.communityId,
+      specifiedType: const FullType.nullable(int),
+    );
     if (object.communityName != null) {
       yield r'community_name';
       yield serializers.serialize(
@@ -268,9 +265,7 @@ class _$PostResponseSerializer implements PrimitiveSerializer<PostResponse> {
     PostResponse object, {
     FullType specifiedType = FullType.unspecified,
   }) {
-    return _serializeProperties(serializers, object,
-            specifiedType: specifiedType)
-        .toList();
+    return _serializeProperties(serializers, object, specifiedType: specifiedType).toList();
   }
 
   void _deserializeProperties(
@@ -453,3 +448,4 @@ class _$PostResponseSerializer implements PrimitiveSerializer<PostResponse> {
     return result.build();
   }
 }
+

@@ -33,6 +33,10 @@ class _$ExaminationRecordResponse extends ExaminationRecordResponse {
   final Date? nextCheckupDate;
   @override
   final int id;
+  @override
+  final String createdAt;
+  @override
+  final String recordDate;
 
   factory _$ExaminationRecordResponse(
           [void Function(ExaminationRecordResponseBuilder)? updates]) =>
@@ -51,7 +55,9 @@ class _$ExaminationRecordResponse extends ExaminationRecordResponse {
       this.recommendations,
       this.followUpRequired,
       this.nextCheckupDate,
-      required this.id})
+      required this.id,
+      required this.createdAt,
+      required this.recordDate})
       : super._();
   @override
   ExaminationRecordResponse rebuild(
@@ -78,7 +84,9 @@ class _$ExaminationRecordResponse extends ExaminationRecordResponse {
         recommendations == other.recommendations &&
         followUpRequired == other.followUpRequired &&
         nextCheckupDate == other.nextCheckupDate &&
-        id == other.id;
+        id == other.id &&
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
@@ -97,6 +105,8 @@ class _$ExaminationRecordResponse extends ExaminationRecordResponse {
     _$hash = $jc(_$hash, followUpRequired.hashCode);
     _$hash = $jc(_$hash, nextCheckupDate.hashCode);
     _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -116,7 +126,9 @@ class _$ExaminationRecordResponse extends ExaminationRecordResponse {
           ..add('recommendations', recommendations)
           ..add('followUpRequired', followUpRequired)
           ..add('nextCheckupDate', nextCheckupDate)
-          ..add('id', id))
+          ..add('id', id)
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -188,6 +200,14 @@ class ExaminationRecordResponseBuilder
   int? get id => _$this._id;
   set id(int? id) => _$this._id = id;
 
+  String? _createdAt;
+  String? get createdAt => _$this._createdAt;
+  set createdAt(String? createdAt) => _$this._createdAt = createdAt;
+
+  String? _recordDate;
+  String? get recordDate => _$this._recordDate;
+  set recordDate(String? recordDate) => _$this._recordDate = recordDate;
+
   ExaminationRecordResponseBuilder() {
     ExaminationRecordResponse._defaults(this);
   }
@@ -208,6 +228,8 @@ class ExaminationRecordResponseBuilder
       _followUpRequired = $v.followUpRequired;
       _nextCheckupDate = $v.nextCheckupDate;
       _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -251,6 +273,10 @@ class ExaminationRecordResponseBuilder
             nextCheckupDate: nextCheckupDate,
             id: BuiltValueNullFieldError.checkNotNull(
                 id, r'ExaminationRecordResponse', 'id'),
+            createdAt: BuiltValueNullFieldError.checkNotNull(
+                createdAt, r'ExaminationRecordResponse', 'createdAt'),
+            recordDate: BuiltValueNullFieldError.checkNotNull(
+                recordDate, r'ExaminationRecordResponse', 'recordDate'),
           );
     } catch (_) {
       late String _$failedField;

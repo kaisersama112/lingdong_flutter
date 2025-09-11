@@ -8,6 +8,8 @@ part of 'deworming_record_response.dart';
 
 class _$DewormingRecordResponse extends DewormingRecordResponse {
   @override
+  final int id;
+  @override
   final int petId;
   @override
   final String dewormingType;
@@ -22,21 +24,25 @@ class _$DewormingRecordResponse extends DewormingRecordResponse {
   @override
   final Date? dewormingNextDate;
   @override
-  final int id;
+  final String createdAt;
+  @override
+  final String recordDate;
 
   factory _$DewormingRecordResponse(
           [void Function(DewormingRecordResponseBuilder)? updates]) =>
       (DewormingRecordResponseBuilder()..update(updates))._build();
 
   _$DewormingRecordResponse._(
-      {required this.petId,
+      {required this.id,
+      required this.petId,
       required this.dewormingType,
       this.dewormingMedicineName,
       this.dewormingDosage,
       this.dewormingLocation,
       this.dewormingValidity,
       this.dewormingNextDate,
-      required this.id})
+      required this.createdAt,
+      required this.recordDate})
       : super._();
   @override
   DewormingRecordResponse rebuild(
@@ -51,6 +57,7 @@ class _$DewormingRecordResponse extends DewormingRecordResponse {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is DewormingRecordResponse &&
+        id == other.id &&
         petId == other.petId &&
         dewormingType == other.dewormingType &&
         dewormingMedicineName == other.dewormingMedicineName &&
@@ -58,12 +65,14 @@ class _$DewormingRecordResponse extends DewormingRecordResponse {
         dewormingLocation == other.dewormingLocation &&
         dewormingValidity == other.dewormingValidity &&
         dewormingNextDate == other.dewormingNextDate &&
-        id == other.id;
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, petId.hashCode);
     _$hash = $jc(_$hash, dewormingType.hashCode);
     _$hash = $jc(_$hash, dewormingMedicineName.hashCode);
@@ -71,7 +80,8 @@ class _$DewormingRecordResponse extends DewormingRecordResponse {
     _$hash = $jc(_$hash, dewormingLocation.hashCode);
     _$hash = $jc(_$hash, dewormingValidity.hashCode);
     _$hash = $jc(_$hash, dewormingNextDate.hashCode);
-    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -79,6 +89,7 @@ class _$DewormingRecordResponse extends DewormingRecordResponse {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'DewormingRecordResponse')
+          ..add('id', id)
           ..add('petId', petId)
           ..add('dewormingType', dewormingType)
           ..add('dewormingMedicineName', dewormingMedicineName)
@@ -86,7 +97,8 @@ class _$DewormingRecordResponse extends DewormingRecordResponse {
           ..add('dewormingLocation', dewormingLocation)
           ..add('dewormingValidity', dewormingValidity)
           ..add('dewormingNextDate', dewormingNextDate)
-          ..add('id', id))
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -95,6 +107,10 @@ class DewormingRecordResponseBuilder
     implements
         Builder<DewormingRecordResponse, DewormingRecordResponseBuilder> {
   _$DewormingRecordResponse? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   int? _petId;
   int? get petId => _$this._petId;
@@ -130,9 +146,13 @@ class DewormingRecordResponseBuilder
   set dewormingNextDate(Date? dewormingNextDate) =>
       _$this._dewormingNextDate = dewormingNextDate;
 
-  int? _id;
-  int? get id => _$this._id;
-  set id(int? id) => _$this._id = id;
+  String? _createdAt;
+  String? get createdAt => _$this._createdAt;
+  set createdAt(String? createdAt) => _$this._createdAt = createdAt;
+
+  String? _recordDate;
+  String? get recordDate => _$this._recordDate;
+  set recordDate(String? recordDate) => _$this._recordDate = recordDate;
 
   DewormingRecordResponseBuilder() {
     DewormingRecordResponse._defaults(this);
@@ -141,6 +161,7 @@ class DewormingRecordResponseBuilder
   DewormingRecordResponseBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _id = $v.id;
       _petId = $v.petId;
       _dewormingType = $v.dewormingType;
       _dewormingMedicineName = $v.dewormingMedicineName;
@@ -148,7 +169,8 @@ class DewormingRecordResponseBuilder
       _dewormingLocation = $v.dewormingLocation;
       _dewormingValidity = $v.dewormingValidity;
       _dewormingNextDate = $v.dewormingNextDate;
-      _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -170,6 +192,8 @@ class DewormingRecordResponseBuilder
   _$DewormingRecordResponse _build() {
     final _$result = _$v ??
         _$DewormingRecordResponse._(
+          id: BuiltValueNullFieldError.checkNotNull(
+              id, r'DewormingRecordResponse', 'id'),
           petId: BuiltValueNullFieldError.checkNotNull(
               petId, r'DewormingRecordResponse', 'petId'),
           dewormingType: BuiltValueNullFieldError.checkNotNull(
@@ -179,8 +203,10 @@ class DewormingRecordResponseBuilder
           dewormingLocation: dewormingLocation,
           dewormingValidity: dewormingValidity,
           dewormingNextDate: dewormingNextDate,
-          id: BuiltValueNullFieldError.checkNotNull(
-              id, r'DewormingRecordResponse', 'id'),
+          createdAt: BuiltValueNullFieldError.checkNotNull(
+              createdAt, r'DewormingRecordResponse', 'createdAt'),
+          recordDate: BuiltValueNullFieldError.checkNotNull(
+              recordDate, r'DewormingRecordResponse', 'recordDate'),
         );
     replace(_$result);
     return _$result;

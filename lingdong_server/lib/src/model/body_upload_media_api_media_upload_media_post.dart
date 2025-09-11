@@ -24,7 +24,7 @@ part 'body_upload_media_api_media_upload_media_post.g.dart';
 abstract class BodyUploadMediaApiMediaUploadMediaPost implements Built<BodyUploadMediaApiMediaUploadMediaPost, BodyUploadMediaApiMediaUploadMediaPostBuilder> {
   @BuiltValueField(wireName: r'related_type')
   RelatedTypeEnum get relatedType;
-  // enum relatedTypeEnum {  1,  2,  3,  4,  };
+  // enum relatedTypeEnum {  1,  2,  3,  4,  5,  6,  };
 
   /// Related Id
   @BuiltValueField(wireName: r'related_id')

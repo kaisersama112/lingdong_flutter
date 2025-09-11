@@ -11,9 +11,14 @@ part 'weight_record_create.g.dart';
 /// WeightRecordCreate
 ///
 /// Properties:
+/// * [petId] - Pet Id，宠物ID
 /// * [weightValue] - Weight Value，体重值
 @BuiltValue()
 abstract class WeightRecordCreate implements Built<WeightRecordCreate, WeightRecordCreateBuilder> {
+  /// Pet Id，宠物ID
+  @BuiltValueField(wireName: r'pet_id')
+  int get petId;
+
   /// Weight Value，体重值
   @BuiltValueField(wireName: r'weight_value')
   num get weightValue;
@@ -41,6 +46,11 @@ class _$WeightRecordCreateSerializer implements PrimitiveSerializer<WeightRecord
     WeightRecordCreate object, {
     FullType specifiedType = FullType.unspecified,
   }) sync* {
+    yield r'pet_id';
+    yield serializers.serialize(
+      object.petId,
+      specifiedType: const FullType(int),
+    );
     yield r'weight_value';
     yield serializers.serialize(
       object.weightValue,
@@ -69,6 +79,13 @@ class _$WeightRecordCreateSerializer implements PrimitiveSerializer<WeightRecord
       final key = serializedList[i] as String;
       final value = serializedList[i + 1];
       switch (key) {
+        case r'pet_id':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.petId = valueDes;
+          break;
         case r'weight_value':
           final valueDes = serializers.deserialize(
             value,

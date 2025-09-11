@@ -24,5 +24,10 @@ void main() {
       // TODO
     });
 
+    // int replyToReplyId
+    test('to test the property `replyToReplyId`', () async {
+      // TODO
+    });
+
   });
 }

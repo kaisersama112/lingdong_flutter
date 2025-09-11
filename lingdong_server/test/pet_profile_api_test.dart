@@ -155,7 +155,7 @@ void main() {
     //
     // 根据宠物ID获取就诊记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseConsultationResponse> getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet', () async {
       // TODO
     });
@@ -173,7 +173,7 @@ void main() {
     //
     // 根据宠物ID获取驱虫记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseDewormingRecordResponse> getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet', () async {
       // TODO
     });
@@ -191,7 +191,7 @@ void main() {
     //
     // 根据宠物ID获取体检记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseExaminationRecordResponse> getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet', () async {
       // TODO
     });
@@ -209,7 +209,7 @@ void main() {
     //
     // 根据宠物ID获取美容养护记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseBeautificationRecordResponse> getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet', () async {
       // TODO
     });
@@ -227,7 +227,7 @@ void main() {
     //
     // 根据宠物ID获取其他健康记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseOtherHealthRecordResponse> getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet', () async {
       // TODO
     });
@@ -236,7 +236,7 @@ void main() {
     //
     // 根据宠物ID获取疫苗接种记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseVaccinationRecordResponse> getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet', () async {
       // TODO
     });
@@ -254,7 +254,7 @@ void main() {
     //
     // 根据宠物ID获取体重记录列表（分页） - pet_id: 宠物ID - skip: 跳过的记录数，默认为0 - size: 每页记录数，默认为10
     //
-    //Future<GenericResponseDict> getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(int petId, { int skip, int size }) async
+    //Future<GenericResponsePaginationResponseWeightRecordResponse> getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet(int petId, { int skip, int size }) async
     test('test getWeightRecordsByPetApiPetGetWeightRecordsByPetPetIdGet', () async {
       // TODO
     });

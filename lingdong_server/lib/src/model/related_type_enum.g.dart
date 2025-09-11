@@ -10,6 +10,8 @@ const RelatedTypeEnum _$number1 = const RelatedTypeEnum._('number1');
 const RelatedTypeEnum _$number2 = const RelatedTypeEnum._('number2');
 const RelatedTypeEnum _$number3 = const RelatedTypeEnum._('number3');
 const RelatedTypeEnum _$number4 = const RelatedTypeEnum._('number4');
+const RelatedTypeEnum _$number5 = const RelatedTypeEnum._('number5');
+const RelatedTypeEnum _$number6 = const RelatedTypeEnum._('number6');
 
 RelatedTypeEnum _$valueOf(String name) {
   switch (name) {
@@ -21,6 +23,10 @@ RelatedTypeEnum _$valueOf(String name) {
       return _$number3;
     case 'number4':
       return _$number4;
+    case 'number5':
+      return _$number5;
+    case 'number6':
+      return _$number6;
     default:
       throw ArgumentError(name);
   }
@@ -32,6 +38,8 @@ final BuiltSet<RelatedTypeEnum> _$values =
   _$number2,
   _$number3,
   _$number4,
+  _$number5,
+  _$number6,
 ]);
 
 class _$RelatedTypeEnumMeta {
@@ -40,6 +48,8 @@ class _$RelatedTypeEnumMeta {
   RelatedTypeEnum get number2 => _$number2;
   RelatedTypeEnum get number3 => _$number3;
   RelatedTypeEnum get number4 => _$number4;
+  RelatedTypeEnum get number5 => _$number5;
+  RelatedTypeEnum get number6 => _$number6;
   RelatedTypeEnum valueOf(String name) => _$valueOf(name);
   BuiltSet<RelatedTypeEnum> get values => _$values;
 }
@@ -59,12 +69,16 @@ class _$RelatedTypeEnumSerializer
     'number2': 2,
     'number3': 3,
     'number4': 4,
+    'number5': 5,
+    'number6': 6,
   };
   static const Map<Object, String> _fromWire = const <Object, String>{
     1: 'number1',
     2: 'number2',
     3: 'number3',
     4: 'number4',
+    5: 'number5',
+    6: 'number6',
   };
 
   @override

@@ -11,11 +11,13 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createDynamicApiDynamicsCreateDynamicPost**](DynamicsApi.md#createdynamicapidynamicscreatedynamicpost) | **POST** /api/dynamics/create_dynamic | 创建广场动态
 [**createParentCommentApiDynamicsPostsRepliesPost**](DynamicsApi.md#createparentcommentapidynamicspostsrepliespost) | **POST** /api/dynamics/posts/replies | 创建顶级评论
-[**createReplyApiDynamicsCommentsParentIdRepliesPost**](DynamicsApi.md#createreplyapidynamicscommentsparentidrepliespost) | **POST** /api/dynamics/comments/{parent_id}/replies | 创建回复
+[**createReplyApiDynamicsCommentsRepliesPost**](DynamicsApi.md#createreplyapidynamicscommentsrepliespost) | **POST** /api/dynamics/comments/replies | 创建回复
 [**deleteDynamicApiDynamicsPostIdDeleteDynamicPost**](DynamicsApi.md#deletedynamicapidynamicspostiddeletedynamicpost) | **POST** /api/dynamics/{post_id}/delete_dynamic | 删除动态
 [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete**](DynamicsApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
-[**deleteReplyApiDynamicsRepliesReplyIdDelete**](DynamicsApi.md#deletereplyapidynamicsrepliesreplyiddelete) | **DELETE** /api/dynamics/replies/{reply_id} | 删除回复
+[**deleteReplyApiDynamicsRepliesReplyIdDeletePost**](DynamicsApi.md#deletereplyapidynamicsrepliesreplyiddeletepost) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
+[**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**](DynamicsApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
 [**getDynamicDetailApiDynamicsPostIdGet**](DynamicsApi.md#getdynamicdetailapidynamicspostidget) | **GET** /api/dynamics/{post_id} | 获取动态详情
+[**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](DynamicsApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](DynamicsApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
 [**getRecommendedDynamicsApiDynamicsRecommendedPost**](DynamicsApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
@@ -84,7 +86,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getDynamicsApi();
-final ParentCommentCreate parentCommentCreate = ; // ParentCommentCreate | 
+final ParentCommentCreate parentCommentCreate = {"post_id":0,"content":"string","medias":[{"related_type":1,"related_id":0,"media_type":0,"url":"string","thumbnail_url":"string","description":"string","sort_order":0,"user_id":0}]}; // ParentCommentCreate | 
 
 try {
     final response = api.createParentCommentApiDynamicsPostsRepliesPost(parentCommentCreate);
@@ -115,26 +117,25 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **createReplyApiDynamicsCommentsParentIdRepliesPost**
-> GenericResponseReply createReplyApiDynamicsCommentsParentIdRepliesPost(parentId, replyCreate)
+# **createReplyApiDynamicsCommentsRepliesPost**
+> GenericResponseReply createReplyApiDynamicsCommentsRepliesPost(replyCreate)
 
 创建回复
 
-创建对指定评论的回复
+创建对指定评论的回复或回复其他回复
 
 ### Example
 ```dart
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getDynamicsApi();
-final int parentId = 0; // int | 
-final ReplyCreate replyCreate = ; // ReplyCreate | 
+final ReplyCreate replyCreate = {"content":"string","medias":[{"related_type":1,"related_id":0,"media_type":0,"url":"string","thumbnail_url":"string","description":"string","sort_order":0,"user_id":0}],"parent_comment_id":0,"reply_to_reply_id":0}; // ReplyCreate | 
 
 try {
-    final response = api.createReplyApiDynamicsCommentsParentIdRepliesPost(parentId, replyCreate);
+    final response = api.createReplyApiDynamicsCommentsRepliesPost(replyCreate);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling DynamicsApi->createReplyApiDynamicsCommentsParentIdRepliesPost: $e\n');
+    print('Exception when calling DynamicsApi->createReplyApiDynamicsCommentsRepliesPost: $e\n');
 }
 ```
 
@@ -142,7 +143,6 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **parentId** | **int**|  | 
  **replyCreate** | [**ReplyCreate**](ReplyCreate.md)|  | [optional] 
 
 ### Return type
@@ -246,8 +246,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **deleteReplyApiDynamicsRepliesReplyIdDelete**
-> GenericResponseBool deleteReplyApiDynamicsRepliesReplyIdDelete(replyId)
+# **deleteReplyApiDynamicsRepliesReplyIdDeletePost**
+> GenericResponseBool deleteReplyApiDynamicsRepliesReplyIdDeletePost(replyId)
 
 删除回复
 
@@ -261,10 +261,10 @@ final api = LingdongServer().getDynamicsApi();
 final int replyId = 0; // int | 
 
 try {
-    final response = api.deleteReplyApiDynamicsRepliesReplyIdDelete(replyId);
+    final response = api.deleteReplyApiDynamicsRepliesReplyIdDeletePost(replyId);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling DynamicsApi->deleteReplyApiDynamicsRepliesReplyIdDelete: $e\n');
+    print('Exception when calling DynamicsApi->deleteReplyApiDynamicsRepliesReplyIdDeletePost: $e\n');
 }
 ```
 
@@ -277,6 +277,53 @@ Name | Type | Description  | Notes
 ### Return type
 
 [**GenericResponseBool**](GenericResponseBool.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**
+> GenericResponseDict getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet(parentCommentId, skip, limit)
+
+获取顶级评论下的回复
+
+获取指定顶级评论下的回复，支持分页，返回平铺形式的回复数据（包含回复人和被回复人信息）
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getDynamicsApi();
+final int parentCommentId = 0; // int | 
+final int skip = 56; // int | 
+final int limit = 56; // int | 
+
+try {
+    final response = api.getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet(parentCommentId, skip, limit);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DynamicsApi->getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **parentCommentId** | **int**|  | 
+ **skip** | **int**|  | [optional] [default to 0]
+ **limit** | **int**|  | [optional] [default to 10]
+
+### Return type
+
+[**GenericResponseDict**](GenericResponseDict.md)
 
 ### Authorization
 
@@ -332,12 +379,55 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
+# **getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**
+> GenericResponseDict getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet(postId)
+
+获取帖子总评论数
+
+获取指定帖子的总评论数，包括顶级评论和回复
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getDynamicsApi();
+final int postId = 0; // int | 
+
+try {
+    final response = api.getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet(postId);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DynamicsApi->getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **postId** | **int**|  | 
+
+### Return type
+
+[**GenericResponseDict**](GenericResponseDict.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
 # **getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**
-> GenericResponseDict getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet(postId, skip, limit)
+> GenericResponseDict getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet(postId, skip, limit, includeReplies)
 
 获取动态下的顶级评论
 
-获取指定动态下的所有顶级评论，包括点赞数量、分页信息和当前用户是否点赞
+获取指定动态下的顶级评论，默认不包含完整回复树以提高性能，返回回复数量
 
 ### Example
 ```dart
@@ -347,9 +437,10 @@ final api = LingdongServer().getDynamicsApi();
 final int postId = 0; // int | 
 final int skip = 56; // int | 
 final int limit = 56; // int | 
+final bool includeReplies = true; // bool | 
 
 try {
-    final response = api.getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet(postId, skip, limit);
+    final response = api.getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet(postId, skip, limit, includeReplies);
     print(response);
 } catch on DioException (e) {
     print('Exception when calling DynamicsApi->getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet: $e\n');
@@ -363,6 +454,7 @@ Name | Type | Description  | Notes
  **postId** | **int**|  | 
  **skip** | **int**|  | [optional] [default to 0]
  **limit** | **int**|  | [optional] [default to 5]
+ **includeReplies** | **bool**|  | [optional] [default to false]
 
 ### Return type
 
@@ -393,7 +485,7 @@ import 'package:lingdong_server/api.dart';
 final api = LingdongServer().getDynamicsApi();
 final int page = 56; // int | 
 final int limit = 56; // int | 
-final String tag = tag_example; // String | 
+final Tag tag = ; // Tag | 
 
 try {
     final response = api.getPublicDynamicsApiDynamicsGetPublicDynamicsGet(page, limit, tag);
@@ -409,7 +501,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **page** | **int**|  | [optional] [default to 0]
  **limit** | **int**|  | [optional] [default to 20]
- **tag** | **String**|  | [optional] 
+ **tag** | [**Tag**](.md)|  | [optional] 
 
 ### Return type
 
@@ -438,7 +530,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getDynamicsApi();
-final PaginationParams paginationParams = ; // PaginationParams | 
+final PaginationParams paginationParams = {"skip":0,"limit":20}; // PaginationParams | 
 
 try {
     final response = api.getRecommendedDynamicsApiDynamicsRecommendedPost(paginationParams);

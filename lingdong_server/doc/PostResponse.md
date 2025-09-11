@@ -17,7 +17,7 @@ Name | Type | Description | Notes
 **content** | **String** | Content | 
 **createdAt** | [**DateTime**](DateTime.md) |  | [optional] 
 **updatedAt** | [**DateTime**](DateTime.md) |  | [optional] 
-**medias** | [**BuiltList&lt;MediaResponse&gt;**](MediaResponse.md) | Medias，媒体文件列表 | [optional] [default to ListBuilder()]
+**medias** | [**BuiltList&lt;MediaOut&gt;**](MediaOut.md) | Medias，媒体文件列表 | [optional] [default to ListBuilder()]
 **likeCount** | **int** | Like Count，点赞数 | [optional] [default to 0]
 **commentCount** | **int** | Comment Count，评论数 | [optional] [default to 0]
 **favoriteCount** | **int** | Favorite Count，收藏数 | [optional] [default to 0]

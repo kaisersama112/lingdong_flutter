@@ -8,6 +8,7 @@ import 'package:lingdong_server/api.dart';
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
+**id** | **int** | Id，记录ID | 
 **petId** | **int** | Pet Id，宠物ID | 
 **consultationType** | **String** | Consultation Type，就诊类型 | 
 **hospitalName** | **String** | Hospital Name，医院名称 | 
@@ -19,7 +20,8 @@ Name | Type | Description | Notes
 **doctorName** | **String** |  | [optional] 
 **doctorPhone** | **String** |  | [optional] 
 **doctorEmail** | **String** |  | [optional] 
-**id** | **int** | Id，记录ID | 
+**createdAt** | [**DateTime**](DateTime.md) | Created At，创建时间 | 
+**recordDate** | [**Date**](Date.md) | Record Date，记录日期 | 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

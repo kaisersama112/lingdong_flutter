@@ -8,6 +8,8 @@ part of 'consultation_response.dart';
 
 class _$ConsultationResponse extends ConsultationResponse {
   @override
+  final int id;
+  @override
   final int petId;
   @override
   final String consultationType;
@@ -30,14 +32,17 @@ class _$ConsultationResponse extends ConsultationResponse {
   @override
   final String? doctorEmail;
   @override
-  final int id;
+  final DateTime createdAt;
+  @override
+  final Date recordDate;
 
   factory _$ConsultationResponse(
           [void Function(ConsultationResponseBuilder)? updates]) =>
       (ConsultationResponseBuilder()..update(updates))._build();
 
   _$ConsultationResponse._(
-      {required this.petId,
+      {required this.id,
+      required this.petId,
       required this.consultationType,
       required this.hospitalName,
       required this.visitDate,
@@ -48,7 +53,8 @@ class _$ConsultationResponse extends ConsultationResponse {
       this.doctorName,
       this.doctorPhone,
       this.doctorEmail,
-      required this.id})
+      required this.createdAt,
+      required this.recordDate})
       : super._();
   @override
   ConsultationResponse rebuild(
@@ -63,6 +69,7 @@ class _$ConsultationResponse extends ConsultationResponse {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is ConsultationResponse &&
+        id == other.id &&
         petId == other.petId &&
         consultationType == other.consultationType &&
         hospitalName == other.hospitalName &&
@@ -74,12 +81,14 @@ class _$ConsultationResponse extends ConsultationResponse {
         doctorName == other.doctorName &&
         doctorPhone == other.doctorPhone &&
         doctorEmail == other.doctorEmail &&
-        id == other.id;
+        createdAt == other.createdAt &&
+        recordDate == other.recordDate;
   }
 
   @override
   int get hashCode {
     var _$hash = 0;
+    _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, petId.hashCode);
     _$hash = $jc(_$hash, consultationType.hashCode);
     _$hash = $jc(_$hash, hospitalName.hashCode);
@@ -91,7 +100,8 @@ class _$ConsultationResponse extends ConsultationResponse {
     _$hash = $jc(_$hash, doctorName.hashCode);
     _$hash = $jc(_$hash, doctorPhone.hashCode);
     _$hash = $jc(_$hash, doctorEmail.hashCode);
-    _$hash = $jc(_$hash, id.hashCode);
+    _$hash = $jc(_$hash, createdAt.hashCode);
+    _$hash = $jc(_$hash, recordDate.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -99,6 +109,7 @@ class _$ConsultationResponse extends ConsultationResponse {
   @override
   String toString() {
     return (newBuiltValueToStringHelper(r'ConsultationResponse')
+          ..add('id', id)
           ..add('petId', petId)
           ..add('consultationType', consultationType)
           ..add('hospitalName', hospitalName)
@@ -110,7 +121,8 @@ class _$ConsultationResponse extends ConsultationResponse {
           ..add('doctorName', doctorName)
           ..add('doctorPhone', doctorPhone)
           ..add('doctorEmail', doctorEmail)
-          ..add('id', id))
+          ..add('createdAt', createdAt)
+          ..add('recordDate', recordDate))
         .toString();
   }
 }
@@ -118,6 +130,10 @@ class _$ConsultationResponse extends ConsultationResponse {
 class ConsultationResponseBuilder
     implements Builder<ConsultationResponse, ConsultationResponseBuilder> {
   _$ConsultationResponse? _$v;
+
+  int? _id;
+  int? get id => _$this._id;
+  set id(int? id) => _$this._id = id;
 
   int? _petId;
   int? get petId => _$this._petId;
@@ -167,9 +183,13 @@ class ConsultationResponseBuilder
   String? get doctorEmail => _$this._doctorEmail;
   set doctorEmail(String? doctorEmail) => _$this._doctorEmail = doctorEmail;
 
-  int? _id;
-  int? get id => _$this._id;
-  set id(int? id) => _$this._id = id;
+  DateTime? _createdAt;
+  DateTime? get createdAt => _$this._createdAt;
+  set createdAt(DateTime? createdAt) => _$this._createdAt = createdAt;
+
+  Date? _recordDate;
+  Date? get recordDate => _$this._recordDate;
+  set recordDate(Date? recordDate) => _$this._recordDate = recordDate;
 
   ConsultationResponseBuilder() {
     ConsultationResponse._defaults(this);
@@ -178,6 +198,7 @@ class ConsultationResponseBuilder
   ConsultationResponseBuilder get _$this {
     final $v = _$v;
     if ($v != null) {
+      _id = $v.id;
       _petId = $v.petId;
       _consultationType = $v.consultationType;
       _hospitalName = $v.hospitalName;
@@ -189,7 +210,8 @@ class ConsultationResponseBuilder
       _doctorName = $v.doctorName;
       _doctorPhone = $v.doctorPhone;
       _doctorEmail = $v.doctorEmail;
-      _id = $v.id;
+      _createdAt = $v.createdAt;
+      _recordDate = $v.recordDate;
       _$v = null;
     }
     return this;
@@ -213,6 +235,8 @@ class ConsultationResponseBuilder
     try {
       _$result = _$v ??
           _$ConsultationResponse._(
+            id: BuiltValueNullFieldError.checkNotNull(
+                id, r'ConsultationResponse', 'id'),
             petId: BuiltValueNullFieldError.checkNotNull(
                 petId, r'ConsultationResponse', 'petId'),
             consultationType: BuiltValueNullFieldError.checkNotNull(
@@ -231,8 +255,10 @@ class ConsultationResponseBuilder
             doctorName: doctorName,
             doctorPhone: doctorPhone,
             doctorEmail: doctorEmail,
-            id: BuiltValueNullFieldError.checkNotNull(
-                id, r'ConsultationResponse', 'id'),
+            createdAt: BuiltValueNullFieldError.checkNotNull(
+                createdAt, r'ConsultationResponse', 'createdAt'),
+            recordDate: BuiltValueNullFieldError.checkNotNull(
+                recordDate, r'ConsultationResponse', 'recordDate'),
           );
     } catch (_) {
       late String _$failedField;

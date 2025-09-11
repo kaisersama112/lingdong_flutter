@@ -19,11 +19,6 @@ void main() {
       // TODO
     });
 
-    // BuiltList<MediaResponse> medias
-    test('to test the property `medias`', () async {
-      // TODO
-    });
-
     // Post Id，动态ID
     // int postId
     test('to test the property `postId`', () async {
@@ -33,6 +28,17 @@ void main() {
     // User Id，用户ID
     // int userId
     test('to test the property `userId`', () async {
+      // TODO
+    });
+
+    // Username，用户名
+    // String username
+    test('to test the property `username`', () async {
+      // TODO
+    });
+
+    // String userAvatar
+    test('to test the property `userAvatar`', () async {
       // TODO
     });
 
@@ -49,6 +55,11 @@ void main() {
 
     // DateTime updatedAt
     test('to test the property `updatedAt`', () async {
+      // TODO
+    });
+
+    // BuiltList<MediaResponse> medias
+    test('to test the property `medias`', () async {
       // TODO
     });
 

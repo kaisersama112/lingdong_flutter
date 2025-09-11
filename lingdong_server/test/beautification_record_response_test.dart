@@ -63,5 +63,17 @@ void main() {
       // TODO
     });
 
+    // Created At，创建时间
+    // String createdAt
+    test('to test the property `createdAt`', () async {
+      // TODO
+    });
+
+    // Record Date，记录日期
+    // String recordDate
+    test('to test the property `recordDate`', () async {
+      // TODO
+    });
+
   });
 }
