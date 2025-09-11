@@ -107,6 +107,7 @@ import 'package:lingdong_server/src/model/generic_response_tag_list_response.dar
 import 'package:lingdong_server/src/model/generic_response_tag_response.dart';
 import 'package:lingdong_server/src/model/generic_response_task_type_response.dart';
 import 'package:lingdong_server/src/model/generic_response_user_info_response.dart';
+import 'package:lingdong_server/src/model/generic_response_user_response.dart';
 import 'package:lingdong_server/src/model/generic_response_vaccination_record_response.dart';
 import 'package:lingdong_server/src/model/generic_response_weight_record_response.dart';
 import 'package:lingdong_server/src/model/http_validation_error.dart';
@@ -155,7 +156,6 @@ import 'package:lingdong_server/src/model/role_update.dart';
 import 'package:lingdong_server/src/model/send_code_request.dart';
 import 'package:lingdong_server/src/model/send_code_response.dart';
 import 'package:lingdong_server/src/model/set_password_by_code_request.dart';
-import 'package:lingdong_server/src/model/tag.dart';
 import 'package:lingdong_server/src/model/tag_create.dart';
 import 'package:lingdong_server/src/model/tag_list_response.dart';
 import 'package:lingdong_server/src/model/tag_response.dart';
@@ -163,6 +163,7 @@ import 'package:lingdong_server/src/model/tag_update.dart';
 import 'package:lingdong_server/src/model/task_type_create.dart';
 import 'package:lingdong_server/src/model/task_type_response.dart';
 import 'package:lingdong_server/src/model/user_info_response.dart';
+import 'package:lingdong_server/src/model/user_response.dart';
 import 'package:lingdong_server/src/model/vaccination_record_create.dart';
 import 'package:lingdong_server/src/model/vaccination_record_response.dart';
 import 'package:lingdong_server/src/model/validation_error.dart';
@@ -265,6 +266,7 @@ part 'serializers.g.dart';
   GenericResponseTagResponse,
   GenericResponseTaskTypeResponse,
   GenericResponseUserInfoResponse,
+  GenericResponseUserResponse,
   GenericResponseVaccinationRecordResponse,
   GenericResponseWeightRecordResponse,
   HttpValidationError,
@@ -313,7 +315,6 @@ part 'serializers.g.dart';
   SendCodeRequest,
   SendCodeResponse,
   SetPasswordByCodeRequest,
-  Tag,
   TagCreate,
   TagListResponse,
   TagResponse,
@@ -321,6 +322,7 @@ part 'serializers.g.dart';
   TaskTypeCreate,
   TaskTypeResponse,
   UserInfoResponse,
+  UserResponse,
   VaccinationRecordCreate,
   VaccinationRecordResponse,
   ValidationError,

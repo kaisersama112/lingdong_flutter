@@ -11,6 +11,8 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**changePasswordApiAuthChangePasswordPost**](AuthApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
 [**changePasswordApiAuthChangePasswordPost_0**](AuthApi.md#changepasswordapiauthchangepasswordpost_0) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
+[**getOtherUserInfoApiAuthUsersUserIdGet**](AuthApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[**getOtherUserInfoApiAuthUsersUserIdGet_0**](AuthApi.md#getotheruserinfoapiauthusersuseridget_0) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
 [**loginForAccessTokenApiAuthLoginPost**](AuthApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [**loginForAccessTokenApiAuthLoginPost_0**](AuthApi.md#loginforaccesstokenapiauthloginpost_0) | **POST** /api/auth/login | 用户登录
 [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](AuthApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
@@ -111,6 +113,92 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getOtherUserInfoApiAuthUsersUserIdGet**
+> GenericResponseUserResponse getOtherUserInfoApiAuthUsersUserIdGet(userId)
+
+获取其他用户个人信息
+
+获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getAuthApi();
+final int userId = 0; // int | 
+
+try {
+    final response = api.getOtherUserInfoApiAuthUsersUserIdGet(userId);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling AuthApi->getOtherUserInfoApiAuthUsersUserIdGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **userId** | **int**|  | 
+
+### Return type
+
+[**GenericResponseUserResponse**](GenericResponseUserResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getOtherUserInfoApiAuthUsersUserIdGet_0**
+> GenericResponseUserResponse getOtherUserInfoApiAuthUsersUserIdGet_0(userId)
+
+获取其他用户个人信息
+
+获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getAuthApi();
+final int userId = 0; // int | 
+
+try {
+    final response = api.getOtherUserInfoApiAuthUsersUserIdGet_0(userId);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling AuthApi->getOtherUserInfoApiAuthUsersUserIdGet_0: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **userId** | **int**|  | 
+
+### Return type
+
+[**GenericResponseUserResponse**](GenericResponseUserResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

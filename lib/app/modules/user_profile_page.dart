@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../app/theme/app_theme.dart';
 import '../routes/app_router.dart';
+import '../services/dynamic_service.dart';
 
 class UserProfileArgs {
   final String userId;
@@ -16,12 +17,79 @@ class UserProfileArgs {
   });
 }
 
-class UserProfilePage extends StatelessWidget {
+class UserProfilePage extends StatefulWidget {
   final UserProfileArgs args;
   const UserProfilePage({super.key, required this.args});
 
   @override
+  State<UserProfilePage> createState() => _UserProfilePageState();
+}
+
+class _UserProfilePageState extends State<UserProfilePage> {
+  bool _loading = true;
+  String? _displayName;
+  String? _avatar;
+  String? _bio;
+  List<DynamicPost> _posts = const [];
+  int _page = 0;
+  final int _limit = 10;
+  bool _hasMore = true;
+  bool _loadingMore = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitial();
+  }
+
+  Future<void> _loadInitial() async {
+    setState(() => _loading = true);
+    try {
+      final info = await DynamicService().getOtherUserInfo(widget.args.userId);
+      final posts = await DynamicService().getUserPosts(
+        userId: widget.args.userId,
+        page: 0,
+        limit: _limit,
+      );
+      if (!mounted) return;
+      setState(() {
+        _displayName = info?.username ?? widget.args.displayName;
+        _avatar = info?.avatar ?? widget.args.avatarUrl;
+        _bio = widget.args.bio;
+        _posts = posts;
+        _page = 1;
+        _hasMore = posts.length == _limit;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _loading = false);
+    }
+  }
+
+  Future<void> _loadMore() async {
+    if (_loadingMore || !_hasMore) return;
+    setState(() => _loadingMore = true);
+    try {
+      final more = await DynamicService().getUserPosts(
+        userId: widget.args.userId,
+        page: _page,
+        limit: _limit,
+      );
+      if (!mounted) return;
+      setState(() {
+        _posts = [..._posts, ...more];
+        _page += 1;
+        _hasMore = more.length == _limit;
+      });
+    } finally {
+      if (mounted) setState(() => _loadingMore = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final args = widget.args;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -43,236 +111,258 @@ class UserProfilePage extends StatelessWidget {
         ],
       ),
       backgroundColor: AppTheme.backgroundColor,
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 36,
-                backgroundColor: AppTheme.primaryLightColor,
-                backgroundImage: args.avatarUrl != null
-                    ? NetworkImage(args.avatarUrl!)
-                    : null,
-                child: args.avatarUrl == null
-                    ? const Icon(Icons.person, color: AppTheme.primaryColor)
-                    : null,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      args.displayName,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      args.bio ?? '这个人很低调，还没有填写简介～',
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: AppTheme.textSecondaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox.shrink(),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.person_add_alt_1, size: 16),
-                label: const Text('关注'),
-              ),
-              const SizedBox(width: 8),
-              OutlinedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.mail_outline, size: 16),
-                label: const Text('私信'),
-              ),
-              const SizedBox(width: 8),
-              // 举报入口隐藏到右上角菜单
-            ],
-          ),
-          const SizedBox(height: 16),
-          const Divider(height: 1, color: Color(0xFFE5E7EB)),
-          const SizedBox(height: 12),
-          const Text(
-            'TA 的动态',
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 8),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: 6,
-            separatorBuilder: (_, __) => const SizedBox(height: 10),
-            itemBuilder: (context, i) {
-              final title = '记录第 ${i + 1} 天的散步日常';
-              final content = '今天和小狗在公园玩耍，遇到了很多小伙伴，天气很好～';
-              final images = [
-                'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1003.jpg',
-                'https://images.dog.ceo/breeds/hound-ibizan/n02091244_1121.jpg',
-              ];
-              return Card(
-                margin: EdgeInsets.zero,
-                color: Colors.white,
-                elevation: 1,
-                shadowColor: Colors.black12,
-                surfaceTintColor: Colors.transparent,
-                clipBehavior: Clip.antiAlias,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                  side: const BorderSide(color: Color(0xFFE5E7EB), width: 0.5),
-                ),
-                child: InkWell(
-                  onTap: () => Navigator.of(context).pushNamed(
-                    AppRouter.contentDetailRoute,
-                    arguments: ContentDetailArgs(
-                      postId: 'user_${args.userId}_$i',
-                      title: title,
-                      content: content,
-                      author: args.displayName,
-                      images: images,
-                      videoThumb: null,
-                    ),
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+      body: _loading
+          ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+          : RefreshIndicator(
+              onRefresh: _loadInitial,
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            // 用户主页的动态卡片不重复展示用户信息
-                          ],
-                        ),
+                      CircleAvatar(
+                        radius: 36,
+                        backgroundColor: AppTheme.primaryLightColor,
+                        backgroundImage: (_avatar ?? args.avatarUrl) != null
+                            ? NetworkImage((_avatar ?? args.avatarUrl)!)
+                            : null,
+                        child: (_avatar ?? args.avatarUrl) == null
+                            ? const Icon(
+                                Icons.person,
+                                color: AppTheme.primaryColor,
+                              )
+                            : null,
                       ),
-                      // 移除头部分割线
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 12,
-                        ),
+                      const SizedBox(width: 16),
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              title,
+                              _displayName ?? args.displayName,
                               style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF1F2937),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              content,
+                              _bio ?? args.bio ?? '这个人很低调，还没有填写简介～',
                               style: const TextStyle(
                                 fontSize: 13,
-                                color: Color(0xFF374151),
-                                height: 1.4,
+                                color: AppTheme.textSecondaryColor,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12),
-                        ),
-                        child: AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: Image.network(
-                            images.first,
-                            fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
-                              color: const Color(0xFFF3F4F6),
-                              alignment: Alignment.center,
-                              child: const Icon(
-                                Icons.broken_image,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                            ),
-                            loadingBuilder: (ctx, child, progress) =>
-                                progress == null
-                                ? child
-                                : const Center(
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                    ),
-                                  ),
-                          ),
-                        ),
-                      ),
-                      const Divider(
-                        height: 1,
-                        thickness: 0.5,
-                        color: Color(0xFFE5E7EB),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Row(
-                          children: [
-                            const Spacer(),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.favorite_border,
-                                size: 18,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                              onPressed: () {},
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.chat_bubble_outline,
-                                size: 18,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                              onPressed: () {},
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.bookmark_border,
-                                size: 18,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                              onPressed: () {},
-                            ),
-                            const SizedBox(width: 8),
-                            IconButton(
-                              icon: const Icon(
-                                Icons.more_horiz,
-                                size: 18,
-                                color: Color(0xFF9CA3AF),
-                              ),
-                              onPressed: () =>
-                                  _showProfileCardMoreActions(context),
-                            ),
-                          ],
-                        ),
-                      ),
+                      const SizedBox.shrink(),
                     ],
                   ),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
+                  const SizedBox(height: 16),
+                  const Divider(height: 1, color: Color(0xFFE5E7EB)),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'TA 的动态',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(height: 8),
+                  if (_posts.isEmpty)
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 40),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: const Color(0xFFE5E7EB),
+                          width: 0.5,
+                        ),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          '暂无动态',
+                          style: TextStyle(color: Color(0xFF9CA3AF)),
+                        ),
+                      ),
+                    )
+                  else
+                    ListView.separated(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _posts.length,
+                      separatorBuilder: (_, __) => const SizedBox(height: 10),
+                      itemBuilder: (context, i) {
+                        final p = _posts[i];
+                        return Card(
+                          margin: EdgeInsets.zero,
+                          color: Colors.white,
+                          elevation: 1,
+                          shadowColor: Colors.black12,
+                          surfaceTintColor: Colors.transparent,
+                          clipBehavior: Clip.antiAlias,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            side: const BorderSide(
+                              color: Color(0xFFE5E7EB),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: InkWell(
+                            onTap: () => Navigator.of(context).pushNamed(
+                              AppRouter.contentDetailRoute,
+                              arguments: ContentDetailArgs(
+                                postId: p.id,
+                                title: p.title,
+                                content: p.content,
+                                author: _displayName ?? args.displayName,
+                                images: p.images,
+                                videoThumb: null,
+                              ),
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: const [
+                                      // 用户主页的动态卡片不重复展示用户信息
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        p.title,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF1F2937),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      Text(
+                                        p.content,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Color(0xFF374151),
+                                          height: 1.4,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (p.images.isNotEmpty)
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(12),
+                                      bottomRight: Radius.circular(12),
+                                    ),
+                                    child: AspectRatio(
+                                      aspectRatio: 16 / 9,
+                                      child: Image.network(
+                                        p.images.first,
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (_, __, ___) => Container(
+                                          color: const Color(0xFFF3F4F6),
+                                          alignment: Alignment.center,
+                                          child: const Icon(
+                                            Icons.broken_image,
+                                            color: Color(0xFF9CA3AF),
+                                          ),
+                                        ),
+                                        loadingBuilder:
+                                            (
+                                              ctx,
+                                              child,
+                                              progress,
+                                            ) => progress == null
+                                            ? child
+                                            : const Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                    ),
+                                              ),
+                                      ),
+                                    ),
+                                  ),
+                                const Divider(
+                                  height: 1,
+                                  thickness: 0.5,
+                                  color: Color(0xFFE5E7EB),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(12),
+                                  child: Row(
+                                    children: [
+                                      const Spacer(),
+                                      _metricActive(
+                                        active: p.likedByCurrentUser,
+                                        activeIcon: Icons.favorite_rounded,
+                                        inactiveIcon:
+                                            Icons.favorite_border_rounded,
+                                        activeColor: Color(0xFFFF6B6B),
+                                        value: p.likes,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      _metric(
+                                        icon: Icons.chat_bubble_outline,
+                                        value: p.comments,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      _metricActive(
+                                        active: p.favoritedByCurrentUser,
+                                        activeIcon: Icons.bookmark_rounded,
+                                        inactiveIcon:
+                                            Icons.bookmark_border_rounded,
+                                        activeColor: Color(0xFFF59E0B),
+                                        value: p.favorites,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.more_horiz,
+                                          size: 18,
+                                          color: Color(0xFF9CA3AF),
+                                        ),
+                                        onPressed: () =>
+                                            _showProfileCardMoreActions(
+                                              context,
+                                            ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  if (_hasMore)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8),
+                      child: Center(
+                        child: TextButton(
+                          onPressed: _loadingMore ? null : _loadMore,
+                          child: Text(_loadingMore ? '加载中...' : '加载更多'),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
     );
   }
 }
@@ -340,6 +430,49 @@ class _ShareIcon extends StatelessWidget {
       ),
     );
   }
+}
+
+Widget _metric({required IconData icon, required int value}) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(icon, size: 18, color: const Color(0xFF9CA3AF)),
+      const SizedBox(width: 4),
+      Text(
+        value > 999 ? '${(value / 1000).toStringAsFixed(1)}k' : '$value',
+        style: const TextStyle(
+          fontSize: 12,
+          color: Color(0xFF9CA3AF),
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ],
+  );
+}
+
+Widget _metricActive({
+  required bool active,
+  required IconData activeIcon,
+  required IconData inactiveIcon,
+  required Color activeColor,
+  required int value,
+}) {
+  final Color color = active ? activeColor : const Color(0xFF9CA3AF);
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Icon(active ? activeIcon : inactiveIcon, size: 18, color: color),
+      const SizedBox(width: 4),
+      Text(
+        value > 999 ? '${(value / 1000).toStringAsFixed(1)}k' : '$value',
+        style: TextStyle(
+          fontSize: 12,
+          color: color,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    ],
+  );
 }
 
 void _showProfileCardMoreActions(BuildContext context) {

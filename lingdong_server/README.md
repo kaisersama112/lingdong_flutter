@@ -123,9 +123,9 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**createOtherHealthRecordApiPetCreateOtherHealthRecordPost**](doc/DefaultApi.md#createotherhealthrecordapipetcreateotherhealthrecordpost) | **POST** /api/pet/create_other_health_record | 创建其他健康记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createOtherHealthRecordApiPetCreateOtherHealthRecordPost_0**](doc/DefaultApi.md#createotherhealthrecordapipetcreateotherhealthrecordpost_0) | **POST** /api/pet/create_other_health_record | 创建其他健康记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createOtherHealthRecordApiPetCreateOtherHealthRecordPost_1**](doc/DefaultApi.md#createotherhealthrecordapipetcreateotherhealthrecordpost_1) | **POST** /api/pet/create_other_health_record | 创建其他健康记录
-[*DefaultApi*](doc/DefaultApi.md) | [**createParentCommentApiDynamicsPostsRepliesPost**](doc/DefaultApi.md#createparentcommentapidynamicspostsrepliespost) | **POST** /api/dynamics/posts/replies | 创建顶级评论
-[*DefaultApi*](doc/DefaultApi.md) | [**createParentCommentApiDynamicsPostsRepliesPost_0**](doc/DefaultApi.md#createparentcommentapidynamicspostsrepliespost_0) | **POST** /api/dynamics/posts/replies | 创建顶级评论
-[*DefaultApi*](doc/DefaultApi.md) | [**createParentCommentApiDynamicsPostsRepliesPost_1**](doc/DefaultApi.md#createparentcommentapidynamicspostsrepliespost_1) | **POST** /api/dynamics/posts/replies | 创建顶级评论
+[*DefaultApi*](doc/DefaultApi.md) | [**createParentCommentApiDynamicsPostsParentCommentsPost**](doc/DefaultApi.md#createparentcommentapidynamicspostsparentcommentspost) | **POST** /api/dynamics/posts/parent_comments | 创建顶级评论
+[*DefaultApi*](doc/DefaultApi.md) | [**createParentCommentApiDynamicsPostsParentCommentsPost_0**](doc/DefaultApi.md#createparentcommentapidynamicspostsparentcommentspost_0) | **POST** /api/dynamics/posts/parent_comments | 创建顶级评论
+[*DefaultApi*](doc/DefaultApi.md) | [**createParentCommentApiDynamicsPostsParentCommentsPost_1**](doc/DefaultApi.md#createparentcommentapidynamicspostsparentcommentspost_1) | **POST** /api/dynamics/posts/parent_comments | 创建顶级评论
 [*DefaultApi*](doc/DefaultApi.md) | [**createPetApiPetProfilePost**](doc/DefaultApi.md#createpetapipetprofilepost) | **POST** /api/pet/profile | 创建宠物档案
 [*DefaultApi*](doc/DefaultApi.md) | [**createPetApiPetProfilePost_0**](doc/DefaultApi.md#createpetapipetprofilepost_0) | **POST** /api/pet/profile | 创建宠物档案
 [*DefaultApi*](doc/DefaultApi.md) | [**createPetApiPetProfilePost_1**](doc/DefaultApi.md#createpetapipetprofilepost_1) | **POST** /api/pet/profile | 创建宠物档案
@@ -230,9 +230,6 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet**](doc/DefaultApi.md#getdewormingrecordsbypetapipetgetdewormingrecordsbypetpetidget) | **GET** /api/pet/get_deworming_records_by_pet/{pet_id} | 根据宠物ID获取驱虫记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getdewormingrecordsbypetapipetgetdewormingrecordsbypetpetidget_0) | **GET** /api/pet/get_deworming_records_by_pet/{pet_id} | 根据宠物ID获取驱虫记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getDewormingRecordsByPetApiPetGetDewormingRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getdewormingrecordsbypetapipetgetdewormingrecordsbypetpetidget_1) | **GET** /api/pet/get_deworming_records_by_pet/{pet_id} | 根据宠物ID获取驱虫记录列表（分页）
-[*DefaultApi*](doc/DefaultApi.md) | [**getDynamicDetailApiDynamicsPostIdGet**](doc/DefaultApi.md#getdynamicdetailapidynamicspostidget) | **GET** /api/dynamics/{post_id} | 获取动态详情
-[*DefaultApi*](doc/DefaultApi.md) | [**getDynamicDetailApiDynamicsPostIdGet_0**](doc/DefaultApi.md#getdynamicdetailapidynamicspostidget_0) | **GET** /api/dynamics/{post_id} | 获取动态详情
-[*DefaultApi*](doc/DefaultApi.md) | [**getDynamicDetailApiDynamicsPostIdGet_1**](doc/DefaultApi.md#getdynamicdetailapidynamicspostidget_1) | **GET** /api/dynamics/{post_id} | 获取动态详情
 [*DefaultApi*](doc/DefaultApi.md) | [**getExaminationRecordApiPetGetExaminationRecordRecordIdGet**](doc/DefaultApi.md#getexaminationrecordapipetgetexaminationrecordrecordidget) | **GET** /api/pet/get_examination_record/{record_id} | 获取体检记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getExaminationRecordApiPetGetExaminationRecordRecordIdGet_0**](doc/DefaultApi.md#getexaminationrecordapipetgetexaminationrecordrecordidget_0) | **GET** /api/pet/get_examination_record/{record_id} | 获取体检记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getExaminationRecordApiPetGetExaminationRecordRecordIdGet_1**](doc/DefaultApi.md#getexaminationrecordapipetgetexaminationrecordrecordidget_1) | **GET** /api/pet/get_examination_record/{record_id} | 获取体检记录
@@ -251,6 +248,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet**](doc/DefaultApi.md#getotherhealthrecordsbypetapipetgetotherhealthrecordsbypetpetidget) | **GET** /api/pet/get_other_health_records_by_pet/{pet_id} | 根据宠物ID获取其他健康记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getotherhealthrecordsbypetapipetgetotherhealthrecordsbypetpetidget_0) | **GET** /api/pet/get_other_health_records_by_pet/{pet_id} | 根据宠物ID获取其他健康记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getotherhealthrecordsbypetapipetgetotherhealthrecordsbypetpetidget_1) | **GET** /api/pet/get_other_health_records_by_pet/{pet_id} | 根据宠物ID获取其他健康记录列表（分页）
+[*DefaultApi*](doc/DefaultApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet**](doc/DefaultApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[*DefaultApi*](doc/DefaultApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet_0**](doc/DefaultApi.md#getotheruserinfoapiauthusersuseridget_0) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
 [*DefaultApi*](doc/DefaultApi.md) | [**getPendingMembersApiCommunityCommunitiesCommunityIdMembersPendingGet**](doc/DefaultApi.md#getpendingmembersapicommunitycommunitiescommunityidmemberspendingget) | **GET** /api/community/communities/{community_id}/members/pending | 获取待审核成员列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getPendingMembersApiCommunityCommunitiesCommunityIdMembersPendingGet_0**](doc/DefaultApi.md#getpendingmembersapicommunitycommunitiescommunityidmemberspendingget_0) | **GET** /api/community/communities/{community_id}/members/pending | 获取待审核成员列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getPendingMembersApiCommunityCommunitiesCommunityIdMembersPendingGet_1**](doc/DefaultApi.md#getpendingmembersapicommunitycommunitiescommunityidmemberspendingget_1) | **GET** /api/community/communities/{community_id}/members/pending | 获取待审核成员列表
@@ -269,12 +268,18 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet_0**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget_0) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet_1**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget_1) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
+[*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
+[*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost_0**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost_0) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
+[*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost_1**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost_1) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost**](doc/DefaultApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost_0**](doc/DefaultApi.md#getrecommendeddynamicsapidynamicsrecommendedpost_0) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost_1**](doc/DefaultApi.md#getrecommendeddynamicsapidynamicsrecommendedpost_1) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost**](doc/DefaultApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost_0**](doc/DefaultApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost_0) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost_1**](doc/DefaultApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost_1) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
+[*DefaultApi*](doc/DefaultApi.md) | [**getUserPostsApiDynamicsUsersUserIdPostsGet**](doc/DefaultApi.md#getuserpostsapidynamicsusersuseridpostsget) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getUserPostsApiDynamicsUsersUserIdPostsGet_0**](doc/DefaultApi.md#getuserpostsapidynamicsusersuseridpostsget_0) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getUserPostsApiDynamicsUsersUserIdPostsGet_1**](doc/DefaultApi.md#getuserpostsapidynamicsusersuseridpostsget_1) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet**](doc/DefaultApi.md#getvaccinationrecordsbypetapipetgetvaccinationrecordsbypetpetidget) | **GET** /api/pet/get_vaccination_records_by_pet/{pet_id} | 根据宠物ID获取疫苗接种记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getvaccinationrecordsbypetapipetgetvaccinationrecordsbypetpetidget_0) | **GET** /api/pet/get_vaccination_records_by_pet/{pet_id} | 根据宠物ID获取疫苗接种记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getVaccinationRecordsByPetApiPetGetVaccinationRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getvaccinationrecordsbypetapipetgetvaccinationrecordsbypetpetidget_1) | **GET** /api/pet/get_vaccination_records_by_pet/{pet_id} | 根据宠物ID获取疫苗接种记录列表（分页）
@@ -287,12 +292,12 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**joinCommunityApiCommunityCommunitiesCommunityIdJoinPost**](doc/DefaultApi.md#joincommunityapicommunitycommunitiescommunityidjoinpost) | **POST** /api/community/communities/{community_id}/join | 加入社群
 [*DefaultApi*](doc/DefaultApi.md) | [**joinCommunityApiCommunityCommunitiesCommunityIdJoinPost_0**](doc/DefaultApi.md#joincommunityapicommunitycommunitiescommunityidjoinpost_0) | **POST** /api/community/communities/{community_id}/join | 加入社群
 [*DefaultApi*](doc/DefaultApi.md) | [**joinCommunityApiCommunityCommunitiesCommunityIdJoinPost_1**](doc/DefaultApi.md#joincommunityapicommunitycommunitiescommunityidjoinpost_1) | **POST** /api/community/communities/{community_id}/join | 加入社群
-[*DefaultApi*](doc/DefaultApi.md) | [**likeCommentApiDynamicsCommentsCommentIdLikePost**](doc/DefaultApi.md#likecommentapidynamicscommentscommentidlikepost) | **POST** /api/dynamics/comments/{comment_id}/like | 回复点赞
-[*DefaultApi*](doc/DefaultApi.md) | [**likeCommentApiDynamicsCommentsCommentIdLikePost_0**](doc/DefaultApi.md#likecommentapidynamicscommentscommentidlikepost_0) | **POST** /api/dynamics/comments/{comment_id}/like | 回复点赞
-[*DefaultApi*](doc/DefaultApi.md) | [**likeCommentApiDynamicsCommentsCommentIdLikePost_1**](doc/DefaultApi.md#likecommentapidynamicscommentscommentidlikepost_1) | **POST** /api/dynamics/comments/{comment_id}/like | 回复点赞
 [*DefaultApi*](doc/DefaultApi.md) | [**likeDynamicApiDynamicsPostIdLikeDynamicPost**](doc/DefaultApi.md#likedynamicapidynamicspostidlikedynamicpost) | **POST** /api/dynamics/{post_id}/like_dynamic | 点赞动态
 [*DefaultApi*](doc/DefaultApi.md) | [**likeDynamicApiDynamicsPostIdLikeDynamicPost_0**](doc/DefaultApi.md#likedynamicapidynamicspostidlikedynamicpost_0) | **POST** /api/dynamics/{post_id}/like_dynamic | 点赞动态
 [*DefaultApi*](doc/DefaultApi.md) | [**likeDynamicApiDynamicsPostIdLikeDynamicPost_1**](doc/DefaultApi.md#likedynamicapidynamicspostidlikedynamicpost_1) | **POST** /api/dynamics/{post_id}/like_dynamic | 点赞动态
+[*DefaultApi*](doc/DefaultApi.md) | [**likeReplyApiDynamicsCommentsReplyIdLikePost**](doc/DefaultApi.md#likereplyapidynamicscommentsreplyidlikepost) | **POST** /api/dynamics/comments/{reply_id}/like | 回复点赞状态切换
+[*DefaultApi*](doc/DefaultApi.md) | [**likeReplyApiDynamicsCommentsReplyIdLikePost_0**](doc/DefaultApi.md#likereplyapidynamicscommentsreplyidlikepost_0) | **POST** /api/dynamics/comments/{reply_id}/like | 回复点赞状态切换
+[*DefaultApi*](doc/DefaultApi.md) | [**likeReplyApiDynamicsCommentsReplyIdLikePost_1**](doc/DefaultApi.md#likereplyapidynamicscommentsreplyidlikepost_1) | **POST** /api/dynamics/comments/{reply_id}/like | 回复点赞状态切换
 [*DefaultApi*](doc/DefaultApi.md) | [**loginForAccessTokenApiAuthLoginPost**](doc/DefaultApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [*DefaultApi*](doc/DefaultApi.md) | [**loginForAccessTokenApiAuthLoginPost_0**](doc/DefaultApi.md#loginforaccesstokenapiauthloginpost_0) | **POST** /api/auth/login | 用户登录
 [*DefaultApi*](doc/DefaultApi.md) | [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](doc/DefaultApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
@@ -400,6 +405,9 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleDynamicFavoriteApiDynamicsPostIdFavoritePost**](doc/DefaultApi.md#toggledynamicfavoriteapidynamicspostidfavoritepost) | **POST** /api/dynamics/{post_id}/favorite | 切换动态收藏状态
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleDynamicFavoriteApiDynamicsPostIdFavoritePost_0**](doc/DefaultApi.md#toggledynamicfavoriteapidynamicspostidfavoritepost_0) | **POST** /api/dynamics/{post_id}/favorite | 切换动态收藏状态
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleDynamicFavoriteApiDynamicsPostIdFavoritePost_1**](doc/DefaultApi.md#toggledynamicfavoriteapidynamicspostidfavoritepost_1) | **POST** /api/dynamics/{post_id}/favorite | 切换动态收藏状态
+[*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsCommentsLikePost**](doc/DefaultApi.md#togglelikeapidynamicscommentslikepost) | **POST** /api/dynamics/comments/like | 统一评论/回复点赞状态切换
+[*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsCommentsLikePost_0**](doc/DefaultApi.md#togglelikeapidynamicscommentslikepost_0) | **POST** /api/dynamics/comments/like | 统一评论/回复点赞状态切换
+[*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsCommentsLikePost_1**](doc/DefaultApi.md#togglelikeapidynamicscommentslikepost_1) | **POST** /api/dynamics/comments/like | 统一评论/回复点赞状态切换
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost**](doc/DefaultApi.md#togglelikeapidynamicspostidtogglelikepost) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost_0**](doc/DefaultApi.md#togglelikeapidynamicspostidtogglelikepost_0) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost_1**](doc/DefaultApi.md#togglelikeapidynamicspostidtogglelikepost_1) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
@@ -460,6 +468,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**uploadMediaApiMediaUploadMediaPost_0**](doc/DefaultApi.md#uploadmediaapimediauploadmediapost_0) | **POST** /api/media/upload_media | 上传媒体资源到指定对象
 [*AuthApi*](doc/AuthApi.md) | [**changePasswordApiAuthChangePasswordPost**](doc/AuthApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
 [*AuthApi*](doc/AuthApi.md) | [**changePasswordApiAuthChangePasswordPost_0**](doc/AuthApi.md#changepasswordapiauthchangepasswordpost_0) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
+[*AuthApi*](doc/AuthApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet**](doc/AuthApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[*AuthApi*](doc/AuthApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet_0**](doc/AuthApi.md#getotheruserinfoapiauthusersuseridget_0) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
 [*AuthApi*](doc/AuthApi.md) | [**loginForAccessTokenApiAuthLoginPost**](doc/AuthApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [*AuthApi*](doc/AuthApi.md) | [**loginForAccessTokenApiAuthLoginPost_0**](doc/AuthApi.md#loginforaccesstokenapiauthloginpost_0) | **POST** /api/auth/login | 用户登录
 [*AuthApi*](doc/AuthApi.md) | [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](doc/AuthApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
@@ -506,22 +516,24 @@ Class | Method | HTTP request | Description
 [*DogBreedsApi*](doc/DogBreedsApi.md) | [**updateGuideApiBreedTrainingGuidesUpdateTrainingGuideGuideIdPost**](doc/DogBreedsApi.md#updateguideapibreedtrainingguidesupdatetrainingguideguideidpost) | **POST** /api/breed/training_guides/update_training_guide/{guide_id} | 更新训练指南
 [*DogBreedsApi*](doc/DogBreedsApi.md) | [**updateStageApiBreedAgeStagesUpdateAgeStagePost**](doc/DogBreedsApi.md#updatestageapibreedagestagesupdateagestagepost) | **POST** /api/breed/age_stages/update_age_stage | 更新年龄阶段
 [*DynamicsApi*](doc/DynamicsApi.md) | [**createDynamicApiDynamicsCreateDynamicPost**](doc/DynamicsApi.md#createdynamicapidynamicscreatedynamicpost) | **POST** /api/dynamics/create_dynamic | 创建广场动态
-[*DynamicsApi*](doc/DynamicsApi.md) | [**createParentCommentApiDynamicsPostsRepliesPost**](doc/DynamicsApi.md#createparentcommentapidynamicspostsrepliespost) | **POST** /api/dynamics/posts/replies | 创建顶级评论
+[*DynamicsApi*](doc/DynamicsApi.md) | [**createParentCommentApiDynamicsPostsParentCommentsPost**](doc/DynamicsApi.md#createparentcommentapidynamicspostsparentcommentspost) | **POST** /api/dynamics/posts/parent_comments | 创建顶级评论
 [*DynamicsApi*](doc/DynamicsApi.md) | [**createReplyApiDynamicsCommentsRepliesPost**](doc/DynamicsApi.md#createreplyapidynamicscommentsrepliespost) | **POST** /api/dynamics/comments/replies | 创建回复
 [*DynamicsApi*](doc/DynamicsApi.md) | [**deleteDynamicApiDynamicsPostIdDeleteDynamicPost**](doc/DynamicsApi.md#deletedynamicapidynamicspostiddeletedynamicpost) | **POST** /api/dynamics/{post_id}/delete_dynamic | 删除动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete**](doc/DynamicsApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
 [*DynamicsApi*](doc/DynamicsApi.md) | [**deleteReplyApiDynamicsRepliesReplyIdDeletePost**](doc/DynamicsApi.md#deletereplyapidynamicsrepliesreplyiddeletepost) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**](doc/DynamicsApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
-[*DynamicsApi*](doc/DynamicsApi.md) | [**getDynamicDetailApiDynamicsPostIdGet**](doc/DynamicsApi.md#getdynamicdetailapidynamicspostidget) | **GET** /api/dynamics/{post_id} | 获取动态详情
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](doc/DynamicsApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](doc/DynamicsApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](doc/DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
+[*DynamicsApi*](doc/DynamicsApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost**](doc/DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost**](doc/DynamicsApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost**](doc/DynamicsApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
-[*DynamicsApi*](doc/DynamicsApi.md) | [**likeCommentApiDynamicsCommentsCommentIdLikePost**](doc/DynamicsApi.md#likecommentapidynamicscommentscommentidlikepost) | **POST** /api/dynamics/comments/{comment_id}/like | 回复点赞
+[*DynamicsApi*](doc/DynamicsApi.md) | [**getUserPostsApiDynamicsUsersUserIdPostsGet**](doc/DynamicsApi.md#getuserpostsapidynamicsusersuseridpostsget) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
 [*DynamicsApi*](doc/DynamicsApi.md) | [**likeDynamicApiDynamicsPostIdLikeDynamicPost**](doc/DynamicsApi.md#likedynamicapidynamicspostidlikedynamicpost) | **POST** /api/dynamics/{post_id}/like_dynamic | 点赞动态
+[*DynamicsApi*](doc/DynamicsApi.md) | [**likeReplyApiDynamicsCommentsReplyIdLikePost**](doc/DynamicsApi.md#likereplyapidynamicscommentsreplyidlikepost) | **POST** /api/dynamics/comments/{reply_id}/like | 回复点赞状态切换
 [*DynamicsApi*](doc/DynamicsApi.md) | [**shareDynamicApiDynamicsPostIdSharePost**](doc/DynamicsApi.md#sharedynamicapidynamicspostidsharepost) | **POST** /api/dynamics/{post_id}/share | 分享动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**toggleDynamicFavoriteApiDynamicsPostIdFavoritePost**](doc/DynamicsApi.md#toggledynamicfavoriteapidynamicspostidfavoritepost) | **POST** /api/dynamics/{post_id}/favorite | 切换动态收藏状态
+[*DynamicsApi*](doc/DynamicsApi.md) | [**toggleLikeApiDynamicsCommentsLikePost**](doc/DynamicsApi.md#togglelikeapidynamicscommentslikepost) | **POST** /api/dynamics/comments/like | 统一评论/回复点赞状态切换
 [*DynamicsApi*](doc/DynamicsApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost**](doc/DynamicsApi.md#togglelikeapidynamicspostidtogglelikepost) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost**](doc/DynamicsApi.md#unlikedynamicapidynamicspostidunlikedynamicpost) | **POST** /api/dynamics/{post_id}/unlike_dynamic | 取消点赞
 [*DynamicsApi*](doc/DynamicsApi.md) | [**updateDynamicApiDynamicsPostIdUpdateDynamicPost**](doc/DynamicsApi.md#updatedynamicapidynamicspostidupdatedynamicpost) | **POST** /api/dynamics/{post_id}/update_dynamic | 更新动态
@@ -596,6 +608,7 @@ Class | Method | HTTP request | Description
 [*TagsApi*](doc/TagsApi.md) | [**readTagsApiTagsGetTagListGet**](doc/TagsApi.md#readtagsapitagsgettaglistget) | **GET** /api/tags/get_tag_list | 获取标签列表
 [*TagsApi*](doc/TagsApi.md) | [**updateTagApiTagsUpdateTagPost**](doc/TagsApi.md#updatetagapitagsupdatetagpost) | **POST** /api/tags/update_tag | 更新标签
 [*UserApi*](doc/UserApi.md) | [**changePasswordApiAuthChangePasswordPost**](doc/UserApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
+[*UserApi*](doc/UserApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet**](doc/UserApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
 [*UserApi*](doc/UserApi.md) | [**loginForAccessTokenApiAuthLoginPost**](doc/UserApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [*UserApi*](doc/UserApi.md) | [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](doc/UserApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
 [*UserApi*](doc/UserApi.md) | [**phonePasswordLoginApiAuthPhoneLoginPost**](doc/UserApi.md#phonepasswordloginapiauthphoneloginpost) | **POST** /api/auth/phone_login | 手机号+密码 登录（仅登录，未注册报错）
@@ -701,6 +714,7 @@ Class | Method | HTTP request | Description
  - [GenericResponseTagResponse](doc/GenericResponseTagResponse.md)
  - [GenericResponseTaskTypeResponse](doc/GenericResponseTaskTypeResponse.md)
  - [GenericResponseUserInfoResponse](doc/GenericResponseUserInfoResponse.md)
+ - [GenericResponseUserResponse](doc/GenericResponseUserResponse.md)
  - [GenericResponseVaccinationRecordResponse](doc/GenericResponseVaccinationRecordResponse.md)
  - [GenericResponseWeightRecordResponse](doc/GenericResponseWeightRecordResponse.md)
  - [HttpValidationError](doc/HttpValidationError.md)
@@ -749,7 +763,6 @@ Class | Method | HTTP request | Description
  - [SendCodeRequest](doc/SendCodeRequest.md)
  - [SendCodeResponse](doc/SendCodeResponse.md)
  - [SetPasswordByCodeRequest](doc/SetPasswordByCodeRequest.md)
- - [Tag](doc/Tag.md)
  - [TagCreate](doc/TagCreate.md)
  - [TagListResponse](doc/TagListResponse.md)
  - [TagResponse](doc/TagResponse.md)
@@ -757,6 +770,7 @@ Class | Method | HTTP request | Description
  - [TaskTypeCreate](doc/TaskTypeCreate.md)
  - [TaskTypeResponse](doc/TaskTypeResponse.md)
  - [UserInfoResponse](doc/UserInfoResponse.md)
+ - [UserResponse](doc/UserResponse.md)
  - [VaccinationRecordCreate](doc/VaccinationRecordCreate.md)
  - [VaccinationRecordResponse](doc/VaccinationRecordResponse.md)
  - [ValidationError](doc/ValidationError.md)

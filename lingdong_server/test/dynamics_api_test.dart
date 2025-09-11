@@ -20,8 +20,8 @@ void main() {
     //
     // 创建对指定动态的顶级评论
     //
-    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsRepliesPost({ ParentCommentCreate parentCommentCreate }) async
-    test('test createParentCommentApiDynamicsPostsRepliesPost', () async {
+    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsParentCommentsPost({ ParentCommentCreate parentCommentCreate }) async
+    test('test createParentCommentApiDynamicsPostsParentCommentsPost', () async {
       // TODO
     });
 
@@ -70,15 +70,6 @@ void main() {
       // TODO
     });
 
-    // 获取动态详情
-    //
-    // 
-    //
-    //Future<GenericResponsePostResponse> getDynamicDetailApiDynamicsPostIdGet(int postId) async
-    test('test getDynamicDetailApiDynamicsPostIdGet', () async {
-      // TODO
-    });
-
     // 获取帖子总评论数
     //
     // 获取指定帖子的总评论数，包括顶级评论和回复
@@ -101,8 +92,17 @@ void main() {
     //
     // 
     //
-    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet({ int page, int limit, Tag tag }) async
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet({ int page, int limit, String tag }) async
     test('test getPublicDynamicsApiDynamicsGetPublicDynamicsGet', () async {
+      // TODO
+    });
+
+    // 获取广场动态
+    //
+    // 
+    //
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsPost({ String tag, PaginationParams paginationParams }) async
+    test('test getPublicDynamicsApiDynamicsGetPublicDynamicsPost', () async {
       // TODO
     });
 
@@ -124,12 +124,12 @@ void main() {
       // TODO
     });
 
-    // 回复点赞
+    // 获取指定用户的动态列表
     //
-    // 对指定回复进行点赞操作
+    // 获取指定用户发布的动态列表（分页） :param user_id: 目标用户ID :param page: 页码，从0开始 :param limit: 每页数量，最大100 :param db: 数据库会话 :param current_user: 当前登录用户（可选） :return: 动态列表和总数
     //
-    //Future<GenericResponseDict> likeCommentApiDynamicsCommentsCommentIdLikePost(int commentId) async
-    test('test likeCommentApiDynamicsCommentsCommentIdLikePost', () async {
+    //Future<GenericResponsePostListResponse> getUserPostsApiDynamicsUsersUserIdPostsGet(int userId, { int page, int limit }) async
+    test('test getUserPostsApiDynamicsUsersUserIdPostsGet', () async {
       // TODO
     });
 
@@ -139,6 +139,15 @@ void main() {
     //
     //Future<GenericResponseDict> likeDynamicApiDynamicsPostIdLikeDynamicPost(int postId) async
     test('test likeDynamicApiDynamicsPostIdLikeDynamicPost', () async {
+      // TODO
+    });
+
+    // 回复点赞状态切换
+    //
+    // 对指定回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> likeReplyApiDynamicsCommentsReplyIdLikePost(int replyId) async
+    test('test likeReplyApiDynamicsCommentsReplyIdLikePost', () async {
       // TODO
     });
 
@@ -157,6 +166,15 @@ void main() {
     //
     //Future<GenericResponseDict> toggleDynamicFavoriteApiDynamicsPostIdFavoritePost(int postId, { String source_ }) async
     test('test toggleDynamicFavoriteApiDynamicsPostIdFavoritePost', () async {
+      // TODO
+    });
+
+    // 统一评论/回复点赞状态切换
+    //
+    // 统一接口，支持对顶级评论或回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> toggleLikeApiDynamicsCommentsLikePost(int targetId, { String targetType }) async
+    test('test toggleLikeApiDynamicsCommentsLikePost', () async {
       // TODO
     });
 

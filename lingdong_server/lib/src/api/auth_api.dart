@@ -17,6 +17,7 @@ import 'package:lingdong_server/src/model/generic_response_phone_login_response.
 import 'package:lingdong_server/src/model/generic_response_refresh_token_response.dart';
 import 'package:lingdong_server/src/model/generic_response_send_code_response.dart';
 import 'package:lingdong_server/src/model/generic_response_user_info_response.dart';
+import 'package:lingdong_server/src/model/generic_response_user_response.dart';
 import 'package:lingdong_server/src/model/http_validation_error.dart';
 import 'package:lingdong_server/src/model/login_request.dart';
 import 'package:lingdong_server/src/model/phone_code_login_request.dart';
@@ -222,6 +223,156 @@ class AuthApi {
     );
   }
 
+  /// 获取其他用户个人信息
+  /// 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+  ///
+  /// Parameters:
+  /// * [userId] - 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [GenericResponseUserResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<GenericResponseUserResponse>> getOtherUserInfoApiAuthUsersUserIdGet({ 
+    required int userId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/auth/users/{user_id}'.replaceAll('{' r'user_id' '}', encodeQueryParameter(_serializers, userId, const FullType(int)).toString());
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    GenericResponseUserResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseUserResponse),
+      ) as GenericResponseUserResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<GenericResponseUserResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
+  /// 获取其他用户个人信息
+  /// 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+  ///
+  /// Parameters:
+  /// * [userId] - 
+  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
+  /// * [headers] - Can be used to add additional headers to the request
+  /// * [extras] - Can be used to add flags to the request
+  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
+  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
+  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
+  ///
+  /// Returns a [Future] containing a [Response] with a [GenericResponseUserResponse] as data
+  /// Throws [DioException] if API call or serialization fails
+  Future<Response<GenericResponseUserResponse>> getOtherUserInfoApiAuthUsersUserIdGet_2({ 
+    required int userId,
+    CancelToken? cancelToken,
+    Map<String, dynamic>? headers,
+    Map<String, dynamic>? extra,
+    ValidateStatus? validateStatus,
+    ProgressCallback? onSendProgress,
+    ProgressCallback? onReceiveProgress,
+  }) async {
+    final _path = r'/api/auth/users/{user_id}'.replaceAll('{' r'user_id' '}', encodeQueryParameter(_serializers, userId, const FullType(int)).toString());
+    final _options = Options(
+      method: r'GET',
+      headers: <String, dynamic>{
+        ...?headers,
+      },
+      extra: <String, dynamic>{
+        'secure': <Map<String, String>>[],
+        ...?extra,
+      },
+      validateStatus: validateStatus,
+    );
+
+    final _response = await _dio.request<Object>(
+      _path,
+      options: _options,
+      cancelToken: cancelToken,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    GenericResponseUserResponse? _responseData;
+
+    try {
+      final rawResponse = _response.data;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseUserResponse),
+      ) as GenericResponseUserResponse;
+
+    } catch (error, stackTrace) {
+      throw DioException(
+        requestOptions: _response.requestOptions,
+        response: _response,
+        type: DioExceptionType.unknown,
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+
+    return Response<GenericResponseUserResponse>(
+      data: _responseData,
+      headers: _response.headers,
+      isRedirect: _response.isRedirect,
+      requestOptions: _response.requestOptions,
+      redirects: _response.redirects,
+      statusCode: _response.statusCode,
+      statusMessage: _response.statusMessage,
+      extra: _response.extra,
+    );
+  }
+
   /// 用户登录
   /// 用户登录，支持用户名或手机号登录 :param request: 登录请求 :param db: 数据库会话 :return: 访问令牌和刷新令牌
   ///
@@ -331,7 +482,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseLoginResponse>> loginForAccessTokenApiAuthLoginPost_2({ 
+  Future<Response<GenericResponseLoginResponse>> loginForAccessTokenApiAuthLoginPost_3({ 
     LoginRequest? loginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -521,7 +672,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePhoneCodeLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePhoneCodeLoginResponse>> phoneCodeLoginApiAuthPhoneCodeLoginPost_3({ 
+  Future<Response<GenericResponsePhoneCodeLoginResponse>> phoneCodeLoginApiAuthPhoneCodeLoginPost_4({ 
     PhoneCodeLoginRequest? phoneCodeLoginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -711,7 +862,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePhoneLoginResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePhoneLoginResponse>> phonePasswordLoginApiAuthPhoneLoginPost_4({ 
+  Future<Response<GenericResponsePhoneLoginResponse>> phonePasswordLoginApiAuthPhoneLoginPost_5({ 
     PhoneLoginRequest? phoneLoginRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -878,7 +1029,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserInfoResponse>> readUsersMeApiAuthUsersMeGet_5({ 
+  Future<Response<GenericResponseUserInfoResponse>> readUsersMeApiAuthUsersMeGet_6({ 
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
     Map<String, dynamic>? extra,
@@ -1032,7 +1183,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseRefreshTokenResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseRefreshTokenResponse>> refreshAccessTokenApiAuthRefreshPost_6({ 
+  Future<Response<GenericResponseRefreshTokenResponse>> refreshAccessTokenApiAuthRefreshPost_7({ 
     required String refreshToken,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1204,7 +1355,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserInfoResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserInfoResponse>> registerUserApiAuthRegisterPost_7({ 
+  Future<Response<GenericResponseUserInfoResponse>> registerUserApiAuthRegisterPost_8({ 
     required String username,
     required String password,
     required String email,
@@ -1385,7 +1536,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseSendCodeResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseSendCodeResponse>> sendLoginCodeApiAuthSendCodePost_8({ 
+  Future<Response<GenericResponseSendCodeResponse>> sendLoginCodeApiAuthSendCodePost_9({ 
     SendCodeRequest? sendCodeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1575,7 +1726,7 @@ class AuthApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseEmptyResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseEmptyResponse>> setPasswordByCodeApiAuthSetPasswordByCodePost_9({ 
+  Future<Response<GenericResponseEmptyResponse>> setPasswordByCodeApiAuthSetPasswordByCodePost_10({ 
     SetPasswordByCodeRequest? setPasswordByCodeRequest,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,

@@ -10,22 +10,24 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**createDynamicApiDynamicsCreateDynamicPost**](DynamicsApi.md#createdynamicapidynamicscreatedynamicpost) | **POST** /api/dynamics/create_dynamic | 创建广场动态
-[**createParentCommentApiDynamicsPostsRepliesPost**](DynamicsApi.md#createparentcommentapidynamicspostsrepliespost) | **POST** /api/dynamics/posts/replies | 创建顶级评论
+[**createParentCommentApiDynamicsPostsParentCommentsPost**](DynamicsApi.md#createparentcommentapidynamicspostsparentcommentspost) | **POST** /api/dynamics/posts/parent_comments | 创建顶级评论
 [**createReplyApiDynamicsCommentsRepliesPost**](DynamicsApi.md#createreplyapidynamicscommentsrepliespost) | **POST** /api/dynamics/comments/replies | 创建回复
 [**deleteDynamicApiDynamicsPostIdDeleteDynamicPost**](DynamicsApi.md#deletedynamicapidynamicspostiddeletedynamicpost) | **POST** /api/dynamics/{post_id}/delete_dynamic | 删除动态
 [**deleteParentCommentApiDynamicsParentCommentsCommentIdDelete**](DynamicsApi.md#deleteparentcommentapidynamicsparentcommentscommentiddelete) | **DELETE** /api/dynamics/parent_comments/{comment_id} | 删除顶级评论
 [**deleteReplyApiDynamicsRepliesReplyIdDeletePost**](DynamicsApi.md#deletereplyapidynamicsrepliesreplyiddeletepost) | **POST** /api/dynamics/replies/{reply_id}/delete | 删除回复
 [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**](DynamicsApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
-[**getDynamicDetailApiDynamicsPostIdGet**](DynamicsApi.md#getdynamicdetailapidynamicspostidget) | **GET** /api/dynamics/{post_id} | 获取动态详情
 [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](DynamicsApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](DynamicsApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
+[**getPublicDynamicsApiDynamicsGetPublicDynamicsPost**](DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
 [**getRecommendedDynamicsApiDynamicsRecommendedPost**](DynamicsApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
 [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost**](DynamicsApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
-[**likeCommentApiDynamicsCommentsCommentIdLikePost**](DynamicsApi.md#likecommentapidynamicscommentscommentidlikepost) | **POST** /api/dynamics/comments/{comment_id}/like | 回复点赞
+[**getUserPostsApiDynamicsUsersUserIdPostsGet**](DynamicsApi.md#getuserpostsapidynamicsusersuseridpostsget) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
 [**likeDynamicApiDynamicsPostIdLikeDynamicPost**](DynamicsApi.md#likedynamicapidynamicspostidlikedynamicpost) | **POST** /api/dynamics/{post_id}/like_dynamic | 点赞动态
+[**likeReplyApiDynamicsCommentsReplyIdLikePost**](DynamicsApi.md#likereplyapidynamicscommentsreplyidlikepost) | **POST** /api/dynamics/comments/{reply_id}/like | 回复点赞状态切换
 [**shareDynamicApiDynamicsPostIdSharePost**](DynamicsApi.md#sharedynamicapidynamicspostidsharepost) | **POST** /api/dynamics/{post_id}/share | 分享动态
 [**toggleDynamicFavoriteApiDynamicsPostIdFavoritePost**](DynamicsApi.md#toggledynamicfavoriteapidynamicspostidfavoritepost) | **POST** /api/dynamics/{post_id}/favorite | 切换动态收藏状态
+[**toggleLikeApiDynamicsCommentsLikePost**](DynamicsApi.md#togglelikeapidynamicscommentslikepost) | **POST** /api/dynamics/comments/like | 统一评论/回复点赞状态切换
 [**toggleLikeApiDynamicsPostIdToggleLikePost**](DynamicsApi.md#togglelikeapidynamicspostidtogglelikepost) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
 [**unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost**](DynamicsApi.md#unlikedynamicapidynamicspostidunlikedynamicpost) | **POST** /api/dynamics/{post_id}/unlike_dynamic | 取消点赞
 [**updateDynamicApiDynamicsPostIdUpdateDynamicPost**](DynamicsApi.md#updatedynamicapidynamicspostidupdatedynamicpost) | **POST** /api/dynamics/{post_id}/update_dynamic | 更新动态
@@ -74,8 +76,8 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **createParentCommentApiDynamicsPostsRepliesPost**
-> GenericResponseParentComment createParentCommentApiDynamicsPostsRepliesPost(parentCommentCreate)
+# **createParentCommentApiDynamicsPostsParentCommentsPost**
+> GenericResponseParentComment createParentCommentApiDynamicsPostsParentCommentsPost(parentCommentCreate)
 
 创建顶级评论
 
@@ -86,13 +88,13 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getDynamicsApi();
-final ParentCommentCreate parentCommentCreate = {"post_id":0,"content":"string","medias":[{"related_type":1,"related_id":0,"media_type":0,"url":"string","thumbnail_url":"string","description":"string","sort_order":0,"user_id":0}]}; // ParentCommentCreate | 
+final ParentCommentCreate parentCommentCreate = ; // ParentCommentCreate | 
 
 try {
-    final response = api.createParentCommentApiDynamicsPostsRepliesPost(parentCommentCreate);
+    final response = api.createParentCommentApiDynamicsPostsParentCommentsPost(parentCommentCreate);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling DynamicsApi->createParentCommentApiDynamicsPostsRepliesPost: $e\n');
+    print('Exception when calling DynamicsApi->createParentCommentApiDynamicsPostsParentCommentsPost: $e\n');
 }
 ```
 
@@ -336,49 +338,6 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getDynamicDetailApiDynamicsPostIdGet**
-> GenericResponsePostResponse getDynamicDetailApiDynamicsPostIdGet(postId)
-
-获取动态详情
-
-
-
-### Example
-```dart
-import 'package:lingdong_server/api.dart';
-
-final api = LingdongServer().getDynamicsApi();
-final int postId = 0; // int | 
-
-try {
-    final response = api.getDynamicDetailApiDynamicsPostIdGet(postId);
-    print(response);
-} catch on DioException (e) {
-    print('Exception when calling DynamicsApi->getDynamicDetailApiDynamicsPostIdGet: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **postId** | **int**|  | 
-
-### Return type
-
-[**GenericResponsePostResponse**](GenericResponsePostResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: Not defined
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
 # **getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**
 > GenericResponseDict getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet(postId)
 
@@ -485,7 +444,7 @@ import 'package:lingdong_server/api.dart';
 final api = LingdongServer().getDynamicsApi();
 final int page = 56; // int | 
 final int limit = 56; // int | 
-final Tag tag = ; // Tag | 
+final String tag = tag_example; // String | 
 
 try {
     final response = api.getPublicDynamicsApiDynamicsGetPublicDynamicsGet(page, limit, tag);
@@ -501,7 +460,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **page** | **int**|  | [optional] [default to 0]
  **limit** | **int**|  | [optional] [default to 20]
- **tag** | [**Tag**](.md)|  | [optional] 
+ **tag** | **String**|  | [optional] 
 
 ### Return type
 
@@ -514,6 +473,51 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getPublicDynamicsApiDynamicsGetPublicDynamicsPost**
+> GenericResponsePostListResponse getPublicDynamicsApiDynamicsGetPublicDynamicsPost(tag, paginationParams)
+
+获取广场动态
+
+
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getDynamicsApi();
+final String tag = tag_example; // String | 
+final PaginationParams paginationParams = ; // PaginationParams | 
+
+try {
+    final response = api.getPublicDynamicsApiDynamicsGetPublicDynamicsPost(tag, paginationParams);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DynamicsApi->getPublicDynamicsApiDynamicsGetPublicDynamicsPost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **tag** | **String**|  | [optional] 
+ **paginationParams** | [**PaginationParams**](PaginationParams.md)|  | [optional] 
+
+### Return type
+
+[**GenericResponsePostListResponse**](GenericResponsePostListResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
@@ -604,25 +608,27 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **likeCommentApiDynamicsCommentsCommentIdLikePost**
-> GenericResponseDict likeCommentApiDynamicsCommentsCommentIdLikePost(commentId)
+# **getUserPostsApiDynamicsUsersUserIdPostsGet**
+> GenericResponsePostListResponse getUserPostsApiDynamicsUsersUserIdPostsGet(userId, page, limit)
 
-回复点赞
+获取指定用户的动态列表
 
-对指定回复进行点赞操作
+获取指定用户发布的动态列表（分页） :param user_id: 目标用户ID :param page: 页码，从0开始 :param limit: 每页数量，最大100 :param db: 数据库会话 :param current_user: 当前登录用户（可选） :return: 动态列表和总数
 
 ### Example
 ```dart
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getDynamicsApi();
-final int commentId = 0; // int | 
+final int userId = 0; // int | 
+final int page = 56; // int | 
+final int limit = 56; // int | 
 
 try {
-    final response = api.likeCommentApiDynamicsCommentsCommentIdLikePost(commentId);
+    final response = api.getUserPostsApiDynamicsUsersUserIdPostsGet(userId, page, limit);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling DynamicsApi->likeCommentApiDynamicsCommentsCommentIdLikePost: $e\n');
+    print('Exception when calling DynamicsApi->getUserPostsApiDynamicsUsersUserIdPostsGet: $e\n');
 }
 ```
 
@@ -630,11 +636,13 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **commentId** | **int**|  | 
+ **userId** | **int**|  | 
+ **page** | **int**|  | [optional] [default to 0]
+ **limit** | **int**|  | [optional] [default to 20]
 
 ### Return type
 
-[**GenericResponseDict**](GenericResponseDict.md)
+[**GenericResponsePostListResponse**](GenericResponsePostListResponse.md)
 
 ### Authorization
 
@@ -674,6 +682,49 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **postId** | **int**|  | 
+
+### Return type
+
+[**GenericResponseDict**](GenericResponseDict.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **likeReplyApiDynamicsCommentsReplyIdLikePost**
+> GenericResponseDict likeReplyApiDynamicsCommentsReplyIdLikePost(replyId)
+
+回复点赞状态切换
+
+对指定回复进行点赞或取消点赞操作
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getDynamicsApi();
+final int replyId = 0; // int | 
+
+try {
+    final response = api.likeReplyApiDynamicsCommentsReplyIdLikePost(replyId);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DynamicsApi->likeReplyApiDynamicsCommentsReplyIdLikePost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **replyId** | **int**|  | 
 
 ### Return type
 
@@ -770,6 +821,51 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **postId** | **int**|  | 
  **source_** | **String**|  | [optional] 
+
+### Return type
+
+[**GenericResponseDict**](GenericResponseDict.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **toggleLikeApiDynamicsCommentsLikePost**
+> GenericResponseDict toggleLikeApiDynamicsCommentsLikePost(targetId, targetType)
+
+统一评论/回复点赞状态切换
+
+统一接口，支持对顶级评论或回复进行点赞或取消点赞操作
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getDynamicsApi();
+final int targetId = 56; // int | 
+final String targetType = targetType_example; // String | 
+
+try {
+    final response = api.toggleLikeApiDynamicsCommentsLikePost(targetId, targetType);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling DynamicsApi->toggleLikeApiDynamicsCommentsLikePost: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **targetId** | **int**|  | 
+ **targetType** | **String**|  | [optional] 
 
 ### Return type
 

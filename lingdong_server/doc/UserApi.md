@@ -10,6 +10,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**changePasswordApiAuthChangePasswordPost**](UserApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
+[**getOtherUserInfoApiAuthUsersUserIdGet**](UserApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
 [**loginForAccessTokenApiAuthLoginPost**](UserApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](UserApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
 [**phonePasswordLoginApiAuthPhoneLoginPost**](UserApi.md#phonepasswordloginapiauthphoneloginpost) | **POST** /api/auth/phone_login | 手机号+密码 登录（仅登录，未注册报错）
@@ -59,6 +60,49 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: application/json
+ - **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
+
+# **getOtherUserInfoApiAuthUsersUserIdGet**
+> GenericResponseUserResponse getOtherUserInfoApiAuthUsersUserIdGet(userId)
+
+获取其他用户个人信息
+
+获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+
+### Example
+```dart
+import 'package:lingdong_server/api.dart';
+
+final api = LingdongServer().getUserApi();
+final int userId = 0; // int | 
+
+try {
+    final response = api.getOtherUserInfoApiAuthUsersUserIdGet(userId);
+    print(response);
+} catch on DioException (e) {
+    print('Exception when calling UserApi->getOtherUserInfoApiAuthUsersUserIdGet: $e\n');
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **userId** | **int**|  | 
+
+### Return type
+
+[**GenericResponseUserResponse**](GenericResponseUserResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

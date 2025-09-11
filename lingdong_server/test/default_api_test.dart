@@ -524,8 +524,8 @@ void main() {
     //
     // 创建对指定动态的顶级评论
     //
-    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsRepliesPost({ ParentCommentCreate parentCommentCreate }) async
-    test('test createParentCommentApiDynamicsPostsRepliesPost', () async {
+    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsParentCommentsPost({ ParentCommentCreate parentCommentCreate }) async
+    test('test createParentCommentApiDynamicsPostsParentCommentsPost', () async {
       // TODO
     });
 
@@ -533,8 +533,8 @@ void main() {
     //
     // 创建对指定动态的顶级评论
     //
-    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsRepliesPost_0({ ParentCommentCreate parentCommentCreate }) async
-    test('test createParentCommentApiDynamicsPostsRepliesPost_0', () async {
+    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsParentCommentsPost_0({ ParentCommentCreate parentCommentCreate }) async
+    test('test createParentCommentApiDynamicsPostsParentCommentsPost_0', () async {
       // TODO
     });
 
@@ -542,8 +542,8 @@ void main() {
     //
     // 创建对指定动态的顶级评论
     //
-    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsRepliesPost_1({ ParentCommentCreate parentCommentCreate }) async
-    test('test createParentCommentApiDynamicsPostsRepliesPost_1', () async {
+    //Future<GenericResponseParentComment> createParentCommentApiDynamicsPostsParentCommentsPost_1({ ParentCommentCreate parentCommentCreate }) async
+    test('test createParentCommentApiDynamicsPostsParentCommentsPost_1', () async {
       // TODO
     });
 
@@ -1483,33 +1483,6 @@ void main() {
       // TODO
     });
 
-    // 获取动态详情
-    //
-    // 
-    //
-    //Future<GenericResponsePostResponse> getDynamicDetailApiDynamicsPostIdGet(int postId) async
-    test('test getDynamicDetailApiDynamicsPostIdGet', () async {
-      // TODO
-    });
-
-    // 获取动态详情
-    //
-    // 
-    //
-    //Future<GenericResponsePostResponse> getDynamicDetailApiDynamicsPostIdGet_0(int postId) async
-    test('test getDynamicDetailApiDynamicsPostIdGet_0', () async {
-      // TODO
-    });
-
-    // 获取动态详情
-    //
-    // 
-    //
-    //Future<GenericResponsePostResponse> getDynamicDetailApiDynamicsPostIdGet_1(int postId) async
-    test('test getDynamicDetailApiDynamicsPostIdGet_1', () async {
-      // TODO
-    });
-
     // 获取体检记录
     //
     // 获取体检记录
@@ -1672,6 +1645,24 @@ void main() {
       // TODO
     });
 
+    // 获取其他用户个人信息
+    //
+    // 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+    //
+    //Future<GenericResponseUserResponse> getOtherUserInfoApiAuthUsersUserIdGet(int userId) async
+    test('test getOtherUserInfoApiAuthUsersUserIdGet', () async {
+      // TODO
+    });
+
+    // 获取其他用户个人信息
+    //
+    // 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+    //
+    //Future<GenericResponseUserResponse> getOtherUserInfoApiAuthUsersUserIdGet_0(int userId) async
+    test('test getOtherUserInfoApiAuthUsersUserIdGet_0', () async {
+      // TODO
+    });
+
     // 获取待审核成员列表
     //
     // 
@@ -1811,7 +1802,7 @@ void main() {
     //
     // 
     //
-    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet({ int page, int limit, Tag tag }) async
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet({ int page, int limit, String tag }) async
     test('test getPublicDynamicsApiDynamicsGetPublicDynamicsGet', () async {
       // TODO
     });
@@ -1820,7 +1811,7 @@ void main() {
     //
     // 
     //
-    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet_0({ int page, int limit, Tag tag }) async
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet_0({ int page, int limit, String tag }) async
     test('test getPublicDynamicsApiDynamicsGetPublicDynamicsGet_0', () async {
       // TODO
     });
@@ -1829,8 +1820,35 @@ void main() {
     //
     // 
     //
-    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet_1({ int page, int limit, Tag tag }) async
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsGet_1({ int page, int limit, String tag }) async
     test('test getPublicDynamicsApiDynamicsGetPublicDynamicsGet_1', () async {
+      // TODO
+    });
+
+    // 获取广场动态
+    //
+    // 
+    //
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsPost({ String tag, PaginationParams paginationParams }) async
+    test('test getPublicDynamicsApiDynamicsGetPublicDynamicsPost', () async {
+      // TODO
+    });
+
+    // 获取广场动态
+    //
+    // 
+    //
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsPost_0({ String tag, PaginationParams paginationParams }) async
+    test('test getPublicDynamicsApiDynamicsGetPublicDynamicsPost_0', () async {
+      // TODO
+    });
+
+    // 获取广场动态
+    //
+    // 
+    //
+    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsPost_1({ String tag, PaginationParams paginationParams }) async
+    test('test getPublicDynamicsApiDynamicsGetPublicDynamicsPost_1', () async {
       // TODO
     });
 
@@ -1885,6 +1903,33 @@ void main() {
     //
     //Future<GenericResponsePostListResponse> getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost_1({ PaginationParams paginationParams }) async
     test('test getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost_1', () async {
+      // TODO
+    });
+
+    // 获取指定用户的动态列表
+    //
+    // 获取指定用户发布的动态列表（分页） :param user_id: 目标用户ID :param page: 页码，从0开始 :param limit: 每页数量，最大100 :param db: 数据库会话 :param current_user: 当前登录用户（可选） :return: 动态列表和总数
+    //
+    //Future<GenericResponsePostListResponse> getUserPostsApiDynamicsUsersUserIdPostsGet(int userId, { int page, int limit }) async
+    test('test getUserPostsApiDynamicsUsersUserIdPostsGet', () async {
+      // TODO
+    });
+
+    // 获取指定用户的动态列表
+    //
+    // 获取指定用户发布的动态列表（分页） :param user_id: 目标用户ID :param page: 页码，从0开始 :param limit: 每页数量，最大100 :param db: 数据库会话 :param current_user: 当前登录用户（可选） :return: 动态列表和总数
+    //
+    //Future<GenericResponsePostListResponse> getUserPostsApiDynamicsUsersUserIdPostsGet_0(int userId, { int page, int limit }) async
+    test('test getUserPostsApiDynamicsUsersUserIdPostsGet_0', () async {
+      // TODO
+    });
+
+    // 获取指定用户的动态列表
+    //
+    // 获取指定用户发布的动态列表（分页） :param user_id: 目标用户ID :param page: 页码，从0开始 :param limit: 每页数量，最大100 :param db: 数据库会话 :param current_user: 当前登录用户（可选） :return: 动态列表和总数
+    //
+    //Future<GenericResponsePostListResponse> getUserPostsApiDynamicsUsersUserIdPostsGet_1(int userId, { int page, int limit }) async
+    test('test getUserPostsApiDynamicsUsersUserIdPostsGet_1', () async {
       // TODO
     });
 
@@ -1996,33 +2041,6 @@ void main() {
       // TODO
     });
 
-    // 回复点赞
-    //
-    // 对指定回复进行点赞操作
-    //
-    //Future<GenericResponseDict> likeCommentApiDynamicsCommentsCommentIdLikePost(int commentId) async
-    test('test likeCommentApiDynamicsCommentsCommentIdLikePost', () async {
-      // TODO
-    });
-
-    // 回复点赞
-    //
-    // 对指定回复进行点赞操作
-    //
-    //Future<GenericResponseDict> likeCommentApiDynamicsCommentsCommentIdLikePost_0(int commentId) async
-    test('test likeCommentApiDynamicsCommentsCommentIdLikePost_0', () async {
-      // TODO
-    });
-
-    // 回复点赞
-    //
-    // 对指定回复进行点赞操作
-    //
-    //Future<GenericResponseDict> likeCommentApiDynamicsCommentsCommentIdLikePost_1(int commentId) async
-    test('test likeCommentApiDynamicsCommentsCommentIdLikePost_1', () async {
-      // TODO
-    });
-
     // 点赞动态
     //
     // 
@@ -2047,6 +2065,33 @@ void main() {
     //
     //Future<GenericResponseDict> likeDynamicApiDynamicsPostIdLikeDynamicPost_1(int postId) async
     test('test likeDynamicApiDynamicsPostIdLikeDynamicPost_1', () async {
+      // TODO
+    });
+
+    // 回复点赞状态切换
+    //
+    // 对指定回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> likeReplyApiDynamicsCommentsReplyIdLikePost(int replyId) async
+    test('test likeReplyApiDynamicsCommentsReplyIdLikePost', () async {
+      // TODO
+    });
+
+    // 回复点赞状态切换
+    //
+    // 对指定回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> likeReplyApiDynamicsCommentsReplyIdLikePost_0(int replyId) async
+    test('test likeReplyApiDynamicsCommentsReplyIdLikePost_0', () async {
+      // TODO
+    });
+
+    // 回复点赞状态切换
+    //
+    // 对指定回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> likeReplyApiDynamicsCommentsReplyIdLikePost_1(int replyId) async
+    test('test likeReplyApiDynamicsCommentsReplyIdLikePost_1', () async {
       // TODO
     });
 
@@ -3010,6 +3055,33 @@ void main() {
     //
     //Future<GenericResponseDict> toggleDynamicFavoriteApiDynamicsPostIdFavoritePost_1(int postId, { String source_ }) async
     test('test toggleDynamicFavoriteApiDynamicsPostIdFavoritePost_1', () async {
+      // TODO
+    });
+
+    // 统一评论/回复点赞状态切换
+    //
+    // 统一接口，支持对顶级评论或回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> toggleLikeApiDynamicsCommentsLikePost(int targetId, { String targetType }) async
+    test('test toggleLikeApiDynamicsCommentsLikePost', () async {
+      // TODO
+    });
+
+    // 统一评论/回复点赞状态切换
+    //
+    // 统一接口，支持对顶级评论或回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> toggleLikeApiDynamicsCommentsLikePost_0(int targetId, { String targetType }) async
+    test('test toggleLikeApiDynamicsCommentsLikePost_0', () async {
+      // TODO
+    });
+
+    // 统一评论/回复点赞状态切换
+    //
+    // 统一接口，支持对顶级评论或回复进行点赞或取消点赞操作
+    //
+    //Future<GenericResponseDict> toggleLikeApiDynamicsCommentsLikePost_1(int targetId, { String targetType }) async
+    test('test toggleLikeApiDynamicsCommentsLikePost_1', () async {
       // TODO
     });
 

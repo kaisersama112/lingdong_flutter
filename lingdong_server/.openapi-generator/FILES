@@ -102,6 +102,7 @@ doc/GenericResponseTagListResponse.md
 doc/GenericResponseTagResponse.md
 doc/GenericResponseTaskTypeResponse.md
 doc/GenericResponseUserInfoResponse.md
+doc/GenericResponseUserResponse.md
 doc/GenericResponseVaccinationRecordResponse.md
 doc/GenericResponseWeightRecordResponse.md
 doc/HttpValidationError.md
@@ -153,7 +154,6 @@ doc/SendCodeRequest.md
 doc/SendCodeResponse.md
 doc/SetPasswordByCodeRequest.md
 doc/SocialApi.md
-doc/Tag.md
 doc/TagCreate.md
 doc/TagListResponse.md
 doc/TagResponse.md
@@ -163,6 +163,7 @@ doc/TaskTypeCreate.md
 doc/TaskTypeResponse.md
 doc/UserApi.md
 doc/UserInfoResponse.md
+doc/UserResponse.md
 doc/VaccinationRecordCreate.md
 doc/VaccinationRecordResponse.md
 doc/ValidationError.md
@@ -283,6 +284,7 @@ lib/src/model/generic_response_tag_list_response.dart
 lib/src/model/generic_response_tag_response.dart
 lib/src/model/generic_response_task_type_response.dart
 lib/src/model/generic_response_user_info_response.dart
+lib/src/model/generic_response_user_response.dart
 lib/src/model/generic_response_vaccination_record_response.dart
 lib/src/model/generic_response_weight_record_response.dart
 lib/src/model/http_validation_error.dart
@@ -331,7 +333,6 @@ lib/src/model/role_update.dart
 lib/src/model/send_code_request.dart
 lib/src/model/send_code_response.dart
 lib/src/model/set_password_by_code_request.dart
-lib/src/model/tag.dart
 lib/src/model/tag_create.dart
 lib/src/model/tag_list_response.dart
 lib/src/model/tag_response.dart
@@ -339,6 +340,7 @@ lib/src/model/tag_update.dart
 lib/src/model/task_type_create.dart
 lib/src/model/task_type_response.dart
 lib/src/model/user_info_response.dart
+lib/src/model/user_response.dart
 lib/src/model/vaccination_record_create.dart
 lib/src/model/vaccination_record_response.dart
 lib/src/model/validation_error.dart
@@ -445,6 +447,7 @@ test/generic_response_tag_list_response_test.dart
 test/generic_response_tag_response_test.dart
 test/generic_response_task_type_response_test.dart
 test/generic_response_user_info_response_test.dart
+test/generic_response_user_response_test.dart
 test/generic_response_vaccination_record_response_test.dart
 test/generic_response_weight_record_response_test.dart
 test/http_validation_error_test.dart
@@ -499,13 +502,13 @@ test/social_api_test.dart
 test/tag_create_test.dart
 test/tag_list_response_test.dart
 test/tag_response_test.dart
-test/tag_test.dart
 test/tag_update_test.dart
 test/tags_api_test.dart
 test/task_type_create_test.dart
 test/task_type_response_test.dart
 test/user_api_test.dart
 test/user_info_response_test.dart
+test/user_response_test.dart
 test/vaccination_record_create_test.dart
 test/vaccination_record_response_test.dart
 test/validation_error_test.dart

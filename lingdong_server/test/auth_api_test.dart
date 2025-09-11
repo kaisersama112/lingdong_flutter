@@ -25,6 +25,24 @@ void main() {
       // TODO
     });
 
+    // 获取其他用户个人信息
+    //
+    // 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+    //
+    //Future<GenericResponseUserResponse> getOtherUserInfoApiAuthUsersUserIdGet(int userId) async
+    test('test getOtherUserInfoApiAuthUsersUserIdGet', () async {
+      // TODO
+    });
+
+    // 获取其他用户个人信息
+    //
+    // 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+    //
+    //Future<GenericResponseUserResponse> getOtherUserInfoApiAuthUsersUserIdGet_0(int userId) async
+    test('test getOtherUserInfoApiAuthUsersUserIdGet_0', () async {
+      // TODO
+    });
+
     // 用户登录
     //
     // 用户登录，支持用户名或手机号登录 :param request: 登录请求 :param db: 数据库会话 :return: 访问令牌和刷新令牌

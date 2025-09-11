@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../services/dynamic_service.dart';
 
 class PublishPage extends StatefulWidget {
   final VoidCallback? onClose;
@@ -17,6 +18,7 @@ class _PublishPageState extends State<PublishPage>
   String _selectedCategory = '社群动态';
   final List<String> _selectedImages = [];
   bool _isPublic = true;
+  bool _publishing = false;
 
   // AI特效相关状态
   String _selectedFilter = '原图';
@@ -1036,18 +1038,36 @@ class _PublishPageState extends State<PublishPage>
   }
 
   void _publishContent() {
-    // 发布逻辑
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('发布成功！'),
-        backgroundColor: AppTheme.successColor,
-      ),
-    );
-
-    if (widget.onClose != null) {
-      widget.onClose!();
-    } else if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+    if (_publishing) return;
+    final content = _contentController.text.trim();
+    if (content.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('请输入内容后再发布')));
+      return;
     }
+    setState(() => _publishing = true);
+    () async {
+      try {
+        final postId = await DynamicService().createPost(content: content);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('发布成功！'),
+            backgroundColor: AppTheme.successColor,
+          ),
+        );
+        if (widget.onClose != null) {
+          widget.onClose!();
+        } else if (Navigator.of(context).canPop()) {
+          Navigator.of(context).pop();
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('发布失败: $e')));
+      } finally {
+        if (mounted) setState(() => _publishing = false);
+      }
+    }();
   }
 }
