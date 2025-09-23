@@ -6,7 +6,7 @@ import 'components/stats_card.dart';
 import 'components/basic_info_card.dart';
 import 'components/pets_card.dart';
 import '../../services/user_auth_service.dart';
-import '../../model/user.dart' as user_model;
+import '../../services/dynamic_service.dart';
 import '../../core/models.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -18,7 +18,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final UserAuthService _auth = UserAuthService();
-  user_model.User? _currentUser;
+  final DynamicService _dynamicService = DynamicService();
   late UserProfile _userProfile;
   late List<Pet> _pets;
   late Map<String, String> _stats;
@@ -53,8 +53,9 @@ class _ProfilePageState extends State<ProfilePage> {
       // 优先刷新一次，确保最新
       await _auth.refreshUserInfo();
       final u = _auth.currentUser;
+      // 拉取关注/粉丝统计
+      final stats = await _dynamicService.getCurrentUserFollowStats();
       setState(() {
-        _currentUser = u;
         _userProfile = UserProfile(
           name: u?.username ?? '未登录',
           phone: u?.phone ?? '',
@@ -67,6 +68,11 @@ class _ProfilePageState extends State<ProfilePage> {
           level: 'Lv.${u != null ? 3 : 1}',
           points: 0,
         );
+        _stats = {
+          'following': '${stats.followingCount}',
+          'followers': '${stats.followersCount}',
+          'likes': _stats['likes'] ?? '0',
+        };
         _isLoading = false;
       });
     } catch (e) {

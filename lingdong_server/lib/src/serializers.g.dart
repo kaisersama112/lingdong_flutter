@@ -7,6 +7,7 @@ part of 'serializers.dart';
 // **************************************************************************
 
 Serializers _$serializers = (Serializers().toBuilder()
+      ..add(AddMessageToConversation.serializer)
       ..add(BeautificationRecordCreate.serializer)
       ..add(BeautificationRecordResponse.serializer)
       ..add(BehaviorStyleCreate.serializer)
@@ -23,6 +24,10 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(CommunityResponse.serializer)
       ..add(ConsultationCreate.serializer)
       ..add(ConsultationResponse.serializer)
+      ..add(ConversationCreate.serializer)
+      ..add(ConversationListItem.serializer)
+      ..add(ConversationMessageResponse.serializer)
+      ..add(ConversationResponse.serializer)
       ..add(DewormingRecordCreate.serializer)
       ..add(DewormingRecordResponse.serializer)
       ..add(DogAgeStageBase.serializer)
@@ -48,6 +53,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(DogTrainingGuideUpdate.serializer)
       ..add(ExaminationRecordCreate.serializer)
       ..add(ExaminationRecordResponse.serializer)
+      ..add(FollowCountResponse.serializer)
+      ..add(FollowRequest.serializer)
+      ..add(FollowStatusResponse.serializer)
       ..add(GenericResponseBeautificationRecordResponse.serializer)
       ..add(GenericResponseBehaviorStyleResponse.serializer)
       ..add(GenericResponseBool.serializer)
@@ -56,6 +64,8 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(GenericResponseCommunityMemberListResponse.serializer)
       ..add(GenericResponseCommunityResponse.serializer)
       ..add(GenericResponseConsultationResponse.serializer)
+      ..add(GenericResponseConversationMessageResponse.serializer)
+      ..add(GenericResponseConversationResponse.serializer)
       ..add(GenericResponseDewormingRecordResponse.serializer)
       ..add(GenericResponseDict.serializer)
       ..add(GenericResponseDogAgeStageOut.serializer)
@@ -65,10 +75,18 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(GenericResponseDogCareGuideOut.serializer)
       ..add(GenericResponseEmptyResponse.serializer)
       ..add(GenericResponseExaminationRecordResponse.serializer)
+      ..add(GenericResponseFollowCountResponse.serializer)
+      ..add(GenericResponseFollowStatusResponse.serializer)
+      ..add(GenericResponseGroupConversationResponse.serializer)
+      ..add(GenericResponseGroupMessageResponse.serializer)
       ..add(GenericResponseInt.serializer)
       ..add(GenericResponseList.serializer)
       ..add(GenericResponseListBehaviorStyleResponse.serializer)
+      ..add(GenericResponseListConversationListItem.serializer)
+      ..add(GenericResponseListConversationMessageResponse.serializer)
       ..add(GenericResponseListDogAgeStageOut.serializer)
+      ..add(GenericResponseListGroupMemberResponse.serializer)
+      ..add(GenericResponseListGroupMessageResponse.serializer)
       ..add(GenericResponseListPersonalityResponse.serializer)
       ..add(GenericResponseListPlaceResponse.serializer)
       ..add(GenericResponseListTaskTypeResponse.serializer)
@@ -103,10 +121,16 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(GenericResponseTagListResponse.serializer)
       ..add(GenericResponseTagResponse.serializer)
       ..add(GenericResponseTaskTypeResponse.serializer)
+      ..add(GenericResponseUserFollowListResponse.serializer)
       ..add(GenericResponseUserInfoResponse.serializer)
       ..add(GenericResponseUserResponse.serializer)
       ..add(GenericResponseVaccinationRecordResponse.serializer)
       ..add(GenericResponseWeightRecordResponse.serializer)
+      ..add(GroupConversationCreate.serializer)
+      ..add(GroupConversationResponse.serializer)
+      ..add(GroupMemberResponse.serializer)
+      ..add(GroupMessageCreate.serializer)
+      ..add(GroupMessageResponse.serializer)
       ..add(HttpValidationError.serializer)
       ..add(LocationInner.serializer)
       ..add(LoginRequest.serializer)
@@ -159,6 +183,9 @@ Serializers _$serializers = (Serializers().toBuilder()
       ..add(TagUpdate.serializer)
       ..add(TaskTypeCreate.serializer)
       ..add(TaskTypeResponse.serializer)
+      ..add(UnfollowRequest.serializer)
+      ..add(UserFollowItem.serializer)
+      ..add(UserFollowListResponse.serializer)
       ..add(UserInfoResponse.serializer)
       ..add(UserResponse.serializer)
       ..add(VaccinationRecordCreate.serializer)
@@ -187,6 +214,14 @@ Serializers _$serializers = (Serializers().toBuilder()
           () => ListBuilder<ConsultationResponse>())
       ..addBuilderFactory(
           const FullType(
+              BuiltList, const [const FullType(ConversationListItem)]),
+          () => ListBuilder<ConversationListItem>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(ConversationMessageResponse)]),
+          () => ListBuilder<ConversationMessageResponse>())
+      ..addBuilderFactory(
+          const FullType(
               BuiltList, const [const FullType(DewormingRecordResponse)]),
           () => ListBuilder<DewormingRecordResponse>())
       ..addBuilderFactory(
@@ -206,6 +241,14 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(ExaminationRecordResponse)]),
           () => ListBuilder<ExaminationRecordResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(GroupMemberResponse)]),
+          () => ListBuilder<GroupMemberResponse>())
+      ..addBuilderFactory(
+          const FullType(
+              BuiltList, const [const FullType(GroupMessageResponse)]),
+          () => ListBuilder<GroupMessageResponse>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(LocationInner)]),
           () => ListBuilder<LocationInner>())
@@ -313,6 +356,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(BuiltList, const [const FullType(TaskTypeResponse)]),
           () => ListBuilder<TaskTypeResponse>())
       ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(UserFollowItem)]),
+          () => ListBuilder<UserFollowItem>())
+      ..addBuilderFactory(
           const FullType(
               BuiltList, const [const FullType(VaccinationRecordResponse)]),
           () => ListBuilder<VaccinationRecordResponse>())
@@ -323,6 +369,9 @@ Serializers _$serializers = (Serializers().toBuilder()
           const FullType(
               BuiltList, const [const FullType(WeightRecordResponse)]),
           () => ListBuilder<WeightRecordResponse>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(int)]),
+          () => ListBuilder<int>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(int)]),
           () => ListBuilder<int>())

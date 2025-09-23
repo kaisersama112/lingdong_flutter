@@ -97,15 +97,6 @@ void main() {
       // TODO
     });
 
-    // 获取广场动态
-    //
-    // 
-    //
-    //Future<GenericResponsePostListResponse> getPublicDynamicsApiDynamicsGetPublicDynamicsPost({ String tag, PaginationParams paginationParams }) async
-    test('test getPublicDynamicsApiDynamicsGetPublicDynamicsPost', () async {
-      // TODO
-    });
-
     // 获取推荐动态
     //
     // 

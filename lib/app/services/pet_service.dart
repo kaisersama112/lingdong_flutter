@@ -5,6 +5,7 @@ import 'database_service.dart';
 import 'user_auth_service.dart';
 import 'package:lingdong_server/lingdong_server.dart' as server;
 import 'dart:async'; // Added for Completer
+import '../core/api_config.dart';
 
 class PetService {
   static final PetService _instance = PetService._internal();
@@ -22,10 +23,10 @@ class PetService {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://172.16.4.114:7009',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 10),
+        baseUrl: ApiConfig.baseUrl,
+        connectTimeout: ApiConfig.connectTimeout,
+        receiveTimeout: ApiConfig.receiveTimeout,
+        sendTimeout: ApiConfig.sendTimeout,
       ),
     );
 

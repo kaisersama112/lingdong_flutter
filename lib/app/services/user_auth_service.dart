@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:lingdong_server/lingdong_server.dart' as server;
 import '../model/user.dart';
 import 'database_service.dart';
+import '../core/api_config.dart';
 
 /// 用户认证服务
 class UserAuthService {
@@ -58,10 +59,10 @@ class UserAuthService {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://172.16.4.114:7009',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 10),
+        baseUrl: ApiConfig.baseUrl,
+        connectTimeout: ApiConfig.connectTimeout,
+        receiveTimeout: ApiConfig.receiveTimeout,
+        sendTimeout: ApiConfig.sendTimeout,
       ),
     );
 
@@ -672,24 +673,6 @@ class UserAuthService {
     } on DioException catch (e) {
       throw AuthException(e.message ?? '网络错误');
     }
-  }
-
-  Future<User> _ensureLocalUser({required String phone}) async {
-    final existing = await _dbService.getUserByPhone(phone);
-    if (existing != null) return existing;
-    final userId = _generateUserId();
-    final now = DateTime.now();
-    final user = User(
-      userId: userId,
-      phone: phone,
-      username: '用户${userId.substring(0, 6)}',
-      registerTime: now,
-      lastLoginTime: now,
-      status: UserStatus.active,
-      role: UserRole.user,
-    );
-    await _dbService.saveUser(user);
-    return user;
   }
 
   Future<User> _ensureLocalUserWithInfo({

@@ -12,6 +12,9 @@ class User {
   final List<String> petIds;
   final PrivacySettings privacySettings;
   final UserPreferences preferences;
+  final int followingCount;
+  final int followersCount;
+  final bool? isFollowing; // 仅“查看他人”时有意义，当前用户可为null
 
   const User({
     required this.userId,
@@ -26,6 +29,9 @@ class User {
     this.petIds = const [],
     this.privacySettings = const PrivacySettings(),
     this.preferences = const UserPreferences(),
+    this.followingCount = 0,
+    this.followersCount = 0,
+    this.isFollowing,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -48,6 +54,16 @@ class User {
       petIds: List<String>.from(json['petIds'] ?? []),
       privacySettings: PrivacySettings.fromJson(json['privacySettings'] ?? {}),
       preferences: UserPreferences.fromJson(json['preferences'] ?? {}),
+      followingCount:
+          json['followingCount'] as int? ??
+          json['following_count'] as int? ??
+          0,
+      followersCount:
+          json['followersCount'] as int? ??
+          json['followers_count'] as int? ??
+          0,
+      isFollowing:
+          json['isFollowing'] as bool? ?? json['is_following'] as bool?,
     );
   }
 
@@ -65,6 +81,9 @@ class User {
       'petIds': petIds,
       'privacySettings': privacySettings.toJson(),
       'preferences': preferences.toJson(),
+      'followingCount': followingCount,
+      'followersCount': followersCount,
+      if (isFollowing != null) 'isFollowing': isFollowing,
     };
   }
 
@@ -81,6 +100,9 @@ class User {
     List<String>? petIds,
     PrivacySettings? privacySettings,
     UserPreferences? preferences,
+    int? followingCount,
+    int? followersCount,
+    bool? isFollowing,
   }) {
     return User(
       userId: userId ?? this.userId,
@@ -95,6 +117,9 @@ class User {
       petIds: petIds ?? this.petIds,
       privacySettings: privacySettings ?? this.privacySettings,
       preferences: preferences ?? this.preferences,
+      followingCount: followingCount ?? this.followingCount,
+      followersCount: followersCount ?? this.followersCount,
+      isFollowing: isFollowing ?? this.isFollowing,
     );
   }
 }

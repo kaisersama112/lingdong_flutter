@@ -14,6 +14,7 @@ import 'package:built_value/iso_8601_date_time_serializer.dart';
 import 'package:lingdong_server/src/date_serializer.dart';
 import 'package:lingdong_server/src/model/date.dart';
 
+import 'package:lingdong_server/src/model/add_message_to_conversation.dart';
 import 'package:lingdong_server/src/model/beautification_record_create.dart';
 import 'package:lingdong_server/src/model/beautification_record_response.dart';
 import 'package:lingdong_server/src/model/behavior_style_create.dart';
@@ -30,6 +31,10 @@ import 'package:lingdong_server/src/model/community_member_response.dart';
 import 'package:lingdong_server/src/model/community_response.dart';
 import 'package:lingdong_server/src/model/consultation_create.dart';
 import 'package:lingdong_server/src/model/consultation_response.dart';
+import 'package:lingdong_server/src/model/conversation_create.dart';
+import 'package:lingdong_server/src/model/conversation_list_item.dart';
+import 'package:lingdong_server/src/model/conversation_message_response.dart';
+import 'package:lingdong_server/src/model/conversation_response.dart';
 import 'package:lingdong_server/src/model/deworming_record_create.dart';
 import 'package:lingdong_server/src/model/deworming_record_response.dart';
 import 'package:lingdong_server/src/model/dog_age_stage_base.dart';
@@ -55,6 +60,9 @@ import 'package:lingdong_server/src/model/dog_training_guide_out.dart';
 import 'package:lingdong_server/src/model/dog_training_guide_update.dart';
 import 'package:lingdong_server/src/model/examination_record_create.dart';
 import 'package:lingdong_server/src/model/examination_record_response.dart';
+import 'package:lingdong_server/src/model/follow_count_response.dart';
+import 'package:lingdong_server/src/model/follow_request.dart';
+import 'package:lingdong_server/src/model/follow_status_response.dart';
 import 'package:lingdong_server/src/model/generic_response_beautification_record_response.dart';
 import 'package:lingdong_server/src/model/generic_response_behavior_style_response.dart';
 import 'package:lingdong_server/src/model/generic_response_bool.dart';
@@ -63,6 +71,8 @@ import 'package:lingdong_server/src/model/generic_response_community_list_respon
 import 'package:lingdong_server/src/model/generic_response_community_member_list_response.dart';
 import 'package:lingdong_server/src/model/generic_response_community_response.dart';
 import 'package:lingdong_server/src/model/generic_response_consultation_response.dart';
+import 'package:lingdong_server/src/model/generic_response_conversation_message_response.dart';
+import 'package:lingdong_server/src/model/generic_response_conversation_response.dart';
 import 'package:lingdong_server/src/model/generic_response_deworming_record_response.dart';
 import 'package:lingdong_server/src/model/generic_response_dict.dart';
 import 'package:lingdong_server/src/model/generic_response_dog_age_stage_out.dart';
@@ -72,10 +82,18 @@ import 'package:lingdong_server/src/model/generic_response_dog_breed_out.dart';
 import 'package:lingdong_server/src/model/generic_response_dog_care_guide_out.dart';
 import 'package:lingdong_server/src/model/generic_response_empty_response.dart';
 import 'package:lingdong_server/src/model/generic_response_examination_record_response.dart';
+import 'package:lingdong_server/src/model/generic_response_follow_count_response.dart';
+import 'package:lingdong_server/src/model/generic_response_follow_status_response.dart';
+import 'package:lingdong_server/src/model/generic_response_group_conversation_response.dart';
+import 'package:lingdong_server/src/model/generic_response_group_message_response.dart';
 import 'package:lingdong_server/src/model/generic_response_int.dart';
 import 'package:lingdong_server/src/model/generic_response_list.dart';
 import 'package:lingdong_server/src/model/generic_response_list_behavior_style_response.dart';
+import 'package:lingdong_server/src/model/generic_response_list_conversation_list_item.dart';
+import 'package:lingdong_server/src/model/generic_response_list_conversation_message_response.dart';
 import 'package:lingdong_server/src/model/generic_response_list_dog_age_stage_out.dart';
+import 'package:lingdong_server/src/model/generic_response_list_group_member_response.dart';
+import 'package:lingdong_server/src/model/generic_response_list_group_message_response.dart';
 import 'package:lingdong_server/src/model/generic_response_list_personality_response.dart';
 import 'package:lingdong_server/src/model/generic_response_list_place_response.dart';
 import 'package:lingdong_server/src/model/generic_response_list_task_type_response.dart';
@@ -106,10 +124,16 @@ import 'package:lingdong_server/src/model/generic_response_send_code_response.da
 import 'package:lingdong_server/src/model/generic_response_tag_list_response.dart';
 import 'package:lingdong_server/src/model/generic_response_tag_response.dart';
 import 'package:lingdong_server/src/model/generic_response_task_type_response.dart';
+import 'package:lingdong_server/src/model/generic_response_user_follow_list_response.dart';
 import 'package:lingdong_server/src/model/generic_response_user_info_response.dart';
 import 'package:lingdong_server/src/model/generic_response_user_response.dart';
 import 'package:lingdong_server/src/model/generic_response_vaccination_record_response.dart';
 import 'package:lingdong_server/src/model/generic_response_weight_record_response.dart';
+import 'package:lingdong_server/src/model/group_conversation_create.dart';
+import 'package:lingdong_server/src/model/group_conversation_response.dart';
+import 'package:lingdong_server/src/model/group_member_response.dart';
+import 'package:lingdong_server/src/model/group_message_create.dart';
+import 'package:lingdong_server/src/model/group_message_response.dart';
 import 'package:lingdong_server/src/model/http_validation_error.dart';
 import 'package:lingdong_server/src/model/location_inner.dart';
 import 'package:lingdong_server/src/model/login_request.dart';
@@ -162,6 +186,9 @@ import 'package:lingdong_server/src/model/tag_response.dart';
 import 'package:lingdong_server/src/model/tag_update.dart';
 import 'package:lingdong_server/src/model/task_type_create.dart';
 import 'package:lingdong_server/src/model/task_type_response.dart';
+import 'package:lingdong_server/src/model/unfollow_request.dart';
+import 'package:lingdong_server/src/model/user_follow_item.dart';
+import 'package:lingdong_server/src/model/user_follow_list_response.dart';
 import 'package:lingdong_server/src/model/user_info_response.dart';
 import 'package:lingdong_server/src/model/user_response.dart';
 import 'package:lingdong_server/src/model/vaccination_record_create.dart';
@@ -173,6 +200,7 @@ import 'package:lingdong_server/src/model/weight_record_response.dart';
 part 'serializers.g.dart';
 
 @SerializersFor([
+  AddMessageToConversation,
   BeautificationRecordCreate,
   BeautificationRecordResponse,
   BehaviorStyleCreate,
@@ -189,6 +217,10 @@ part 'serializers.g.dart';
   CommunityResponse,
   ConsultationCreate,
   ConsultationResponse,
+  ConversationCreate,
+  ConversationListItem,
+  ConversationMessageResponse,
+  ConversationResponse,
   DewormingRecordCreate,
   DewormingRecordResponse,
   DogAgeStageBase,
@@ -214,6 +246,9 @@ part 'serializers.g.dart';
   DogTrainingGuideUpdate,
   ExaminationRecordCreate,
   ExaminationRecordResponse,
+  FollowCountResponse,
+  FollowRequest,
+  FollowStatusResponse,
   GenericResponseBeautificationRecordResponse,
   GenericResponseBehaviorStyleResponse,
   GenericResponseBool,
@@ -222,6 +257,8 @@ part 'serializers.g.dart';
   GenericResponseCommunityMemberListResponse,
   GenericResponseCommunityResponse,
   GenericResponseConsultationResponse,
+  GenericResponseConversationMessageResponse,
+  GenericResponseConversationResponse,
   GenericResponseDewormingRecordResponse,
   GenericResponseDict,
   GenericResponseDogAgeStageOut,
@@ -231,10 +268,18 @@ part 'serializers.g.dart';
   GenericResponseDogCareGuideOut,
   GenericResponseEmptyResponse,
   GenericResponseExaminationRecordResponse,
+  GenericResponseFollowCountResponse,
+  GenericResponseFollowStatusResponse,
+  GenericResponseGroupConversationResponse,
+  GenericResponseGroupMessageResponse,
   GenericResponseInt,
   GenericResponseList,
   GenericResponseListBehaviorStyleResponse,
+  GenericResponseListConversationListItem,
+  GenericResponseListConversationMessageResponse,
   GenericResponseListDogAgeStageOut,
+  GenericResponseListGroupMemberResponse,
+  GenericResponseListGroupMessageResponse,
   GenericResponseListPersonalityResponse,
   GenericResponseListPlaceResponse,
   GenericResponseListTaskTypeResponse,
@@ -265,10 +310,16 @@ part 'serializers.g.dart';
   GenericResponseTagListResponse,
   GenericResponseTagResponse,
   GenericResponseTaskTypeResponse,
+  GenericResponseUserFollowListResponse,
   GenericResponseUserInfoResponse,
   GenericResponseUserResponse,
   GenericResponseVaccinationRecordResponse,
   GenericResponseWeightRecordResponse,
+  GroupConversationCreate,
+  GroupConversationResponse,
+  GroupMemberResponse,
+  GroupMessageCreate,
+  GroupMessageResponse,
   HttpValidationError,
   LocationInner,
   LoginRequest,
@@ -321,6 +372,9 @@ part 'serializers.g.dart';
   TagUpdate,
   TaskTypeCreate,
   TaskTypeResponse,
+  UnfollowRequest,
+  UserFollowItem,
+  UserFollowListResponse,
   UserInfoResponse,
   UserResponse,
   VaccinationRecordCreate,

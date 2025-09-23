@@ -3,6 +3,7 @@ import '../../routes/app_router.dart';
 import '../user_profile_page.dart';
 import '../../services/dynamic_service.dart';
 import '../../services/user_auth_service.dart';
+import '../../core/components/optimized_image.dart';
 
 class FollowTab extends StatefulWidget {
   const FollowTab({Key? key}) : super(key: key);
@@ -18,6 +19,9 @@ class _FollowTabState extends State<FollowTab> {
   final Map<String, int> _likeCounts = {};
   final Map<String, int> _commentCounts = {};
   final Map<String, int> _favoriteCounts = {};
+
+  // 用户头像缓存
+  final Map<String, String?> _userAvatars = {};
 
   void _ensureStatsInitialized(String postId, DynamicPostStats stats) {
     _liked.putIfAbsent(postId, () => stats.likedByCurrentUser);
@@ -171,6 +175,23 @@ class _FollowTabState extends State<FollowTab> {
     );
   }
 
+  Future<String?> _getUserAvatar(String authorId) async {
+    if (_userAvatars.containsKey(authorId)) {
+      return _userAvatars[authorId];
+    }
+
+    try {
+      final userInfo = await DynamicService().getOtherUserInfo(authorId);
+      final avatar = userInfo?.avatar;
+      _userAvatars[authorId] = avatar;
+      return avatar;
+    } catch (e) {
+      debugPrint('获取用户头像失败: $e');
+      _userAvatars[authorId] = null;
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<DynamicPost>>(
@@ -225,6 +246,7 @@ class _FollowTabState extends State<FollowTab> {
                     title: post.title,
                     content: post.content,
                     author: post.author,
+                    authorId: post.authorId,
                     likes: stats.likes,
                     comments: stats.comments,
                     isLiked: stats.likedByCurrentUser,
@@ -250,6 +272,7 @@ class _FollowTabState extends State<FollowTab> {
     required String title,
     required String content,
     required String author,
+    required String authorId,
     required int likes,
     required int comments,
     required bool isLiked,
@@ -283,19 +306,48 @@ class _FollowTabState extends State<FollowTab> {
                 GestureDetector(
                   onTap: () => Navigator.of(context).pushNamed(
                     AppRouter.userProfileRoute,
-                    arguments: const UserProfileArgs(
-                      userId: 'user_follow',
-                      displayName: '关注用户',
-                      avatarUrl: null,
-                      bio: '爱狗人士，记录与毛孩子的点滴',
+                    arguments: UserProfileArgs(
+                      userId: authorId,
+                      displayName: author,
                     ),
                   ),
-                  child: CircleAvatar(
-                    radius: 18,
-                    backgroundColor: const Color(
-                      0xFF8B5CF6,
-                    ).withValues(alpha: 0.1),
-                    child: const Text('🐕', style: TextStyle(fontSize: 18)),
+                  child: FutureBuilder<String?>(
+                    future: _getUserAvatar(authorId),
+                    builder: (context, snapshot) {
+                      final avatarUrl = snapshot.data;
+                      if (avatarUrl != null && avatarUrl.isNotEmpty) {
+                        return OptimizedAvatar(
+                          imageUrl: avatarUrl,
+                          size: 36,
+                          backgroundColor: const Color(
+                            0xFF8B5CF6,
+                          ).withValues(alpha: 0.1),
+                          fallback: Text(
+                            author.isNotEmpty ? author[0].toUpperCase() : 'U',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF8B5CF6),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return CircleAvatar(
+                          radius: 18,
+                          backgroundColor: const Color(
+                            0xFF8B5CF6,
+                          ).withValues(alpha: 0.1),
+                          child: Text(
+                            author.isNotEmpty ? author[0].toUpperCase() : 'U',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xFF8B5CF6),
+                            ),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
                 const SizedBox(width: 10),

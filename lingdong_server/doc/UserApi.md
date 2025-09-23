@@ -10,7 +10,7 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**changePasswordApiAuthChangePasswordPost**](UserApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
-[**getOtherUserInfoApiAuthUsersUserIdGet**](UserApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[**getOtherUserInfoApiAuthUsersOtherUserIdGet**](UserApi.md#getotheruserinfoapiauthusersotheruseridget) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
 [**loginForAccessTokenApiAuthLoginPost**](UserApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](UserApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
 [**phonePasswordLoginApiAuthPhoneLoginPost**](UserApi.md#phonepasswordloginapiauthphoneloginpost) | **POST** /api/auth/phone_login | 手机号+密码 登录（仅登录，未注册报错）
@@ -64,12 +64,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getOtherUserInfoApiAuthUsersUserIdGet**
-> GenericResponseUserResponse getOtherUserInfoApiAuthUsersUserIdGet(userId)
+# **getOtherUserInfoApiAuthUsersOtherUserIdGet**
+> GenericResponseUserResponse getOtherUserInfoApiAuthUsersOtherUserIdGet(userId)
 
-获取其他用户个人信息
+获取其他用户信息
 
-获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+获取其他用户的非敏感信息 :param user_id: 目标用户ID :param db: 数据库会话 :param current_user: 当前用户（可选） :return: 用户的非敏感信息
 
 ### Example
 ```dart
@@ -79,10 +79,10 @@ final api = LingdongServer().getUserApi();
 final int userId = 0; // int | 
 
 try {
-    final response = api.getOtherUserInfoApiAuthUsersUserIdGet(userId);
+    final response = api.getOtherUserInfoApiAuthUsersOtherUserIdGet(userId);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling UserApi->getOtherUserInfoApiAuthUsersUserIdGet: $e\n');
+    print('Exception when calling UserApi->getOtherUserInfoApiAuthUsersOtherUserIdGet: $e\n');
 }
 ```
 
@@ -119,7 +119,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getUserApi();
-final LoginRequest loginRequest = {"identifier":"string","password":"string"}; // LoginRequest | 
+final LoginRequest loginRequest = ; // LoginRequest | 
 
 try {
     final response = api.loginForAccessTokenApiAuthLoginPost(loginRequest);
@@ -241,7 +241,7 @@ No authorization required
 
 获取当前用户信息
 
-获取当前用户信息 :param current_user: 当前用户 :return: 当前用户信息
+获取当前用户信息 :param current_user: 当前用户 :param db: 数据库会话 :return: 当前用户信息
 
 ### Example
 ```dart

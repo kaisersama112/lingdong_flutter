@@ -128,8 +128,8 @@ class UserApi {
     );
   }
 
-  /// 获取其他用户个人信息
-  /// 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+  /// 获取其他用户信息
+  /// 获取其他用户的非敏感信息 :param user_id: 目标用户ID :param db: 数据库会话 :param current_user: 当前用户（可选） :return: 用户的非敏感信息
   ///
   /// Parameters:
   /// * [userId] - 
@@ -142,7 +142,7 @@ class UserApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseUserResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseUserResponse>> getOtherUserInfoApiAuthUsersUserIdGet({ 
+  Future<Response<GenericResponseUserResponse>> getOtherUserInfoApiAuthUsersOtherUserIdGet({ 
     required int userId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -151,7 +151,7 @@ class UserApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/auth/users/{user_id}'.replaceAll('{' r'user_id' '}', encodeQueryParameter(_serializers, userId, const FullType(int)).toString());
+    final _path = r'/api/auth/users/other/{user_id}/'.replaceAll('{' r'user_id' '}', encodeQueryParameter(_serializers, userId, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -489,7 +489,7 @@ class UserApi {
   }
 
   /// 获取当前用户信息
-  /// 获取当前用户信息 :param current_user: 当前用户 :return: 当前用户信息
+  /// 获取当前用户信息 :param current_user: 当前用户 :param db: 数据库会话 :return: 当前用户信息
   ///
   /// Parameters:
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation

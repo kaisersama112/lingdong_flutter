@@ -35,6 +35,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
   final int _limit = 10;
   bool _hasMore = true;
   bool _loadingMore = false;
+  int _followingCount = 0;
+  int _followersCount = 0;
+  bool? _isFollowing; // null 表示未知或无意义
 
   @override
   void initState() {
@@ -45,7 +48,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
   Future<void> _loadInitial() async {
     setState(() => _loading = true);
     try {
-      final info = await DynamicService().getOtherUserInfo(widget.args.userId);
+      final dynamicService = DynamicService();
+      final info = await dynamicService.getOtherUserInfo(widget.args.userId);
+      final stats = await dynamicService.getOtherUserFollowStats(
+        widget.args.userId,
+      );
       final posts = await DynamicService().getUserPosts(
         userId: widget.args.userId,
         page: 0,
@@ -60,6 +67,9 @@ class _UserProfilePageState extends State<UserProfilePage> {
         _page = 1;
         _hasMore = posts.length == _limit;
         _loading = false;
+        _followingCount = stats.followingCount;
+        _followersCount = stats.followersCount;
+        _isFollowing = stats.isFollowing;
       });
     } catch (_) {
       if (!mounted) return;
@@ -153,10 +163,19 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                 color: AppTheme.textSecondaryColor,
                               ),
                             ),
+                            const SizedBox(height: 10),
+                            Row(
+                              children: [
+                                _countItem('关注', _followingCount),
+                                const SizedBox(width: 16),
+                                _countItem('粉丝', _followersCount),
+                              ],
+                            ),
                           ],
                         ),
                       ),
-                      const SizedBox.shrink(),
+                      const SizedBox(width: 8),
+                      _buildFollowButton(),
                     ],
                   ),
                   const SizedBox(height: 16),
@@ -365,6 +384,78 @@ class _UserProfilePageState extends State<UserProfilePage> {
             ),
     );
   }
+
+  Widget _buildFollowButton() {
+    final isOn = _isFollowing == true;
+    return SizedBox(
+      height: 36,
+      child: OutlinedButton(
+        onPressed: () async {
+          final svc = DynamicService();
+          bool ok = false;
+          if (isOn) {
+            ok = await svc.unfollowUser(widget.args.userId);
+          } else {
+            ok = await svc.followUser(widget.args.userId);
+          }
+          if (!mounted) return;
+          if (ok) {
+            final stats = await svc.getOtherUserFollowStats(widget.args.userId);
+            if (!mounted) return;
+            setState(() {
+              _isFollowing = !isOn;
+              _followingCount = stats.followingCount;
+              _followersCount = stats.followersCount;
+            });
+          } else {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(isOn ? '取消关注失败' : '关注失败')));
+          }
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor: isOn ? const Color(0xFF374151) : Colors.white,
+          backgroundColor: isOn ? Colors.white : AppTheme.primaryColor,
+          side: BorderSide(
+            color: isOn ? const Color(0xFFD1D5DB) : AppTheme.primaryColor,
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(isOn ? Icons.check : Icons.person_add_alt_1, size: 16),
+            const SizedBox(width: 6),
+            Text(isOn ? '已关注' : '关注'),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+Widget _countItem(String label, int value) {
+  return Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Text(
+        '$value',
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+          color: Color(0xFF111827),
+        ),
+      ),
+      const SizedBox(width: 4),
+      Text(
+        label,
+        style: const TextStyle(fontSize: 12, color: Color(0xFF6B7280)),
+      ),
+    ],
+  );
 }
 
 void _showShareSheet(BuildContext context) {

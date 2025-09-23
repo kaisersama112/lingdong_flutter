@@ -11,6 +11,7 @@ import 'package:lingdong_server/src/auth/bearer_auth.dart';
 import 'package:lingdong_server/src/auth/oauth.dart';
 import 'package:lingdong_server/src/api/default_api.dart';
 import 'package:lingdong_server/src/api/auth_api.dart';
+import 'package:lingdong_server/src/api/chat_api.dart';
 import 'package:lingdong_server/src/api/default_api.dart';
 import 'package:lingdong_server/src/api/dog_breeds_api.dart';
 import 'package:lingdong_server/src/api/dynamics_api.dart';
@@ -21,6 +22,7 @@ import 'package:lingdong_server/src/api/pet_profile_api.dart';
 import 'package:lingdong_server/src/api/social_api.dart';
 import 'package:lingdong_server/src/api/tags_api.dart';
 import 'package:lingdong_server/src/api/user_api.dart';
+import 'package:lingdong_server/src/api/user_relationship_api.dart';
 
 class LingdongServer {
   static const String basePath = r'http://localhost';
@@ -99,6 +101,12 @@ class LingdongServer {
     return AuthApi(dio, serializers);
   }
 
+  /// Get ChatApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  ChatApi getChatApi() {
+    return ChatApi(dio, serializers);
+  }
+
   /// Get DogBreedsApi instance, base route and serializer can be overridden by a given but be careful,
   /// by doing that all interceptors will not be executed
   DogBreedsApi getDogBreedsApi() {
@@ -151,5 +159,11 @@ class LingdongServer {
   /// by doing that all interceptors will not be executed
   UserApi getUserApi() {
     return UserApi(dio, serializers);
+  }
+
+  /// Get UserRelationshipApi instance, base route and serializer can be overridden by a given but be careful,
+  /// by doing that all interceptors will not be executed
+  UserRelationshipApi getUserRelationshipApi() {
+    return UserRelationshipApi(dio, serializers);
   }
 }

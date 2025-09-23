@@ -48,14 +48,13 @@ import 'package:lingdong_server/lingdong_server.dart';
 
 
 final api = LingdongServer().getDefaultApi();
-final int communityId = 0; // int | 
-final MembershipApproval membershipApproval = ; // MembershipApproval | 
+final AddMessageToConversation addMessageToConversation = ; // AddMessageToConversation | 
 
 try {
-    final response = await api.approveMemberApiCommunityCommunitiesCommunityIdMembersApprovePost(communityId, membershipApproval);
+    final response = await api.addConversationMessageApiChatConversationMessageAddPost(addMessageToConversation);
     print(response);
 } catch on DioException (e) {
-    print("Exception when calling DefaultApi->approveMemberApiCommunityCommunitiesCommunityIdMembersApprovePost: $e\n");
+    print("Exception when calling DefaultApi->addConversationMessageApiChatConversationMessageAddPost: $e\n");
 }
 
 ```
@@ -66,6 +65,8 @@ All URIs are relative to *http://localhost*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
+[*DefaultApi*](doc/DefaultApi.md) | [**addConversationMessageApiChatConversationMessageAddPost**](doc/DefaultApi.md#addconversationmessageapichatconversationmessageaddpost) | **POST** /api/chat/conversation/message/add | 向会话中添加消息
+[*DefaultApi*](doc/DefaultApi.md) | [**addConversationMessageApiChatConversationMessageAddPost_0**](doc/DefaultApi.md#addconversationmessageapichatconversationmessageaddpost_0) | **POST** /api/chat/conversation/message/add | 向会话中添加消息
 [*DefaultApi*](doc/DefaultApi.md) | [**approveMemberApiCommunityCommunitiesCommunityIdMembersApprovePost**](doc/DefaultApi.md#approvememberapicommunitycommunitiescommunityidmembersapprovepost) | **POST** /api/community/communities/{community_id}/members/approve | 审核成员加入申请
 [*DefaultApi*](doc/DefaultApi.md) | [**approveMemberApiCommunityCommunitiesCommunityIdMembersApprovePost_0**](doc/DefaultApi.md#approvememberapicommunitycommunitiescommunityidmembersapprovepost_0) | **POST** /api/community/communities/{community_id}/members/approve | 审核成员加入申请
 [*DefaultApi*](doc/DefaultApi.md) | [**approveMemberApiCommunityCommunitiesCommunityIdMembersApprovePost_1**](doc/DefaultApi.md#approvememberapicommunitycommunitiescommunityidmembersapprovepost_1) | **POST** /api/community/communities/{community_id}/members/approve | 审核成员加入申请
@@ -74,6 +75,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**banMemberApiCommunityCommunitiesCommunityIdMembersMemberIdBanPost_1**](doc/DefaultApi.md#banmemberapicommunitycommunitiescommunityidmembersmemberidbanpost_1) | **POST** /api/community/communities/{community_id}/members/{member_id}/ban | 封禁成员
 [*DefaultApi*](doc/DefaultApi.md) | [**changePasswordApiAuthChangePasswordPost**](doc/DefaultApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
 [*DefaultApi*](doc/DefaultApi.md) | [**changePasswordApiAuthChangePasswordPost_0**](doc/DefaultApi.md#changepasswordapiauthchangepasswordpost_0) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
+[*DefaultApi*](doc/DefaultApi.md) | [**checkFollowStatusApiUserRelationshipStatusUserIdGet**](doc/DefaultApi.md#checkfollowstatusapiuserrelationshipstatususeridget) | **GET** /api/user/relationship/status/{user_id} | 检查关注状态
+[*DefaultApi*](doc/DefaultApi.md) | [**checkFollowStatusApiUserRelationshipStatusUserIdGet_0**](doc/DefaultApi.md#checkfollowstatusapiuserrelationshipstatususeridget_0) | **GET** /api/user/relationship/status/{user_id} | 检查关注状态
 [*DefaultApi*](doc/DefaultApi.md) | [**createBreedApiBreedReedsCreateBreedPost**](doc/DefaultApi.md#createbreedapibreedreedscreatebreedpost) | **POST** /api/breed/reeds/create_breed | 创建种类
 [*DefaultApi*](doc/DefaultApi.md) | [**createBreedApiBreedReedsCreateBreedPost_0**](doc/DefaultApi.md#createbreedapibreedreedscreatebreedpost_0) | **POST** /api/breed/reeds/create_breed | 创建种类
 [*DefaultApi*](doc/DefaultApi.md) | [**createBreedApiBreedReedsCreateBreedPost_1**](doc/DefaultApi.md#createbreedapibreedreedscreatebreedpost_1) | **POST** /api/breed/reeds/create_breed | 创建种类
@@ -87,6 +90,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**createConsultationRecordApiPetCreateConsultationRecordPost**](doc/DefaultApi.md#createconsultationrecordapipetcreateconsultationrecordpost) | **POST** /api/pet/create_consultation_record | 创建就诊记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createConsultationRecordApiPetCreateConsultationRecordPost_0**](doc/DefaultApi.md#createconsultationrecordapipetcreateconsultationrecordpost_0) | **POST** /api/pet/create_consultation_record | 创建就诊记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createConsultationRecordApiPetCreateConsultationRecordPost_1**](doc/DefaultApi.md#createconsultationrecordapipetcreateconsultationrecordpost_1) | **POST** /api/pet/create_consultation_record | 创建就诊记录
+[*DefaultApi*](doc/DefaultApi.md) | [**createConversationApiChatConversationCreatePost**](doc/DefaultApi.md#createconversationapichatconversationcreatepost) | **POST** /api/chat/conversation/create | 创建新会话
+[*DefaultApi*](doc/DefaultApi.md) | [**createConversationApiChatConversationCreatePost_0**](doc/DefaultApi.md#createconversationapichatconversationcreatepost_0) | **POST** /api/chat/conversation/create | 创建新会话
 [*DefaultApi*](doc/DefaultApi.md) | [**createDewormingRecordApiPetCreateDewormingRecordPost**](doc/DefaultApi.md#createdewormingrecordapipetcreatedewormingrecordpost) | **POST** /api/pet/create_deworming_record | 创建驱虫记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createDewormingRecordApiPetCreateDewormingRecordPost_0**](doc/DefaultApi.md#createdewormingrecordapipetcreatedewormingrecordpost_0) | **POST** /api/pet/create_deworming_record | 创建驱虫记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createDewormingRecordApiPetCreateDewormingRecordPost_1**](doc/DefaultApi.md#createdewormingrecordapipetcreatedewormingrecordpost_1) | **POST** /api/pet/create_deworming_record | 创建驱虫记录
@@ -99,6 +104,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**createGroomingRecordApiPetCreateGroomingRecordPost**](doc/DefaultApi.md#creategroomingrecordapipetcreategroomingrecordpost) | **POST** /api/pet/create_grooming_record | 创建美容养护记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createGroomingRecordApiPetCreateGroomingRecordPost_0**](doc/DefaultApi.md#creategroomingrecordapipetcreategroomingrecordpost_0) | **POST** /api/pet/create_grooming_record | 创建美容养护记录
 [*DefaultApi*](doc/DefaultApi.md) | [**createGroomingRecordApiPetCreateGroomingRecordPost_1**](doc/DefaultApi.md#creategroomingrecordapipetcreategroomingrecordpost_1) | **POST** /api/pet/create_grooming_record | 创建美容养护记录
+[*DefaultApi*](doc/DefaultApi.md) | [**createGroupConversationApiChatGroupCreatePost**](doc/DefaultApi.md#creategroupconversationapichatgroupcreatepost) | **POST** /api/chat/group/create | 创建群聊
+[*DefaultApi*](doc/DefaultApi.md) | [**createGroupConversationApiChatGroupCreatePost_0**](doc/DefaultApi.md#creategroupconversationapichatgroupcreatepost_0) | **POST** /api/chat/group/create | 创建群聊
 [*DefaultApi*](doc/DefaultApi.md) | [**createGuideApiBreedBehaviorGuidesCreateBehaviorGuidePost**](doc/DefaultApi.md#createguideapibreedbehaviorguidescreatebehaviorguidepost) | **POST** /api/breed/behavior_guides/create_behavior_guide | 创建行为指南
 [*DefaultApi*](doc/DefaultApi.md) | [**createGuideApiBreedBehaviorGuidesCreateBehaviorGuidePost_0**](doc/DefaultApi.md#createguideapibreedbehaviorguidescreatebehaviorguidepost_0) | **POST** /api/breed/behavior_guides/create_behavior_guide | 创建行为指南
 [*DefaultApi*](doc/DefaultApi.md) | [**createGuideApiBreedBehaviorGuidesCreateBehaviorGuidePost_1**](doc/DefaultApi.md#createguideapibreedbehaviorguidescreatebehaviorguidepost_1) | **POST** /api/breed/behavior_guides/create_behavior_guide | 创建行为指南
@@ -203,6 +210,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteWeightRecordApiPetDeleteWeightRecordRecordIdPost**](doc/DefaultApi.md#deleteweightrecordapipetdeleteweightrecordrecordidpost) | **POST** /api/pet/delete_weight_record/{record_id} | 删除体重记录
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteWeightRecordApiPetDeleteWeightRecordRecordIdPost_0**](doc/DefaultApi.md#deleteweightrecordapipetdeleteweightrecordrecordidpost_0) | **POST** /api/pet/delete_weight_record/{record_id} | 删除体重记录
 [*DefaultApi*](doc/DefaultApi.md) | [**deleteWeightRecordApiPetDeleteWeightRecordRecordIdPost_1**](doc/DefaultApi.md#deleteweightrecordapipetdeleteweightrecordrecordidpost_1) | **POST** /api/pet/delete_weight_record/{record_id} | 删除体重记录
+[*DefaultApi*](doc/DefaultApi.md) | [**followApiUserRelationshipFollowPost**](doc/DefaultApi.md#followapiuserrelationshipfollowpost) | **POST** /api/user/relationship/follow | 关注用户
+[*DefaultApi*](doc/DefaultApi.md) | [**followApiUserRelationshipFollowPost_0**](doc/DefaultApi.md#followapiuserrelationshipfollowpost_0) | **POST** /api/user/relationship/follow | 关注用户
 [*DefaultApi*](doc/DefaultApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet**](doc/DefaultApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
 [*DefaultApi*](doc/DefaultApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet_0**](doc/DefaultApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget_0) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
 [*DefaultApi*](doc/DefaultApi.md) | [**getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet_1**](doc/DefaultApi.md#getcommentrepliesapidynamicscommentsparentcommentidrepliesget_1) | **GET** /api/dynamics/comments/{parent_comment_id}/replies | 获取顶级评论下的回复
@@ -224,6 +233,10 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet**](doc/DefaultApi.md#getconsultationrecordsbypetapipetgetconsultationrecordsbypetpetidget) | **GET** /api/pet/get_consultation_records_by_pet/{pet_id} | 根据宠物ID获取就诊记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getconsultationrecordsbypetapipetgetconsultationrecordsbypetpetidget_0) | **GET** /api/pet/get_consultation_records_by_pet/{pet_id} | 根据宠物ID获取就诊记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getConsultationRecordsByPetApiPetGetConsultationRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getconsultationrecordsbypetapipetgetconsultationrecordsbypetpetidget_1) | **GET** /api/pet/get_consultation_records_by_pet/{pet_id} | 根据宠物ID获取就诊记录列表（分页）
+[*DefaultApi*](doc/DefaultApi.md) | [**getConversationBySessionIdApiChatConversationSessionIdGet**](doc/DefaultApi.md#getconversationbysessionidapichatconversationsessionidget) | **GET** /api/chat/conversation/{session_id} | 根据会话ID获取会话信息
+[*DefaultApi*](doc/DefaultApi.md) | [**getConversationBySessionIdApiChatConversationSessionIdGet_0**](doc/DefaultApi.md#getconversationbysessionidapichatconversationsessionidget_0) | **GET** /api/chat/conversation/{session_id} | 根据会话ID获取会话信息
+[*DefaultApi*](doc/DefaultApi.md) | [**getConversationMessagesApiChatConversationMessagesSessionIdGet**](doc/DefaultApi.md#getconversationmessagesapichatconversationmessagessessionidget) | **GET** /api/chat/conversation/messages/{session_id} | 获取会话中的所有消息
+[*DefaultApi*](doc/DefaultApi.md) | [**getConversationMessagesApiChatConversationMessagesSessionIdGet_0**](doc/DefaultApi.md#getconversationmessagesapichatconversationmessagessessionidget_0) | **GET** /api/chat/conversation/messages/{session_id} | 获取会话中的所有消息
 [*DefaultApi*](doc/DefaultApi.md) | [**getDewormingRecordApiPetGetDewormingRecordRecordIdGet**](doc/DefaultApi.md#getdewormingrecordapipetgetdewormingrecordrecordidget) | **GET** /api/pet/get_deworming_record/{record_id} | 获取驱虫记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getDewormingRecordApiPetGetDewormingRecordRecordIdGet_0**](doc/DefaultApi.md#getdewormingrecordapipetgetdewormingrecordrecordidget_0) | **GET** /api/pet/get_deworming_record/{record_id} | 获取驱虫记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getDewormingRecordApiPetGetDewormingRecordRecordIdGet_1**](doc/DefaultApi.md#getdewormingrecordapipetgetdewormingrecordrecordidget_1) | **GET** /api/pet/get_deworming_record/{record_id} | 获取驱虫记录
@@ -236,20 +249,34 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet**](doc/DefaultApi.md#getexaminationrecordsbypetapipetgetexaminationrecordsbypetpetidget) | **GET** /api/pet/get_examination_records_by_pet/{pet_id} | 根据宠物ID获取体检记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getexaminationrecordsbypetapipetgetexaminationrecordsbypetpetidget_0) | **GET** /api/pet/get_examination_records_by_pet/{pet_id} | 根据宠物ID获取体检记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getExaminationRecordsByPetApiPetGetExaminationRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getexaminationrecordsbypetapipetgetexaminationrecordsbypetpetidget_1) | **GET** /api/pet/get_examination_records_by_pet/{pet_id} | 根据宠物ID获取体检记录列表（分页）
+[*DefaultApi*](doc/DefaultApi.md) | [**getFollowCountsApiUserRelationshipCountUserIdGet**](doc/DefaultApi.md#getfollowcountsapiuserrelationshipcountuseridget) | **GET** /api/user/relationship/count/{user_id} | 获取关注/粉丝数量
+[*DefaultApi*](doc/DefaultApi.md) | [**getFollowCountsApiUserRelationshipCountUserIdGet_0**](doc/DefaultApi.md#getfollowcountsapiuserrelationshipcountuseridget_0) | **GET** /api/user/relationship/count/{user_id} | 获取关注/粉丝数量
+[*DefaultApi*](doc/DefaultApi.md) | [**getFollowersListApiUserRelationshipFollowersUserIdGet**](doc/DefaultApi.md#getfollowerslistapiuserrelationshipfollowersuseridget) | **GET** /api/user/relationship/followers/{user_id} | 获取用户粉丝列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getFollowersListApiUserRelationshipFollowersUserIdGet_0**](doc/DefaultApi.md#getfollowerslistapiuserrelationshipfollowersuseridget_0) | **GET** /api/user/relationship/followers/{user_id} | 获取用户粉丝列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getFollowingListApiUserRelationshipFollowingUserIdGet**](doc/DefaultApi.md#getfollowinglistapiuserrelationshipfollowinguseridget) | **GET** /api/user/relationship/following/{user_id} | 获取用户关注列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getFollowingListApiUserRelationshipFollowingUserIdGet_0**](doc/DefaultApi.md#getfollowinglistapiuserrelationshipfollowinguseridget_0) | **GET** /api/user/relationship/following/{user_id} | 获取用户关注列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getGroomingRecordApiPetGetGroomingRecordRecordIdGet**](doc/DefaultApi.md#getgroomingrecordapipetgetgroomingrecordrecordidget) | **GET** /api/pet/get_grooming_record/{record_id} | 获取美容养护记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getGroomingRecordApiPetGetGroomingRecordRecordIdGet_0**](doc/DefaultApi.md#getgroomingrecordapipetgetgroomingrecordrecordidget_0) | **GET** /api/pet/get_grooming_record/{record_id} | 获取美容养护记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getGroomingRecordApiPetGetGroomingRecordRecordIdGet_1**](doc/DefaultApi.md#getgroomingrecordapipetgetgroomingrecordrecordidget_1) | **GET** /api/pet/get_grooming_record/{record_id} | 获取美容养护记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet**](doc/DefaultApi.md#getgroomingrecordsbypetapipetgetgroomingrecordsbypetpetidget) | **GET** /api/pet/get_grooming_records_by_pet/{pet_id} | 根据宠物ID获取美容养护记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getgroomingrecordsbypetapipetgetgroomingrecordsbypetpetidget_0) | **GET** /api/pet/get_grooming_records_by_pet/{pet_id} | 根据宠物ID获取美容养护记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getGroomingRecordsByPetApiPetGetGroomingRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getgroomingrecordsbypetapipetgetgroomingrecordsbypetpetidget_1) | **GET** /api/pet/get_grooming_records_by_pet/{pet_id} | 根据宠物ID获取美容养护记录列表（分页）
+[*DefaultApi*](doc/DefaultApi.md) | [**getGroupMembersApiChatGroupMembersGroupIdGet**](doc/DefaultApi.md#getgroupmembersapichatgroupmembersgroupidget) | **GET** /api/chat/group/members/{group_id} | 获取群成员列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getGroupMembersApiChatGroupMembersGroupIdGet_0**](doc/DefaultApi.md#getgroupmembersapichatgroupmembersgroupidget_0) | **GET** /api/chat/group/members/{group_id} | 获取群成员列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getGroupMessagesApiChatGroupMessagesGroupIdGet**](doc/DefaultApi.md#getgroupmessagesapichatgroupmessagesgroupidget) | **GET** /api/chat/group/messages/{group_id} | 获取群消息记录
+[*DefaultApi*](doc/DefaultApi.md) | [**getGroupMessagesApiChatGroupMessagesGroupIdGet_0**](doc/DefaultApi.md#getgroupmessagesapichatgroupmessagesgroupidget_0) | **GET** /api/chat/group/messages/{group_id} | 获取群消息记录
+[*DefaultApi*](doc/DefaultApi.md) | [**getMyFollowersApiUserRelationshipMyFollowersGet**](doc/DefaultApi.md#getmyfollowersapiuserrelationshipmyfollowersget) | **GET** /api/user/relationship/my/followers | 获取当前用户粉丝列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getMyFollowersApiUserRelationshipMyFollowersGet_0**](doc/DefaultApi.md#getmyfollowersapiuserrelationshipmyfollowersget_0) | **GET** /api/user/relationship/my/followers | 获取当前用户粉丝列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getMyFollowingApiUserRelationshipMyFollowingGet**](doc/DefaultApi.md#getmyfollowingapiuserrelationshipmyfollowingget) | **GET** /api/user/relationship/my/following | 获取当前用户关注列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getMyFollowingApiUserRelationshipMyFollowingGet_0**](doc/DefaultApi.md#getmyfollowingapiuserrelationshipmyfollowingget_0) | **GET** /api/user/relationship/my/following | 获取当前用户关注列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordApiPetGetOtherHealthRecordRecordIdGet**](doc/DefaultApi.md#getotherhealthrecordapipetgetotherhealthrecordrecordidget) | **GET** /api/pet/get_other_health_record/{record_id} | 获取其他健康记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordApiPetGetOtherHealthRecordRecordIdGet_0**](doc/DefaultApi.md#getotherhealthrecordapipetgetotherhealthrecordrecordidget_0) | **GET** /api/pet/get_other_health_record/{record_id} | 获取其他健康记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordApiPetGetOtherHealthRecordRecordIdGet_1**](doc/DefaultApi.md#getotherhealthrecordapipetgetotherhealthrecordrecordidget_1) | **GET** /api/pet/get_other_health_record/{record_id} | 获取其他健康记录
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet**](doc/DefaultApi.md#getotherhealthrecordsbypetapipetgetotherhealthrecordsbypetpetidget) | **GET** /api/pet/get_other_health_records_by_pet/{pet_id} | 根据宠物ID获取其他健康记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet_0**](doc/DefaultApi.md#getotherhealthrecordsbypetapipetgetotherhealthrecordsbypetpetidget_0) | **GET** /api/pet/get_other_health_records_by_pet/{pet_id} | 根据宠物ID获取其他健康记录列表（分页）
 [*DefaultApi*](doc/DefaultApi.md) | [**getOtherHealthRecordsByPetApiPetGetOtherHealthRecordsByPetPetIdGet_1**](doc/DefaultApi.md#getotherhealthrecordsbypetapipetgetotherhealthrecordsbypetpetidget_1) | **GET** /api/pet/get_other_health_records_by_pet/{pet_id} | 根据宠物ID获取其他健康记录列表（分页）
-[*DefaultApi*](doc/DefaultApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet**](doc/DefaultApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
-[*DefaultApi*](doc/DefaultApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet_0**](doc/DefaultApi.md#getotheruserinfoapiauthusersuseridget_0) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[*DefaultApi*](doc/DefaultApi.md) | [**getOtherUserInfoApiAuthUsersOtherUserIdGet**](doc/DefaultApi.md#getotheruserinfoapiauthusersotheruseridget) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
+[*DefaultApi*](doc/DefaultApi.md) | [**getOtherUserInfoApiAuthUsersOtherUserIdGet_0**](doc/DefaultApi.md#getotheruserinfoapiauthusersotheruseridget_0) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
 [*DefaultApi*](doc/DefaultApi.md) | [**getPendingMembersApiCommunityCommunitiesCommunityIdMembersPendingGet**](doc/DefaultApi.md#getpendingmembersapicommunitycommunitiescommunityidmemberspendingget) | **GET** /api/community/communities/{community_id}/members/pending | 获取待审核成员列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getPendingMembersApiCommunityCommunitiesCommunityIdMembersPendingGet_0**](doc/DefaultApi.md#getpendingmembersapicommunitycommunitiescommunityidmemberspendingget_0) | **GET** /api/community/communities/{community_id}/members/pending | 获取待审核成员列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getPendingMembersApiCommunityCommunitiesCommunityIdMembersPendingGet_1**](doc/DefaultApi.md#getpendingmembersapicommunitycommunitiescommunityidmemberspendingget_1) | **GET** /api/community/communities/{community_id}/members/pending | 获取待审核成员列表
@@ -268,12 +295,11 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet_0**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget_0) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet_1**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget_1) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
-[*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
-[*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost_0**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost_0) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
-[*DefaultApi*](doc/DefaultApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost_1**](doc/DefaultApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost_1) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost**](doc/DefaultApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost_0**](doc/DefaultApi.md#getrecommendeddynamicsapidynamicsrecommendedpost_0) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost_1**](doc/DefaultApi.md#getrecommendeddynamicsapidynamicsrecommendedpost_1) | **POST** /api/dynamics/recommended | 获取推荐动态
+[*DefaultApi*](doc/DefaultApi.md) | [**getUserConversationsApiChatConversationsGet**](doc/DefaultApi.md#getuserconversationsapichatconversationsget) | **GET** /api/chat/conversations | 获取用户的所有会话列表
+[*DefaultApi*](doc/DefaultApi.md) | [**getUserConversationsApiChatConversationsGet_0**](doc/DefaultApi.md#getuserconversationsapichatconversationsget_0) | **GET** /api/chat/conversations | 获取用户的所有会话列表
 [*DefaultApi*](doc/DefaultApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost**](doc/DefaultApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost_0**](doc/DefaultApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost_0) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
 [*DefaultApi*](doc/DefaultApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost_1**](doc/DefaultApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost_1) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
@@ -395,6 +421,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**refreshAccessTokenApiAuthRefreshPost_0**](doc/DefaultApi.md#refreshaccesstokenapiauthrefreshpost_0) | **POST** /api/auth/refresh | 刷新访问令牌
 [*DefaultApi*](doc/DefaultApi.md) | [**registerUserApiAuthRegisterPost**](doc/DefaultApi.md#registeruserapiauthregisterpost) | **POST** /api/auth/register | 注册用户
 [*DefaultApi*](doc/DefaultApi.md) | [**registerUserApiAuthRegisterPost_0**](doc/DefaultApi.md#registeruserapiauthregisterpost_0) | **POST** /api/auth/register | 注册用户
+[*DefaultApi*](doc/DefaultApi.md) | [**sendGroupMessageApiChatGroupSendPost**](doc/DefaultApi.md#sendgroupmessageapichatgroupsendpost) | **POST** /api/chat/group/send | 发送群消息
+[*DefaultApi*](doc/DefaultApi.md) | [**sendGroupMessageApiChatGroupSendPost_0**](doc/DefaultApi.md#sendgroupmessageapichatgroupsendpost_0) | **POST** /api/chat/group/send | 发送群消息
 [*DefaultApi*](doc/DefaultApi.md) | [**sendLoginCodeApiAuthSendCodePost**](doc/DefaultApi.md#sendlogincodeapiauthsendcodepost) | **POST** /api/auth/send_code | 发送手机验证码
 [*DefaultApi*](doc/DefaultApi.md) | [**sendLoginCodeApiAuthSendCodePost_0**](doc/DefaultApi.md#sendlogincodeapiauthsendcodepost_0) | **POST** /api/auth/send_code | 发送手机验证码
 [*DefaultApi*](doc/DefaultApi.md) | [**setPasswordByCodeApiAuthSetPasswordByCodePost**](doc/DefaultApi.md#setpasswordbycodeapiauthsetpasswordbycodepost) | **POST** /api/auth/set_password_by_code | 通过手机号验证码设置密码（无需登录）
@@ -411,6 +439,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost**](doc/DefaultApi.md#togglelikeapidynamicspostidtogglelikepost) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost_0**](doc/DefaultApi.md#togglelikeapidynamicspostidtogglelikepost_0) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
 [*DefaultApi*](doc/DefaultApi.md) | [**toggleLikeApiDynamicsPostIdToggleLikePost_1**](doc/DefaultApi.md#togglelikeapidynamicspostidtogglelikepost_1) | **POST** /api/dynamics/{post_id}/toggle_like | 切换点赞状态
+[*DefaultApi*](doc/DefaultApi.md) | [**unfollowApiUserRelationshipUnfollowPost**](doc/DefaultApi.md#unfollowapiuserrelationshipunfollowpost) | **POST** /api/user/relationship/unfollow | 取消关注用户
+[*DefaultApi*](doc/DefaultApi.md) | [**unfollowApiUserRelationshipUnfollowPost_0**](doc/DefaultApi.md#unfollowapiuserrelationshipunfollowpost_0) | **POST** /api/user/relationship/unfollow | 取消关注用户
 [*DefaultApi*](doc/DefaultApi.md) | [**unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost**](doc/DefaultApi.md#unlikedynamicapidynamicspostidunlikedynamicpost) | **POST** /api/dynamics/{post_id}/unlike_dynamic | 取消点赞
 [*DefaultApi*](doc/DefaultApi.md) | [**unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost_0**](doc/DefaultApi.md#unlikedynamicapidynamicspostidunlikedynamicpost_0) | **POST** /api/dynamics/{post_id}/unlike_dynamic | 取消点赞
 [*DefaultApi*](doc/DefaultApi.md) | [**unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost_1**](doc/DefaultApi.md#unlikedynamicapidynamicspostidunlikedynamicpost_1) | **POST** /api/dynamics/{post_id}/unlike_dynamic | 取消点赞
@@ -468,8 +498,8 @@ Class | Method | HTTP request | Description
 [*DefaultApi*](doc/DefaultApi.md) | [**uploadMediaApiMediaUploadMediaPost_0**](doc/DefaultApi.md#uploadmediaapimediauploadmediapost_0) | **POST** /api/media/upload_media | 上传媒体资源到指定对象
 [*AuthApi*](doc/AuthApi.md) | [**changePasswordApiAuthChangePasswordPost**](doc/AuthApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
 [*AuthApi*](doc/AuthApi.md) | [**changePasswordApiAuthChangePasswordPost_0**](doc/AuthApi.md#changepasswordapiauthchangepasswordpost_0) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
-[*AuthApi*](doc/AuthApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet**](doc/AuthApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
-[*AuthApi*](doc/AuthApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet_0**](doc/AuthApi.md#getotheruserinfoapiauthusersuseridget_0) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[*AuthApi*](doc/AuthApi.md) | [**getOtherUserInfoApiAuthUsersOtherUserIdGet**](doc/AuthApi.md#getotheruserinfoapiauthusersotheruseridget) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
+[*AuthApi*](doc/AuthApi.md) | [**getOtherUserInfoApiAuthUsersOtherUserIdGet_0**](doc/AuthApi.md#getotheruserinfoapiauthusersotheruseridget_0) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
 [*AuthApi*](doc/AuthApi.md) | [**loginForAccessTokenApiAuthLoginPost**](doc/AuthApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [*AuthApi*](doc/AuthApi.md) | [**loginForAccessTokenApiAuthLoginPost_0**](doc/AuthApi.md#loginforaccesstokenapiauthloginpost_0) | **POST** /api/auth/login | 用户登录
 [*AuthApi*](doc/AuthApi.md) | [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](doc/AuthApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
@@ -486,6 +516,24 @@ Class | Method | HTTP request | Description
 [*AuthApi*](doc/AuthApi.md) | [**sendLoginCodeApiAuthSendCodePost_0**](doc/AuthApi.md#sendlogincodeapiauthsendcodepost_0) | **POST** /api/auth/send_code | 发送手机验证码
 [*AuthApi*](doc/AuthApi.md) | [**setPasswordByCodeApiAuthSetPasswordByCodePost**](doc/AuthApi.md#setpasswordbycodeapiauthsetpasswordbycodepost) | **POST** /api/auth/set_password_by_code | 通过手机号验证码设置密码（无需登录）
 [*AuthApi*](doc/AuthApi.md) | [**setPasswordByCodeApiAuthSetPasswordByCodePost_0**](doc/AuthApi.md#setpasswordbycodeapiauthsetpasswordbycodepost_0) | **POST** /api/auth/set_password_by_code | 通过手机号验证码设置密码（无需登录）
+[*ChatApi*](doc/ChatApi.md) | [**addConversationMessageApiChatConversationMessageAddPost**](doc/ChatApi.md#addconversationmessageapichatconversationmessageaddpost) | **POST** /api/chat/conversation/message/add | 向会话中添加消息
+[*ChatApi*](doc/ChatApi.md) | [**addConversationMessageApiChatConversationMessageAddPost_0**](doc/ChatApi.md#addconversationmessageapichatconversationmessageaddpost_0) | **POST** /api/chat/conversation/message/add | 向会话中添加消息
+[*ChatApi*](doc/ChatApi.md) | [**createConversationApiChatConversationCreatePost**](doc/ChatApi.md#createconversationapichatconversationcreatepost) | **POST** /api/chat/conversation/create | 创建新会话
+[*ChatApi*](doc/ChatApi.md) | [**createConversationApiChatConversationCreatePost_0**](doc/ChatApi.md#createconversationapichatconversationcreatepost_0) | **POST** /api/chat/conversation/create | 创建新会话
+[*ChatApi*](doc/ChatApi.md) | [**createGroupConversationApiChatGroupCreatePost**](doc/ChatApi.md#creategroupconversationapichatgroupcreatepost) | **POST** /api/chat/group/create | 创建群聊
+[*ChatApi*](doc/ChatApi.md) | [**createGroupConversationApiChatGroupCreatePost_0**](doc/ChatApi.md#creategroupconversationapichatgroupcreatepost_0) | **POST** /api/chat/group/create | 创建群聊
+[*ChatApi*](doc/ChatApi.md) | [**getConversationBySessionIdApiChatConversationSessionIdGet**](doc/ChatApi.md#getconversationbysessionidapichatconversationsessionidget) | **GET** /api/chat/conversation/{session_id} | 根据会话ID获取会话信息
+[*ChatApi*](doc/ChatApi.md) | [**getConversationBySessionIdApiChatConversationSessionIdGet_0**](doc/ChatApi.md#getconversationbysessionidapichatconversationsessionidget_0) | **GET** /api/chat/conversation/{session_id} | 根据会话ID获取会话信息
+[*ChatApi*](doc/ChatApi.md) | [**getConversationMessagesApiChatConversationMessagesSessionIdGet**](doc/ChatApi.md#getconversationmessagesapichatconversationmessagessessionidget) | **GET** /api/chat/conversation/messages/{session_id} | 获取会话中的所有消息
+[*ChatApi*](doc/ChatApi.md) | [**getConversationMessagesApiChatConversationMessagesSessionIdGet_0**](doc/ChatApi.md#getconversationmessagesapichatconversationmessagessessionidget_0) | **GET** /api/chat/conversation/messages/{session_id} | 获取会话中的所有消息
+[*ChatApi*](doc/ChatApi.md) | [**getGroupMembersApiChatGroupMembersGroupIdGet**](doc/ChatApi.md#getgroupmembersapichatgroupmembersgroupidget) | **GET** /api/chat/group/members/{group_id} | 获取群成员列表
+[*ChatApi*](doc/ChatApi.md) | [**getGroupMembersApiChatGroupMembersGroupIdGet_0**](doc/ChatApi.md#getgroupmembersapichatgroupmembersgroupidget_0) | **GET** /api/chat/group/members/{group_id} | 获取群成员列表
+[*ChatApi*](doc/ChatApi.md) | [**getGroupMessagesApiChatGroupMessagesGroupIdGet**](doc/ChatApi.md#getgroupmessagesapichatgroupmessagesgroupidget) | **GET** /api/chat/group/messages/{group_id} | 获取群消息记录
+[*ChatApi*](doc/ChatApi.md) | [**getGroupMessagesApiChatGroupMessagesGroupIdGet_0**](doc/ChatApi.md#getgroupmessagesapichatgroupmessagesgroupidget_0) | **GET** /api/chat/group/messages/{group_id} | 获取群消息记录
+[*ChatApi*](doc/ChatApi.md) | [**getUserConversationsApiChatConversationsGet**](doc/ChatApi.md#getuserconversationsapichatconversationsget) | **GET** /api/chat/conversations | 获取用户的所有会话列表
+[*ChatApi*](doc/ChatApi.md) | [**getUserConversationsApiChatConversationsGet_0**](doc/ChatApi.md#getuserconversationsapichatconversationsget_0) | **GET** /api/chat/conversations | 获取用户的所有会话列表
+[*ChatApi*](doc/ChatApi.md) | [**sendGroupMessageApiChatGroupSendPost**](doc/ChatApi.md#sendgroupmessageapichatgroupsendpost) | **POST** /api/chat/group/send | 发送群消息
+[*ChatApi*](doc/ChatApi.md) | [**sendGroupMessageApiChatGroupSendPost_0**](doc/ChatApi.md#sendgroupmessageapichatgroupsendpost_0) | **POST** /api/chat/group/send | 发送群消息
 [*DefaultApi*](doc/DefaultApi.md) | [**readRootGet**](doc/DefaultApi.md#readrootget) | **GET** / | 获取根路由
 [*DogBreedsApi*](doc/DogBreedsApi.md) | [**createBreedApiBreedReedsCreateBreedPost**](doc/DogBreedsApi.md#createbreedapibreedreedscreatebreedpost) | **POST** /api/breed/reeds/create_breed | 创建种类
 [*DogBreedsApi*](doc/DogBreedsApi.md) | [**createGuideApiBreedBehaviorGuidesCreateBehaviorGuidePost**](doc/DogBreedsApi.md#createguideapibreedbehaviorguidescreatebehaviorguidepost) | **POST** /api/breed/behavior_guides/create_behavior_guide | 创建行为指南
@@ -525,7 +573,6 @@ Class | Method | HTTP request | Description
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](doc/DynamicsApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](doc/DynamicsApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](doc/DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
-[*DynamicsApi*](doc/DynamicsApi.md) | [**getPublicDynamicsApiDynamicsGetPublicDynamicsPost**](doc/DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getRecommendedDynamicsApiDynamicsRecommendedPost**](doc/DynamicsApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost**](doc/DynamicsApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
 [*DynamicsApi*](doc/DynamicsApi.md) | [**getUserPostsApiDynamicsUsersUserIdPostsGet**](doc/DynamicsApi.md#getuserpostsapidynamicsusersuseridpostsget) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
@@ -608,7 +655,7 @@ Class | Method | HTTP request | Description
 [*TagsApi*](doc/TagsApi.md) | [**readTagsApiTagsGetTagListGet**](doc/TagsApi.md#readtagsapitagsgettaglistget) | **GET** /api/tags/get_tag_list | 获取标签列表
 [*TagsApi*](doc/TagsApi.md) | [**updateTagApiTagsUpdateTagPost**](doc/TagsApi.md#updatetagapitagsupdatetagpost) | **POST** /api/tags/update_tag | 更新标签
 [*UserApi*](doc/UserApi.md) | [**changePasswordApiAuthChangePasswordPost**](doc/UserApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
-[*UserApi*](doc/UserApi.md) | [**getOtherUserInfoApiAuthUsersUserIdGet**](doc/UserApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[*UserApi*](doc/UserApi.md) | [**getOtherUserInfoApiAuthUsersOtherUserIdGet**](doc/UserApi.md#getotheruserinfoapiauthusersotheruseridget) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
 [*UserApi*](doc/UserApi.md) | [**loginForAccessTokenApiAuthLoginPost**](doc/UserApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [*UserApi*](doc/UserApi.md) | [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](doc/UserApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
 [*UserApi*](doc/UserApi.md) | [**phonePasswordLoginApiAuthPhoneLoginPost**](doc/UserApi.md#phonepasswordloginapiauthphoneloginpost) | **POST** /api/auth/phone_login | 手机号+密码 登录（仅登录，未注册报错）
@@ -617,10 +664,27 @@ Class | Method | HTTP request | Description
 [*UserApi*](doc/UserApi.md) | [**registerUserApiAuthRegisterPost**](doc/UserApi.md#registeruserapiauthregisterpost) | **POST** /api/auth/register | 注册用户
 [*UserApi*](doc/UserApi.md) | [**sendLoginCodeApiAuthSendCodePost**](doc/UserApi.md#sendlogincodeapiauthsendcodepost) | **POST** /api/auth/send_code | 发送手机验证码
 [*UserApi*](doc/UserApi.md) | [**setPasswordByCodeApiAuthSetPasswordByCodePost**](doc/UserApi.md#setpasswordbycodeapiauthsetpasswordbycodepost) | **POST** /api/auth/set_password_by_code | 通过手机号验证码设置密码（无需登录）
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**checkFollowStatusApiUserRelationshipStatusUserIdGet**](doc/UserRelationshipApi.md#checkfollowstatusapiuserrelationshipstatususeridget) | **GET** /api/user/relationship/status/{user_id} | 检查关注状态
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**checkFollowStatusApiUserRelationshipStatusUserIdGet_0**](doc/UserRelationshipApi.md#checkfollowstatusapiuserrelationshipstatususeridget_0) | **GET** /api/user/relationship/status/{user_id} | 检查关注状态
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**followApiUserRelationshipFollowPost**](doc/UserRelationshipApi.md#followapiuserrelationshipfollowpost) | **POST** /api/user/relationship/follow | 关注用户
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**followApiUserRelationshipFollowPost_0**](doc/UserRelationshipApi.md#followapiuserrelationshipfollowpost_0) | **POST** /api/user/relationship/follow | 关注用户
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getFollowCountsApiUserRelationshipCountUserIdGet**](doc/UserRelationshipApi.md#getfollowcountsapiuserrelationshipcountuseridget) | **GET** /api/user/relationship/count/{user_id} | 获取关注/粉丝数量
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getFollowCountsApiUserRelationshipCountUserIdGet_0**](doc/UserRelationshipApi.md#getfollowcountsapiuserrelationshipcountuseridget_0) | **GET** /api/user/relationship/count/{user_id} | 获取关注/粉丝数量
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getFollowersListApiUserRelationshipFollowersUserIdGet**](doc/UserRelationshipApi.md#getfollowerslistapiuserrelationshipfollowersuseridget) | **GET** /api/user/relationship/followers/{user_id} | 获取用户粉丝列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getFollowersListApiUserRelationshipFollowersUserIdGet_0**](doc/UserRelationshipApi.md#getfollowerslistapiuserrelationshipfollowersuseridget_0) | **GET** /api/user/relationship/followers/{user_id} | 获取用户粉丝列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getFollowingListApiUserRelationshipFollowingUserIdGet**](doc/UserRelationshipApi.md#getfollowinglistapiuserrelationshipfollowinguseridget) | **GET** /api/user/relationship/following/{user_id} | 获取用户关注列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getFollowingListApiUserRelationshipFollowingUserIdGet_0**](doc/UserRelationshipApi.md#getfollowinglistapiuserrelationshipfollowinguseridget_0) | **GET** /api/user/relationship/following/{user_id} | 获取用户关注列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getMyFollowersApiUserRelationshipMyFollowersGet**](doc/UserRelationshipApi.md#getmyfollowersapiuserrelationshipmyfollowersget) | **GET** /api/user/relationship/my/followers | 获取当前用户粉丝列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getMyFollowersApiUserRelationshipMyFollowersGet_0**](doc/UserRelationshipApi.md#getmyfollowersapiuserrelationshipmyfollowersget_0) | **GET** /api/user/relationship/my/followers | 获取当前用户粉丝列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getMyFollowingApiUserRelationshipMyFollowingGet**](doc/UserRelationshipApi.md#getmyfollowingapiuserrelationshipmyfollowingget) | **GET** /api/user/relationship/my/following | 获取当前用户关注列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**getMyFollowingApiUserRelationshipMyFollowingGet_0**](doc/UserRelationshipApi.md#getmyfollowingapiuserrelationshipmyfollowingget_0) | **GET** /api/user/relationship/my/following | 获取当前用户关注列表
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**unfollowApiUserRelationshipUnfollowPost**](doc/UserRelationshipApi.md#unfollowapiuserrelationshipunfollowpost) | **POST** /api/user/relationship/unfollow | 取消关注用户
+[*UserRelationshipApi*](doc/UserRelationshipApi.md) | [**unfollowApiUserRelationshipUnfollowPost_0**](doc/UserRelationshipApi.md#unfollowapiuserrelationshipunfollowpost_0) | **POST** /api/user/relationship/unfollow | 取消关注用户
 
 
 ## Documentation For Models
 
+ - [AddMessageToConversation](doc/AddMessageToConversation.md)
  - [BeautificationRecordCreate](doc/BeautificationRecordCreate.md)
  - [BeautificationRecordResponse](doc/BeautificationRecordResponse.md)
  - [BehaviorStyleCreate](doc/BehaviorStyleCreate.md)
@@ -637,6 +701,10 @@ Class | Method | HTTP request | Description
  - [CommunityResponse](doc/CommunityResponse.md)
  - [ConsultationCreate](doc/ConsultationCreate.md)
  - [ConsultationResponse](doc/ConsultationResponse.md)
+ - [ConversationCreate](doc/ConversationCreate.md)
+ - [ConversationListItem](doc/ConversationListItem.md)
+ - [ConversationMessageResponse](doc/ConversationMessageResponse.md)
+ - [ConversationResponse](doc/ConversationResponse.md)
  - [DewormingRecordCreate](doc/DewormingRecordCreate.md)
  - [DewormingRecordResponse](doc/DewormingRecordResponse.md)
  - [DogAgeStageBase](doc/DogAgeStageBase.md)
@@ -662,6 +730,9 @@ Class | Method | HTTP request | Description
  - [DogTrainingGuideUpdate](doc/DogTrainingGuideUpdate.md)
  - [ExaminationRecordCreate](doc/ExaminationRecordCreate.md)
  - [ExaminationRecordResponse](doc/ExaminationRecordResponse.md)
+ - [FollowCountResponse](doc/FollowCountResponse.md)
+ - [FollowRequest](doc/FollowRequest.md)
+ - [FollowStatusResponse](doc/FollowStatusResponse.md)
  - [GenericResponseBeautificationRecordResponse](doc/GenericResponseBeautificationRecordResponse.md)
  - [GenericResponseBehaviorStyleResponse](doc/GenericResponseBehaviorStyleResponse.md)
  - [GenericResponseBool](doc/GenericResponseBool.md)
@@ -670,6 +741,8 @@ Class | Method | HTTP request | Description
  - [GenericResponseCommunityMemberListResponse](doc/GenericResponseCommunityMemberListResponse.md)
  - [GenericResponseCommunityResponse](doc/GenericResponseCommunityResponse.md)
  - [GenericResponseConsultationResponse](doc/GenericResponseConsultationResponse.md)
+ - [GenericResponseConversationMessageResponse](doc/GenericResponseConversationMessageResponse.md)
+ - [GenericResponseConversationResponse](doc/GenericResponseConversationResponse.md)
  - [GenericResponseDewormingRecordResponse](doc/GenericResponseDewormingRecordResponse.md)
  - [GenericResponseDict](doc/GenericResponseDict.md)
  - [GenericResponseDogAgeStageOut](doc/GenericResponseDogAgeStageOut.md)
@@ -679,10 +752,18 @@ Class | Method | HTTP request | Description
  - [GenericResponseDogCareGuideOut](doc/GenericResponseDogCareGuideOut.md)
  - [GenericResponseEmptyResponse](doc/GenericResponseEmptyResponse.md)
  - [GenericResponseExaminationRecordResponse](doc/GenericResponseExaminationRecordResponse.md)
+ - [GenericResponseFollowCountResponse](doc/GenericResponseFollowCountResponse.md)
+ - [GenericResponseFollowStatusResponse](doc/GenericResponseFollowStatusResponse.md)
+ - [GenericResponseGroupConversationResponse](doc/GenericResponseGroupConversationResponse.md)
+ - [GenericResponseGroupMessageResponse](doc/GenericResponseGroupMessageResponse.md)
  - [GenericResponseInt](doc/GenericResponseInt.md)
  - [GenericResponseList](doc/GenericResponseList.md)
  - [GenericResponseListBehaviorStyleResponse](doc/GenericResponseListBehaviorStyleResponse.md)
+ - [GenericResponseListConversationListItem](doc/GenericResponseListConversationListItem.md)
+ - [GenericResponseListConversationMessageResponse](doc/GenericResponseListConversationMessageResponse.md)
  - [GenericResponseListDogAgeStageOut](doc/GenericResponseListDogAgeStageOut.md)
+ - [GenericResponseListGroupMemberResponse](doc/GenericResponseListGroupMemberResponse.md)
+ - [GenericResponseListGroupMessageResponse](doc/GenericResponseListGroupMessageResponse.md)
  - [GenericResponseListPersonalityResponse](doc/GenericResponseListPersonalityResponse.md)
  - [GenericResponseListPlaceResponse](doc/GenericResponseListPlaceResponse.md)
  - [GenericResponseListTaskTypeResponse](doc/GenericResponseListTaskTypeResponse.md)
@@ -713,10 +794,16 @@ Class | Method | HTTP request | Description
  - [GenericResponseTagListResponse](doc/GenericResponseTagListResponse.md)
  - [GenericResponseTagResponse](doc/GenericResponseTagResponse.md)
  - [GenericResponseTaskTypeResponse](doc/GenericResponseTaskTypeResponse.md)
+ - [GenericResponseUserFollowListResponse](doc/GenericResponseUserFollowListResponse.md)
  - [GenericResponseUserInfoResponse](doc/GenericResponseUserInfoResponse.md)
  - [GenericResponseUserResponse](doc/GenericResponseUserResponse.md)
  - [GenericResponseVaccinationRecordResponse](doc/GenericResponseVaccinationRecordResponse.md)
  - [GenericResponseWeightRecordResponse](doc/GenericResponseWeightRecordResponse.md)
+ - [GroupConversationCreate](doc/GroupConversationCreate.md)
+ - [GroupConversationResponse](doc/GroupConversationResponse.md)
+ - [GroupMemberResponse](doc/GroupMemberResponse.md)
+ - [GroupMessageCreate](doc/GroupMessageCreate.md)
+ - [GroupMessageResponse](doc/GroupMessageResponse.md)
  - [HttpValidationError](doc/HttpValidationError.md)
  - [LocationInner](doc/LocationInner.md)
  - [LoginRequest](doc/LoginRequest.md)
@@ -769,6 +856,9 @@ Class | Method | HTTP request | Description
  - [TagUpdate](doc/TagUpdate.md)
  - [TaskTypeCreate](doc/TaskTypeCreate.md)
  - [TaskTypeResponse](doc/TaskTypeResponse.md)
+ - [UnfollowRequest](doc/UnfollowRequest.md)
+ - [UserFollowItem](doc/UserFollowItem.md)
+ - [UserFollowListResponse](doc/UserFollowListResponse.md)
  - [UserInfoResponse](doc/UserInfoResponse.md)
  - [UserResponse](doc/UserResponse.md)
  - [VaccinationRecordCreate](doc/VaccinationRecordCreate.md)

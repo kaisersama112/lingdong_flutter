@@ -22,6 +22,7 @@ import 'package:lingdong_server/src/model/post_create.dart';
 import 'package:lingdong_server/src/model/reply_create.dart';
 
 class DynamicsApi {
+
   final Dio _dio;
 
   final Serializers _serializers;
@@ -29,10 +30,10 @@ class DynamicsApi {
   const DynamicsApi(this._dio, this._serializers);
 
   /// 创建广场动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postCreate]
+  /// * [postCreate] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -42,8 +43,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePostResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostResponse>>
-      createDynamicApiDynamicsCreateDynamicPost({
+  Future<Response<GenericResponsePostResponse>> createDynamicApiDynamicsCreateDynamicPost({ 
     PostCreate? postCreate,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -70,12 +70,11 @@ class DynamicsApi {
 
     try {
       const _type = FullType(PostCreate);
-      _bodyData = postCreate == null
-          ? null
-          : _serializers.serialize(postCreate, specifiedType: _type);
-    } catch (error, stackTrace) {
+      _bodyData = postCreate == null ? null : _serializers.serialize(postCreate, specifiedType: _type);
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(
+         requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -98,12 +97,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostResponse),
-            ) as GenericResponsePostResponse;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponsePostResponse),
+      ) as GenericResponsePostResponse;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -130,7 +128,7 @@ class DynamicsApi {
   /// 创建对指定动态的顶级评论
   ///
   /// Parameters:
-  /// * [parentCommentCreate]
+  /// * [parentCommentCreate] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -140,8 +138,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseParentComment] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseParentComment>>
-      createParentCommentApiDynamicsPostsParentCommentsPost({
+  Future<Response<GenericResponseParentComment>> createParentCommentApiDynamicsPostsParentCommentsPost({ 
     ParentCommentCreate? parentCommentCreate,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -168,12 +165,11 @@ class DynamicsApi {
 
     try {
       const _type = FullType(ParentCommentCreate);
-      _bodyData = parentCommentCreate == null
-          ? null
-          : _serializers.serialize(parentCommentCreate, specifiedType: _type);
-    } catch (error, stackTrace) {
+      _bodyData = parentCommentCreate == null ? null : _serializers.serialize(parentCommentCreate, specifiedType: _type);
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(
+         requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -196,12 +192,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseParentComment),
-            ) as GenericResponseParentComment;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseParentComment),
+      ) as GenericResponseParentComment;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -228,7 +223,7 @@ class DynamicsApi {
   /// 创建对指定评论的回复或回复其他回复
   ///
   /// Parameters:
-  /// * [replyCreate]
+  /// * [replyCreate] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -238,8 +233,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseReply] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseReply>>
-      createReplyApiDynamicsCommentsRepliesPost({
+  Future<Response<GenericResponseReply>> createReplyApiDynamicsCommentsRepliesPost({ 
     ReplyCreate? replyCreate,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -266,12 +260,11 @@ class DynamicsApi {
 
     try {
       const _type = FullType(ReplyCreate);
-      _bodyData = replyCreate == null
-          ? null
-          : _serializers.serialize(replyCreate, specifiedType: _type);
-    } catch (error, stackTrace) {
+      _bodyData = replyCreate == null ? null : _serializers.serialize(replyCreate, specifiedType: _type);
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(
+         requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -294,12 +287,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseReply),
-            ) as GenericResponseReply;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseReply),
+      ) as GenericResponseReply;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -323,10 +315,10 @@ class DynamicsApi {
   }
 
   /// 删除动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
+  /// * [postId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -336,8 +328,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      deleteDynamicApiDynamicsPostIdDeleteDynamicPost({
+  Future<Response<GenericResponseDict>> deleteDynamicApiDynamicsPostIdDeleteDynamicPost({ 
     required int postId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -346,10 +337,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/delete_dynamic'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/delete_dynamic'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -374,12 +362,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -406,7 +393,7 @@ class DynamicsApi {
   /// 删除指定的顶级评论，包括评论的所有回复
   ///
   /// Parameters:
-  /// * [commentId] -
+  /// * [commentId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -416,8 +403,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseBool] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseBool>>
-      deleteParentCommentApiDynamicsParentCommentsCommentIdDelete({
+  Future<Response<GenericResponseBool>> deleteParentCommentApiDynamicsParentCommentsCommentIdDelete({ 
     required int commentId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -426,10 +412,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/parent_comments/{comment_id}'.replaceAll(
-        '{' r'comment_id' '}',
-        encodeQueryParameter(_serializers, commentId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/parent_comments/{comment_id}'.replaceAll('{' r'comment_id' '}', encodeQueryParameter(_serializers, commentId, const FullType(int)).toString());
     final _options = Options(
       method: r'DELETE',
       headers: <String, dynamic>{
@@ -454,12 +437,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseBool),
-            ) as GenericResponseBool;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseBool),
+      ) as GenericResponseBool;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -486,7 +468,7 @@ class DynamicsApi {
   /// 删除指定的回复
   ///
   /// Parameters:
-  /// * [replyId] -
+  /// * [replyId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -496,8 +478,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseBool] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseBool>>
-      deleteReplyApiDynamicsRepliesReplyIdDeletePost({
+  Future<Response<GenericResponseBool>> deleteReplyApiDynamicsRepliesReplyIdDeletePost({ 
     required int replyId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -506,10 +487,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/replies/{reply_id}/delete'.replaceAll(
-        '{' r'reply_id' '}',
-        encodeQueryParameter(_serializers, replyId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/replies/{reply_id}/delete'.replaceAll('{' r'reply_id' '}', encodeQueryParameter(_serializers, replyId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -534,12 +512,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseBool),
-            ) as GenericResponseBool;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseBool),
+      ) as GenericResponseBool;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -566,9 +543,9 @@ class DynamicsApi {
   /// 获取指定顶级评论下的回复，支持分页，返回平铺形式的回复数据（包含回复人和被回复人信息）
   ///
   /// Parameters:
-  /// * [parentCommentId] -
-  /// * [skip] -
-  /// * [limit] -
+  /// * [parentCommentId] - 
+  /// * [skip] - 
+  /// * [limit] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -578,8 +555,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet({
+  Future<Response<GenericResponseDict>> getCommentRepliesApiDynamicsCommentsParentCommentIdRepliesGet({ 
     required int parentCommentId,
     int? skip = 0,
     int? limit = 10,
@@ -590,12 +566,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/comments/{parent_comment_id}/replies'
-        .replaceAll(
-            '{' r'parent_comment_id' '}',
-            encodeQueryParameter(
-                    _serializers, parentCommentId, const FullType(int))
-                .toString());
+    final _path = r'/api/dynamics/comments/{parent_comment_id}/replies'.replaceAll('{' r'parent_comment_id' '}', encodeQueryParameter(_serializers, parentCommentId, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -609,11 +580,8 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (skip != null)
-        r'skip': encodeQueryParameter(_serializers, skip, const FullType(int)),
-      if (limit != null)
-        r'limit':
-            encodeQueryParameter(_serializers, limit, const FullType(int)),
+      if (skip != null) r'skip': encodeQueryParameter(_serializers, skip, const FullType(int)),
+      if (limit != null) r'limit': encodeQueryParameter(_serializers, limit, const FullType(int)),
     };
 
     final _response = await _dio.request<Object>(
@@ -629,12 +597,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -661,7 +628,7 @@ class DynamicsApi {
   /// 获取指定帖子的总评论数，包括顶级评论和回复
   ///
   /// Parameters:
-  /// * [postId] -
+  /// * [postId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -671,8 +638,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet({
+  Future<Response<GenericResponseDict>> getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet({ 
     required int postId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -681,10 +647,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/posts/{post_id}/comments/count'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/posts/{post_id}/comments/count'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -709,12 +672,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -741,10 +703,10 @@ class DynamicsApi {
   /// 获取指定动态下的顶级评论，默认不包含完整回复树以提高性能，返回回复数量
   ///
   /// Parameters:
-  /// * [postId] -
-  /// * [skip] -
-  /// * [limit] -
-  /// * [includeReplies] -
+  /// * [postId] - 
+  /// * [skip] - 
+  /// * [limit] - 
+  /// * [includeReplies] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -754,8 +716,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet({
+  Future<Response<GenericResponseDict>> getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet({ 
     required int postId,
     int? skip = 0,
     int? limit = 5,
@@ -767,10 +728,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/posts/{post_id}/parent_comments'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/posts/{post_id}/parent_comments'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -784,14 +742,9 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (skip != null)
-        r'skip': encodeQueryParameter(_serializers, skip, const FullType(int)),
-      if (limit != null)
-        r'limit':
-            encodeQueryParameter(_serializers, limit, const FullType(int)),
-      if (includeReplies != null)
-        r'include_replies': encodeQueryParameter(
-            _serializers, includeReplies, const FullType(bool)),
+      if (skip != null) r'skip': encodeQueryParameter(_serializers, skip, const FullType(int)),
+      if (limit != null) r'limit': encodeQueryParameter(_serializers, limit, const FullType(int)),
+      if (includeReplies != null) r'include_replies': encodeQueryParameter(_serializers, includeReplies, const FullType(bool)),
     };
 
     final _response = await _dio.request<Object>(
@@ -807,12 +760,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -836,12 +788,12 @@ class DynamicsApi {
   }
 
   /// 获取广场动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [page] -
-  /// * [limit] -
-  /// * [tag] -
+  /// * [page] - 
+  /// * [limit] - 
+  /// * [tag] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -851,8 +803,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePostListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostListResponse>>
-      getPublicDynamicsApiDynamicsGetPublicDynamicsGet({
+  Future<Response<GenericResponsePostListResponse>> getPublicDynamicsApiDynamicsGetPublicDynamicsGet({ 
     int? page = 0,
     int? limit = 20,
     String? tag,
@@ -877,11 +828,8 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (page != null)
-        r'page': encodeQueryParameter(_serializers, page, const FullType(int)),
-      if (limit != null)
-        r'limit':
-            encodeQueryParameter(_serializers, limit, const FullType(int)),
+      if (page != null) r'page': encodeQueryParameter(_serializers, page, const FullType(int)),
+      if (limit != null) r'limit': encodeQueryParameter(_serializers, limit, const FullType(int)),
       r'tag': encodeQueryParameter(_serializers, tag, const FullType(String)),
     };
 
@@ -898,118 +846,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostListResponse),
-            ) as GenericResponsePostListResponse;
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _response.requestOptions,
-        response: _response,
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponsePostListResponse),
+      ) as GenericResponsePostListResponse;
 
-    return Response<GenericResponsePostListResponse>(
-      data: _responseData,
-      headers: _response.headers,
-      isRedirect: _response.isRedirect,
-      requestOptions: _response.requestOptions,
-      redirects: _response.redirects,
-      statusCode: _response.statusCode,
-      statusMessage: _response.statusMessage,
-      extra: _response.extra,
-    );
-  }
-
-  /// 获取广场动态
-  ///
-  ///
-  /// Parameters:
-  /// * [tag] -
-  /// * [paginationParams]
-  /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
-  /// * [headers] - Can be used to add additional headers to the request
-  /// * [extras] - Can be used to add flags to the request
-  /// * [validateStatus] - A [ValidateStatus] callback that can be used to determine request success based on the HTTP status of the response
-  /// * [onSendProgress] - A [ProgressCallback] that can be used to get the send progress
-  /// * [onReceiveProgress] - A [ProgressCallback] that can be used to get the receive progress
-  ///
-  /// Returns a [Future] containing a [Response] with a [GenericResponsePostListResponse] as data
-  /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostListResponse>>
-      getPublicDynamicsApiDynamicsGetPublicDynamicsPost({
-    String? tag,
-    PaginationParams? paginationParams,
-    CancelToken? cancelToken,
-    Map<String, dynamic>? headers,
-    Map<String, dynamic>? extra,
-    ValidateStatus? validateStatus,
-    ProgressCallback? onSendProgress,
-    ProgressCallback? onReceiveProgress,
-  }) async {
-    final _path = r'/api/dynamics/get_public_dynamics';
-    final _options = Options(
-      method: r'POST',
-      headers: <String, dynamic>{
-        ...?headers,
-      },
-      extra: <String, dynamic>{
-        'secure': <Map<String, String>>[],
-        ...?extra,
-      },
-      contentType: 'application/json',
-      validateStatus: validateStatus,
-    );
-
-    final _queryParameters = <String, dynamic>{
-      r'tag': encodeQueryParameter(_serializers, tag, const FullType(String)),
-    };
-
-    dynamic _bodyData;
-
-    try {
-      const _type = FullType(PaginationParams);
-      _bodyData = paginationParams == null
-          ? null
-          : _serializers.serialize(paginationParams, specifiedType: _type);
-    } catch (error, stackTrace) {
-      throw DioException(
-        requestOptions: _options.compose(
-          _dio.options,
-          _path,
-          queryParameters: _queryParameters,
-        ),
-        type: DioExceptionType.unknown,
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    final _response = await _dio.request<Object>(
-      _path,
-      data: _bodyData,
-      options: _options,
-      queryParameters: _queryParameters,
-      cancelToken: cancelToken,
-      onSendProgress: onSendProgress,
-      onReceiveProgress: onReceiveProgress,
-    );
-
-    GenericResponsePostListResponse? _responseData;
-
-    try {
-      final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostListResponse),
-            ) as GenericResponsePostListResponse;
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1033,10 +874,10 @@ class DynamicsApi {
   }
 
   /// 获取推荐动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [paginationParams]
+  /// * [paginationParams] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1046,8 +887,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePostListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostListResponse>>
-      getRecommendedDynamicsApiDynamicsRecommendedPost({
+  Future<Response<GenericResponsePostListResponse>> getRecommendedDynamicsApiDynamicsRecommendedPost({ 
     PaginationParams? paginationParams,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1074,12 +914,11 @@ class DynamicsApi {
 
     try {
       const _type = FullType(PaginationParams);
-      _bodyData = paginationParams == null
-          ? null
-          : _serializers.serialize(paginationParams, specifiedType: _type);
-    } catch (error, stackTrace) {
+      _bodyData = paginationParams == null ? null : _serializers.serialize(paginationParams, specifiedType: _type);
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(
+         requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1102,12 +941,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostListResponse),
-            ) as GenericResponsePostListResponse;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponsePostListResponse),
+      ) as GenericResponsePostListResponse;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1134,7 +972,7 @@ class DynamicsApi {
   /// 获取当前用户收藏的动态列表，支持分页
   ///
   /// Parameters:
-  /// * [paginationParams]
+  /// * [paginationParams] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1144,8 +982,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePostListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostListResponse>>
-      getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost({
+  Future<Response<GenericResponsePostListResponse>> getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost({ 
     PaginationParams? paginationParams,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1172,12 +1009,11 @@ class DynamicsApi {
 
     try {
       const _type = FullType(PaginationParams);
-      _bodyData = paginationParams == null
-          ? null
-          : _serializers.serialize(paginationParams, specifiedType: _type);
-    } catch (error, stackTrace) {
+      _bodyData = paginationParams == null ? null : _serializers.serialize(paginationParams, specifiedType: _type);
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(
+         requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1200,12 +1036,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostListResponse),
-            ) as GenericResponsePostListResponse;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponsePostListResponse),
+      ) as GenericResponsePostListResponse;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1232,9 +1067,9 @@ class DynamicsApi {
   /// 获取指定用户发布的动态列表（分页） :param user_id: 目标用户ID :param page: 页码，从0开始 :param limit: 每页数量，最大100 :param db: 数据库会话 :param current_user: 当前登录用户（可选） :return: 动态列表和总数
   ///
   /// Parameters:
-  /// * [userId] -
-  /// * [page] -
-  /// * [limit] -
+  /// * [userId] - 
+  /// * [page] - 
+  /// * [limit] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1244,8 +1079,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePostListResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostListResponse>>
-      getUserPostsApiDynamicsUsersUserIdPostsGet({
+  Future<Response<GenericResponsePostListResponse>> getUserPostsApiDynamicsUsersUserIdPostsGet({ 
     required int userId,
     int? page = 0,
     int? limit = 20,
@@ -1256,10 +1090,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/users/{user_id}/posts'.replaceAll(
-        '{' r'user_id' '}',
-        encodeQueryParameter(_serializers, userId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/users/{user_id}/posts'.replaceAll('{' r'user_id' '}', encodeQueryParameter(_serializers, userId, const FullType(int)).toString());
     final _options = Options(
       method: r'GET',
       headers: <String, dynamic>{
@@ -1273,11 +1104,8 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      if (page != null)
-        r'page': encodeQueryParameter(_serializers, page, const FullType(int)),
-      if (limit != null)
-        r'limit':
-            encodeQueryParameter(_serializers, limit, const FullType(int)),
+      if (page != null) r'page': encodeQueryParameter(_serializers, page, const FullType(int)),
+      if (limit != null) r'limit': encodeQueryParameter(_serializers, limit, const FullType(int)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1293,12 +1121,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostListResponse),
-            ) as GenericResponsePostListResponse;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponsePostListResponse),
+      ) as GenericResponsePostListResponse;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1322,10 +1149,10 @@ class DynamicsApi {
   }
 
   /// 点赞动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
+  /// * [postId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1335,8 +1162,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      likeDynamicApiDynamicsPostIdLikeDynamicPost({
+  Future<Response<GenericResponseDict>> likeDynamicApiDynamicsPostIdLikeDynamicPost({ 
     required int postId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1345,10 +1171,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/like_dynamic'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/like_dynamic'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1373,12 +1196,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1405,7 +1227,7 @@ class DynamicsApi {
   /// 对指定回复进行点赞或取消点赞操作
   ///
   /// Parameters:
-  /// * [replyId] -
+  /// * [replyId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1415,8 +1237,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      likeReplyApiDynamicsCommentsReplyIdLikePost({
+  Future<Response<GenericResponseDict>> likeReplyApiDynamicsCommentsReplyIdLikePost({ 
     required int replyId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1425,10 +1246,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/comments/{reply_id}/like'.replaceAll(
-        '{' r'reply_id' '}',
-        encodeQueryParameter(_serializers, replyId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/comments/{reply_id}/like'.replaceAll('{' r'reply_id' '}', encodeQueryParameter(_serializers, replyId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1453,12 +1271,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1482,14 +1299,14 @@ class DynamicsApi {
   }
 
   /// 分享动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
-  /// * [platform] -
-  /// * [content] -
-  /// * [shareUrl] -
-  /// * [isPublic] -
+  /// * [postId] - 
+  /// * [platform] - 
+  /// * [content] - 
+  /// * [shareUrl] - 
+  /// * [isPublic] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1499,7 +1316,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>> shareDynamicApiDynamicsPostIdSharePost({
+  Future<Response<GenericResponseDict>> shareDynamicApiDynamicsPostIdSharePost({ 
     required int postId,
     required String platform,
     String? content,
@@ -1512,10 +1329,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/share'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/share'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1529,15 +1343,10 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'platform':
-          encodeQueryParameter(_serializers, platform, const FullType(String)),
-      r'content':
-          encodeQueryParameter(_serializers, content, const FullType(String)),
-      r'share_url':
-          encodeQueryParameter(_serializers, shareUrl, const FullType(String)),
-      if (isPublic != null)
-        r'is_public':
-            encodeQueryParameter(_serializers, isPublic, const FullType(bool)),
+      r'platform': encodeQueryParameter(_serializers, platform, const FullType(String)),
+      r'content': encodeQueryParameter(_serializers, content, const FullType(String)),
+      r'share_url': encodeQueryParameter(_serializers, shareUrl, const FullType(String)),
+      if (isPublic != null) r'is_public': encodeQueryParameter(_serializers, isPublic, const FullType(bool)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1553,12 +1362,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1582,11 +1390,11 @@ class DynamicsApi {
   }
 
   /// 切换动态收藏状态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
-  /// * [source_] -
+  /// * [postId] - 
+  /// * [source_] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1596,8 +1404,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      toggleDynamicFavoriteApiDynamicsPostIdFavoritePost({
+  Future<Response<GenericResponseDict>> toggleDynamicFavoriteApiDynamicsPostIdFavoritePost({ 
     required int postId,
     String? source_,
     CancelToken? cancelToken,
@@ -1607,10 +1414,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/favorite'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/favorite'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1624,8 +1428,7 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'source':
-          encodeQueryParameter(_serializers, source_, const FullType(String)),
+      r'source': encodeQueryParameter(_serializers, source_, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1641,12 +1444,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1673,8 +1475,8 @@ class DynamicsApi {
   /// 统一接口，支持对顶级评论或回复进行点赞或取消点赞操作
   ///
   /// Parameters:
-  /// * [targetId] -
-  /// * [targetType] -
+  /// * [targetId] - 
+  /// * [targetType] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1684,7 +1486,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>> toggleLikeApiDynamicsCommentsLikePost({
+  Future<Response<GenericResponseDict>> toggleLikeApiDynamicsCommentsLikePost({ 
     required int targetId,
     String? targetType,
     CancelToken? cancelToken,
@@ -1708,11 +1510,8 @@ class DynamicsApi {
     );
 
     final _queryParameters = <String, dynamic>{
-      r'target_id':
-          encodeQueryParameter(_serializers, targetId, const FullType(int)),
-      if (targetType != null)
-        r'target_type': encodeQueryParameter(
-            _serializers, targetType, const FullType(String)),
+      r'target_id': encodeQueryParameter(_serializers, targetId, const FullType(int)),
+      if (targetType != null) r'target_type': encodeQueryParameter(_serializers, targetType, const FullType(String)),
     };
 
     final _response = await _dio.request<Object>(
@@ -1728,12 +1527,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1757,10 +1555,10 @@ class DynamicsApi {
   }
 
   /// 切换点赞状态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
+  /// * [postId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1770,8 +1568,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      toggleLikeApiDynamicsPostIdToggleLikePost({
+  Future<Response<GenericResponseDict>> toggleLikeApiDynamicsPostIdToggleLikePost({ 
     required int postId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1780,10 +1577,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/toggle_like'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/toggle_like'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1808,12 +1602,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1837,10 +1630,10 @@ class DynamicsApi {
   }
 
   /// 取消点赞
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
+  /// * [postId] - 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1850,8 +1643,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponseDict] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponseDict>>
-      unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost({
+  Future<Response<GenericResponseDict>> unlikeDynamicApiDynamicsPostIdUnlikeDynamicPost({ 
     required int postId,
     CancelToken? cancelToken,
     Map<String, dynamic>? headers,
@@ -1860,10 +1652,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/unlike_dynamic'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/unlike_dynamic'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1888,12 +1677,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponseDict),
-            ) as GenericResponseDict;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponseDict),
+      ) as GenericResponseDict;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -1917,11 +1705,11 @@ class DynamicsApi {
   }
 
   /// 更新动态
-  ///
+  /// 
   ///
   /// Parameters:
-  /// * [postId] -
-  /// * [postCreate]
+  /// * [postId] - 
+  /// * [postCreate] 
   /// * [cancelToken] - A [CancelToken] that can be used to cancel the operation
   /// * [headers] - Can be used to add additional headers to the request
   /// * [extras] - Can be used to add flags to the request
@@ -1931,8 +1719,7 @@ class DynamicsApi {
   ///
   /// Returns a [Future] containing a [Response] with a [GenericResponsePostResponse] as data
   /// Throws [DioException] if API call or serialization fails
-  Future<Response<GenericResponsePostResponse>>
-      updateDynamicApiDynamicsPostIdUpdateDynamicPost({
+  Future<Response<GenericResponsePostResponse>> updateDynamicApiDynamicsPostIdUpdateDynamicPost({ 
     required int postId,
     PostCreate? postCreate,
     CancelToken? cancelToken,
@@ -1942,10 +1729,7 @@ class DynamicsApi {
     ProgressCallback? onSendProgress,
     ProgressCallback? onReceiveProgress,
   }) async {
-    final _path = r'/api/dynamics/{post_id}/update_dynamic'.replaceAll(
-        '{' r'post_id' '}',
-        encodeQueryParameter(_serializers, postId, const FullType(int))
-            .toString());
+    final _path = r'/api/dynamics/{post_id}/update_dynamic'.replaceAll('{' r'post_id' '}', encodeQueryParameter(_serializers, postId, const FullType(int)).toString());
     final _options = Options(
       method: r'POST',
       headers: <String, dynamic>{
@@ -1963,12 +1747,11 @@ class DynamicsApi {
 
     try {
       const _type = FullType(PostCreate);
-      _bodyData = postCreate == null
-          ? null
-          : _serializers.serialize(postCreate, specifiedType: _type);
-    } catch (error, stackTrace) {
+      _bodyData = postCreate == null ? null : _serializers.serialize(postCreate, specifiedType: _type);
+
+    } catch(error, stackTrace) {
       throw DioException(
-        requestOptions: _options.compose(
+         requestOptions: _options.compose(
           _dio.options,
           _path,
         ),
@@ -1991,12 +1774,11 @@ class DynamicsApi {
 
     try {
       final rawResponse = _response.data;
-      _responseData = rawResponse == null
-          ? null
-          : _serializers.deserialize(
-              rawResponse,
-              specifiedType: const FullType(GenericResponsePostResponse),
-            ) as GenericResponsePostResponse;
+      _responseData = rawResponse == null ? null : _serializers.deserialize(
+        rawResponse,
+        specifiedType: const FullType(GenericResponsePostResponse),
+      ) as GenericResponsePostResponse;
+
     } catch (error, stackTrace) {
       throw DioException(
         requestOptions: _response.requestOptions,
@@ -2018,4 +1800,5 @@ class DynamicsApi {
       extra: _response.extra,
     );
   }
+
 }

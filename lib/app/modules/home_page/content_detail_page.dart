@@ -41,6 +41,8 @@ class _ContentDetailPageState extends State<ContentDetailPage>
   final Map<String, bool> _replyHasMore = {};
   final Map<String, bool> _replyLoadingMore = {};
   static const int _replyPageSize = 10;
+  // 用户头像缓存
+  final Map<String, String?> _userAvatars = {};
   // 顶级评论分页
   int _commentSkip = 0;
   static const int _commentPageSize = 10;
@@ -190,6 +192,23 @@ class _ContentDetailPageState extends State<ContentDetailPage>
       setState(() {});
     });
     _load();
+  }
+
+  Future<String?> _getUserAvatar(String authorId) async {
+    if (_userAvatars.containsKey(authorId)) {
+      return _userAvatars[authorId];
+    }
+
+    try {
+      final userInfo = await DynamicService().getOtherUserInfo(authorId);
+      final avatar = userInfo?.avatar;
+      _userAvatars[authorId] = avatar;
+      return avatar;
+    } catch (e) {
+      debugPrint('获取用户头像失败: $e');
+      _userAvatars[authorId] = null;
+      return null;
+    }
   }
 
   @override
@@ -753,14 +772,47 @@ class _ContentDetailPageState extends State<ContentDetailPage>
                         ),
                       ],
                     ),
-                    child: CircleAvatar(
-                      radius: 24,
-                      backgroundColor: AppTheme.primaryColor.withOpacity(0.1),
-                      child: Icon(
-                        Icons.pets,
-                        color: AppTheme.primaryColor,
-                        size: 20,
-                      ),
+                    child: FutureBuilder<String?>(
+                      future: _getUserAvatar('user_${widget.author}'),
+                      builder: (context, snapshot) {
+                        final avatarUrl = snapshot.data;
+                        if (avatarUrl != null && avatarUrl.isNotEmpty) {
+                          return OptimizedAvatar(
+                            imageUrl: avatarUrl,
+                            size: 48,
+                            backgroundColor: AppTheme.primaryColor.withOpacity(
+                              0.1,
+                            ),
+                            fallback: Text(
+                              widget.author.isNotEmpty
+                                  ? widget.author[0].toUpperCase()
+                                  : 'U',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.primaryColor,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return CircleAvatar(
+                            radius: 24,
+                            backgroundColor: AppTheme.primaryColor.withOpacity(
+                              0.1,
+                            ),
+                            child: Text(
+                              widget.author.isNotEmpty
+                                  ? widget.author[0].toUpperCase()
+                                  : 'U',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.primaryColor,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                     ),
                   ),
                 ),

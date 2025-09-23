@@ -25,6 +25,10 @@ class _$UserInfoResponse extends UserInfoResponse {
   final String? createdAt;
   @override
   final String? updatedAt;
+  @override
+  final int? followingCount;
+  @override
+  final int? followersCount;
 
   factory _$UserInfoResponse(
           [void Function(UserInfoResponseBuilder)? updates]) =>
@@ -39,7 +43,9 @@ class _$UserInfoResponse extends UserInfoResponse {
       required this.isPasswordSet,
       this.level,
       this.createdAt,
-      this.updatedAt})
+      this.updatedAt,
+      this.followingCount,
+      this.followersCount})
       : super._();
   @override
   UserInfoResponse rebuild(void Function(UserInfoResponseBuilder) updates) =>
@@ -61,7 +67,9 @@ class _$UserInfoResponse extends UserInfoResponse {
         isPasswordSet == other.isPasswordSet &&
         level == other.level &&
         createdAt == other.createdAt &&
-        updatedAt == other.updatedAt;
+        updatedAt == other.updatedAt &&
+        followingCount == other.followingCount &&
+        followersCount == other.followersCount;
   }
 
   @override
@@ -76,6 +84,8 @@ class _$UserInfoResponse extends UserInfoResponse {
     _$hash = $jc(_$hash, level.hashCode);
     _$hash = $jc(_$hash, createdAt.hashCode);
     _$hash = $jc(_$hash, updatedAt.hashCode);
+    _$hash = $jc(_$hash, followingCount.hashCode);
+    _$hash = $jc(_$hash, followersCount.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -91,7 +101,9 @@ class _$UserInfoResponse extends UserInfoResponse {
           ..add('isPasswordSet', isPasswordSet)
           ..add('level', level)
           ..add('createdAt', createdAt)
-          ..add('updatedAt', updatedAt))
+          ..add('updatedAt', updatedAt)
+          ..add('followingCount', followingCount)
+          ..add('followersCount', followersCount))
         .toString();
   }
 }
@@ -137,6 +149,16 @@ class UserInfoResponseBuilder
   String? get updatedAt => _$this._updatedAt;
   set updatedAt(String? updatedAt) => _$this._updatedAt = updatedAt;
 
+  int? _followingCount;
+  int? get followingCount => _$this._followingCount;
+  set followingCount(int? followingCount) =>
+      _$this._followingCount = followingCount;
+
+  int? _followersCount;
+  int? get followersCount => _$this._followersCount;
+  set followersCount(int? followersCount) =>
+      _$this._followersCount = followersCount;
+
   UserInfoResponseBuilder() {
     UserInfoResponse._defaults(this);
   }
@@ -153,6 +175,8 @@ class UserInfoResponseBuilder
       _level = $v.level;
       _createdAt = $v.createdAt;
       _updatedAt = $v.updatedAt;
+      _followingCount = $v.followingCount;
+      _followersCount = $v.followersCount;
       _$v = null;
     }
     return this;
@@ -186,6 +210,8 @@ class UserInfoResponseBuilder
           level: level,
           createdAt: createdAt,
           updatedAt: updatedAt,
+          followingCount: followingCount,
+          followersCount: followersCount,
         );
     replace(_$result);
     return _$result;

@@ -4,6 +4,7 @@ import '../core/models.dart' as models;
 import 'database_service.dart';
 import 'user_auth_service.dart';
 import 'package:lingdong_server/lingdong_server.dart' as server;
+import '../core/api_config.dart';
 
 class RecordService {
   static final RecordService _instance = RecordService._internal();
@@ -21,10 +22,10 @@ class RecordService {
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://172.16.4.114:7009',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 10),
+        baseUrl: ApiConfig.baseUrl,
+        connectTimeout: ApiConfig.connectTimeout,
+        receiveTimeout: ApiConfig.receiveTimeout,
+        sendTimeout: ApiConfig.sendTimeout,
       ),
     );
 
@@ -77,7 +78,7 @@ class RecordService {
           is server.GenericResponsePaginationResponseVaccinationRecordResponse) {
         final data = resp.data;
         if (data?.items != null) {
-          return data!.items!
+          return data!.items
               .map((item) => _vaccinationRecordToMap(item))
               .toList();
         }
@@ -85,7 +86,7 @@ class RecordService {
           is server.GenericResponsePaginationResponseDewormingRecordResponse) {
         final data = resp.data;
         if (data?.items != null) {
-          return data!.items!
+          return data!.items
               .map((item) => _dewormingRecordToMap(item))
               .toList();
         }
@@ -93,7 +94,7 @@ class RecordService {
           is server.GenericResponsePaginationResponseExaminationRecordResponse) {
         final data = resp.data;
         if (data?.items != null) {
-          return data!.items!
+          return data!.items
               .map((item) => _examinationRecordToMap(item))
               .toList();
         }
@@ -101,13 +102,13 @@ class RecordService {
           is server.GenericResponsePaginationResponseWeightRecordResponse) {
         final data = resp.data;
         if (data?.items != null) {
-          return data!.items!.map((item) => _weightRecordToMap(item)).toList();
+          return data!.items.map((item) => _weightRecordToMap(item)).toList();
         }
       } else if (resp
           is server.GenericResponsePaginationResponseBeautificationRecordResponse) {
         final data = resp.data;
         if (data?.items != null) {
-          return data!.items!
+          return data!.items
               .map((item) => _beautificationRecordToMap(item))
               .toList();
         }

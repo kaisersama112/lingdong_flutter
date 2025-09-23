@@ -13,11 +13,23 @@ class _$UserResponse extends UserResponse {
   final String username;
   @override
   final String? avatar;
+  @override
+  final int? followingCount;
+  @override
+  final int? followersCount;
+  @override
+  final bool? isFollowing;
 
   factory _$UserResponse([void Function(UserResponseBuilder)? updates]) =>
       (UserResponseBuilder()..update(updates))._build();
 
-  _$UserResponse._({required this.id, required this.username, this.avatar})
+  _$UserResponse._(
+      {required this.id,
+      required this.username,
+      this.avatar,
+      this.followingCount,
+      this.followersCount,
+      this.isFollowing})
       : super._();
   @override
   UserResponse rebuild(void Function(UserResponseBuilder) updates) =>
@@ -32,7 +44,10 @@ class _$UserResponse extends UserResponse {
     return other is UserResponse &&
         id == other.id &&
         username == other.username &&
-        avatar == other.avatar;
+        avatar == other.avatar &&
+        followingCount == other.followingCount &&
+        followersCount == other.followersCount &&
+        isFollowing == other.isFollowing;
   }
 
   @override
@@ -41,6 +56,9 @@ class _$UserResponse extends UserResponse {
     _$hash = $jc(_$hash, id.hashCode);
     _$hash = $jc(_$hash, username.hashCode);
     _$hash = $jc(_$hash, avatar.hashCode);
+    _$hash = $jc(_$hash, followingCount.hashCode);
+    _$hash = $jc(_$hash, followersCount.hashCode);
+    _$hash = $jc(_$hash, isFollowing.hashCode);
     _$hash = $jf(_$hash);
     return _$hash;
   }
@@ -50,7 +68,10 @@ class _$UserResponse extends UserResponse {
     return (newBuiltValueToStringHelper(r'UserResponse')
           ..add('id', id)
           ..add('username', username)
-          ..add('avatar', avatar))
+          ..add('avatar', avatar)
+          ..add('followingCount', followingCount)
+          ..add('followersCount', followersCount)
+          ..add('isFollowing', isFollowing))
         .toString();
   }
 }
@@ -71,6 +92,20 @@ class UserResponseBuilder
   String? get avatar => _$this._avatar;
   set avatar(String? avatar) => _$this._avatar = avatar;
 
+  int? _followingCount;
+  int? get followingCount => _$this._followingCount;
+  set followingCount(int? followingCount) =>
+      _$this._followingCount = followingCount;
+
+  int? _followersCount;
+  int? get followersCount => _$this._followersCount;
+  set followersCount(int? followersCount) =>
+      _$this._followersCount = followersCount;
+
+  bool? _isFollowing;
+  bool? get isFollowing => _$this._isFollowing;
+  set isFollowing(bool? isFollowing) => _$this._isFollowing = isFollowing;
+
   UserResponseBuilder() {
     UserResponse._defaults(this);
   }
@@ -81,6 +116,9 @@ class UserResponseBuilder
       _id = $v.id;
       _username = $v.username;
       _avatar = $v.avatar;
+      _followingCount = $v.followingCount;
+      _followersCount = $v.followersCount;
+      _isFollowing = $v.isFollowing;
       _$v = null;
     }
     return this;
@@ -106,6 +144,9 @@ class UserResponseBuilder
           username: BuiltValueNullFieldError.checkNotNull(
               username, r'UserResponse', 'username'),
           avatar: avatar,
+          followingCount: followingCount,
+          followersCount: followersCount,
+          isFollowing: isFollowing,
         );
     replace(_$result);
     return _$result;

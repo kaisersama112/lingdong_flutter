@@ -11,8 +11,8 @@ Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**changePasswordApiAuthChangePasswordPost**](AuthApi.md#changepasswordapiauthchangepasswordpost) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
 [**changePasswordApiAuthChangePasswordPost_0**](AuthApi.md#changepasswordapiauthchangepasswordpost_0) | **POST** /api/auth/change_password | 修改密码（需登录+旧密码）
-[**getOtherUserInfoApiAuthUsersUserIdGet**](AuthApi.md#getotheruserinfoapiauthusersuseridget) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
-[**getOtherUserInfoApiAuthUsersUserIdGet_0**](AuthApi.md#getotheruserinfoapiauthusersuseridget_0) | **GET** /api/auth/users/{user_id} | 获取其他用户个人信息
+[**getOtherUserInfoApiAuthUsersOtherUserIdGet**](AuthApi.md#getotheruserinfoapiauthusersotheruseridget) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
+[**getOtherUserInfoApiAuthUsersOtherUserIdGet_0**](AuthApi.md#getotheruserinfoapiauthusersotheruseridget_0) | **GET** /api/auth/users/other/{user_id}/ | 获取其他用户信息
 [**loginForAccessTokenApiAuthLoginPost**](AuthApi.md#loginforaccesstokenapiauthloginpost) | **POST** /api/auth/login | 用户登录
 [**loginForAccessTokenApiAuthLoginPost_0**](AuthApi.md#loginforaccesstokenapiauthloginpost_0) | **POST** /api/auth/login | 用户登录
 [**phoneCodeLoginApiAuthPhoneCodeLoginPost**](AuthApi.md#phonecodeloginapiauthphonecodeloginpost) | **POST** /api/auth/phone_code_login | 手机号+验证码 一键注册/登录
@@ -117,12 +117,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getOtherUserInfoApiAuthUsersUserIdGet**
-> GenericResponseUserResponse getOtherUserInfoApiAuthUsersUserIdGet(userId)
+# **getOtherUserInfoApiAuthUsersOtherUserIdGet**
+> GenericResponseUserResponse getOtherUserInfoApiAuthUsersOtherUserIdGet(userId)
 
-获取其他用户个人信息
+获取其他用户信息
 
-获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+获取其他用户的非敏感信息 :param user_id: 目标用户ID :param db: 数据库会话 :param current_user: 当前用户（可选） :return: 用户的非敏感信息
 
 ### Example
 ```dart
@@ -132,10 +132,10 @@ final api = LingdongServer().getAuthApi();
 final int userId = 0; // int | 
 
 try {
-    final response = api.getOtherUserInfoApiAuthUsersUserIdGet(userId);
+    final response = api.getOtherUserInfoApiAuthUsersOtherUserIdGet(userId);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling AuthApi->getOtherUserInfoApiAuthUsersUserIdGet: $e\n');
+    print('Exception when calling AuthApi->getOtherUserInfoApiAuthUsersOtherUserIdGet: $e\n');
 }
 ```
 
@@ -160,12 +160,12 @@ No authorization required
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
-# **getOtherUserInfoApiAuthUsersUserIdGet_0**
-> GenericResponseUserResponse getOtherUserInfoApiAuthUsersUserIdGet_0(userId)
+# **getOtherUserInfoApiAuthUsersOtherUserIdGet_0**
+> GenericResponseUserResponse getOtherUserInfoApiAuthUsersOtherUserIdGet_0(userId)
 
-获取其他用户个人信息
+获取其他用户信息
 
-获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
+获取其他用户的非敏感信息 :param user_id: 目标用户ID :param db: 数据库会话 :param current_user: 当前用户（可选） :return: 用户的非敏感信息
 
 ### Example
 ```dart
@@ -175,10 +175,10 @@ final api = LingdongServer().getAuthApi();
 final int userId = 0; // int | 
 
 try {
-    final response = api.getOtherUserInfoApiAuthUsersUserIdGet_0(userId);
+    final response = api.getOtherUserInfoApiAuthUsersOtherUserIdGet_0(userId);
     print(response);
 } catch on DioException (e) {
-    print('Exception when calling AuthApi->getOtherUserInfoApiAuthUsersUserIdGet_0: $e\n');
+    print('Exception when calling AuthApi->getOtherUserInfoApiAuthUsersOtherUserIdGet_0: $e\n');
 }
 ```
 
@@ -215,7 +215,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getAuthApi();
-final LoginRequest loginRequest = {"identifier":"string","password":"string"}; // LoginRequest | 
+final LoginRequest loginRequest = ; // LoginRequest | 
 
 try {
     final response = api.loginForAccessTokenApiAuthLoginPost(loginRequest);
@@ -258,7 +258,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getAuthApi();
-final LoginRequest loginRequest = {"identifier":"string","password":"string"}; // LoginRequest | 
+final LoginRequest loginRequest = ; // LoginRequest | 
 
 try {
     final response = api.loginForAccessTokenApiAuthLoginPost_0(loginRequest);
@@ -466,7 +466,7 @@ No authorization required
 
 获取当前用户信息
 
-获取当前用户信息 :param current_user: 当前用户 :return: 当前用户信息
+获取当前用户信息 :param current_user: 当前用户 :param db: 数据库会话 :return: 当前用户信息
 
 ### Example
 ```dart
@@ -505,7 +505,7 @@ No authorization required
 
 获取当前用户信息
 
-获取当前用户信息 :param current_user: 当前用户 :return: 当前用户信息
+获取当前用户信息 :param current_user: 当前用户 :param db: 数据库会话 :return: 当前用户信息
 
 ### Example
 ```dart

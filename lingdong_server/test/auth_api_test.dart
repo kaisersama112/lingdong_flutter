@@ -25,6 +25,24 @@ void main() {
       // TODO
     });
 
+    // 获取其他用户信息
+    //
+    // 获取其他用户的非敏感信息 :param user_id: 目标用户ID :param db: 数据库会话 :param current_user: 当前用户（可选） :return: 用户的非敏感信息
+    //
+    //Future<GenericResponseUserResponse> getOtherUserInfoApiAuthUsersOtherUserIdGet(int userId) async
+    test('test getOtherUserInfoApiAuthUsersOtherUserIdGet', () async {
+      // TODO
+    });
+
+    // 获取其他用户信息
+    //
+    // 获取其他用户的非敏感信息 :param user_id: 目标用户ID :param db: 数据库会话 :param current_user: 当前用户（可选） :return: 用户的非敏感信息
+    //
+    //Future<GenericResponseUserResponse> getOtherUserInfoApiAuthUsersOtherUserIdGet_0(int userId) async
+    test('test getOtherUserInfoApiAuthUsersOtherUserIdGet_0', () async {
+      // TODO
+    });
+
     // 获取其他用户个人信息
     //
     // 获取其他用户的个人信息（不包含敏感数据） :param user_id: 目标用户ID :param db: 数据库会话 :return: 用户的非敏感信息
@@ -99,7 +117,7 @@ void main() {
 
     // 获取当前用户信息
     //
-    // 获取当前用户信息 :param current_user: 当前用户 :return: 当前用户信息
+    // 获取当前用户信息 :param current_user: 当前用户 :param db: 数据库会话 :return: 当前用户信息
     //
     //Future<GenericResponseUserInfoResponse> readUsersMeApiAuthUsersMeGet() async
     test('test readUsersMeApiAuthUsersMeGet', () async {
@@ -108,7 +126,7 @@ void main() {
 
     // 获取当前用户信息
     //
-    // 获取当前用户信息 :param current_user: 当前用户 :return: 当前用户信息
+    // 获取当前用户信息 :param current_user: 当前用户 :param db: 数据库会话 :return: 当前用户信息
     //
     //Future<GenericResponseUserInfoResponse> readUsersMeApiAuthUsersMeGet_0() async
     test('test readUsersMeApiAuthUsersMeGet_0', () async {

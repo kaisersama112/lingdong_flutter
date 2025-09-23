@@ -20,6 +20,8 @@ part 'user_info_response.g.dart';
 /// * [level] - Level
 /// * [createdAt] 
 /// * [updatedAt] 
+/// * [followingCount] - Following Count
+/// * [followersCount] - Followers Count
 @BuiltValue()
 abstract class UserInfoResponse implements Built<UserInfoResponse, UserInfoResponseBuilder> {
   /// Id
@@ -53,13 +55,23 @@ abstract class UserInfoResponse implements Built<UserInfoResponse, UserInfoRespo
   @BuiltValueField(wireName: r'updated_at')
   String? get updatedAt;
 
+  /// Following Count
+  @BuiltValueField(wireName: r'following_count')
+  int? get followingCount;
+
+  /// Followers Count
+  @BuiltValueField(wireName: r'followers_count')
+  int? get followersCount;
+
   UserInfoResponse._();
 
   factory UserInfoResponse([void updates(UserInfoResponseBuilder b)]) = _$UserInfoResponse;
 
   @BuiltValueHook(initializeBuilder: true)
   static void _defaults(UserInfoResponseBuilder b) => b
-      ..level = 3;
+      ..level = 3
+      ..followingCount = 0
+      ..followersCount = 0;
 
   @BuiltValueSerializer(custom: true)
   static Serializer<UserInfoResponse> get serializer => _$UserInfoResponseSerializer();
@@ -132,6 +144,20 @@ class _$UserInfoResponseSerializer implements PrimitiveSerializer<UserInfoRespon
       yield serializers.serialize(
         object.updatedAt,
         specifiedType: const FullType.nullable(String),
+      );
+    }
+    if (object.followingCount != null) {
+      yield r'following_count';
+      yield serializers.serialize(
+        object.followingCount,
+        specifiedType: const FullType(int),
+      );
+    }
+    if (object.followersCount != null) {
+      yield r'followers_count';
+      yield serializers.serialize(
+        object.followersCount,
+        specifiedType: const FullType(int),
       );
     }
   }
@@ -224,6 +250,20 @@ class _$UserInfoResponseSerializer implements PrimitiveSerializer<UserInfoRespon
           ) as String?;
           if (valueDes == null) continue;
           result.updatedAt = valueDes;
+          break;
+        case r'following_count':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.followingCount = valueDes;
+          break;
+        case r'followers_count':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.followersCount = valueDes;
           break;
         default:
           unhandled.add(key);

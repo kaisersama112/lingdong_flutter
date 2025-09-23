@@ -17,6 +17,8 @@ Name | Type | Description | Notes
 **level** | **int** | Level | [optional] [default to 3]
 **createdAt** | **String** |  | [optional] 
 **updatedAt** | **String** |  | [optional] 
+**followingCount** | **int** | Following Count | [optional] [default to 0]
+**followersCount** | **int** | Followers Count | [optional] [default to 0]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

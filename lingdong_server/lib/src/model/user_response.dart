@@ -14,6 +14,9 @@ part 'user_response.g.dart';
 /// * [id] - Id
 /// * [username] - Username
 /// * [avatar] 
+/// * [followingCount] - Following Count
+/// * [followersCount] - Followers Count
+/// * [isFollowing] 
 @BuiltValue()
 abstract class UserResponse implements Built<UserResponse, UserResponseBuilder> {
   /// Id
@@ -27,12 +30,25 @@ abstract class UserResponse implements Built<UserResponse, UserResponseBuilder> 
   @BuiltValueField(wireName: r'avatar')
   String? get avatar;
 
+  /// Following Count
+  @BuiltValueField(wireName: r'following_count')
+  int? get followingCount;
+
+  /// Followers Count
+  @BuiltValueField(wireName: r'followers_count')
+  int? get followersCount;
+
+  @BuiltValueField(wireName: r'is_following')
+  bool? get isFollowing;
+
   UserResponse._();
 
   factory UserResponse([void updates(UserResponseBuilder b)]) = _$UserResponse;
 
   @BuiltValueHook(initializeBuilder: true)
-  static void _defaults(UserResponseBuilder b) => b;
+  static void _defaults(UserResponseBuilder b) => b
+      ..followingCount = 0
+      ..followersCount = 0;
 
   @BuiltValueSerializer(custom: true)
   static Serializer<UserResponse> get serializer => _$UserResponseSerializer();
@@ -65,6 +81,27 @@ class _$UserResponseSerializer implements PrimitiveSerializer<UserResponse> {
       yield serializers.serialize(
         object.avatar,
         specifiedType: const FullType.nullable(String),
+      );
+    }
+    if (object.followingCount != null) {
+      yield r'following_count';
+      yield serializers.serialize(
+        object.followingCount,
+        specifiedType: const FullType(int),
+      );
+    }
+    if (object.followersCount != null) {
+      yield r'followers_count';
+      yield serializers.serialize(
+        object.followersCount,
+        specifiedType: const FullType(int),
+      );
+    }
+    if (object.isFollowing != null) {
+      yield r'is_following';
+      yield serializers.serialize(
+        object.isFollowing,
+        specifiedType: const FullType.nullable(bool),
       );
     }
   }
@@ -111,6 +148,28 @@ class _$UserResponseSerializer implements PrimitiveSerializer<UserResponse> {
           ) as String?;
           if (valueDes == null) continue;
           result.avatar = valueDes;
+          break;
+        case r'following_count':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.followingCount = valueDes;
+          break;
+        case r'followers_count':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType(int),
+          ) as int;
+          result.followersCount = valueDes;
+          break;
+        case r'is_following':
+          final valueDes = serializers.deserialize(
+            value,
+            specifiedType: const FullType.nullable(bool),
+          ) as bool?;
+          if (valueDes == null) continue;
+          result.isFollowing = valueDes;
           break;
         default:
           unhandled.add(key);

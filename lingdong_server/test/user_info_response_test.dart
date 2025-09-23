@@ -56,5 +56,17 @@ void main() {
       // TODO
     });
 
+    // Following Count
+    // int followingCount (default value: 0)
+    test('to test the property `followingCount`', () async {
+      // TODO
+    });
+
+    // Followers Count
+    // int followersCount (default value: 0)
+    test('to test the property `followersCount`', () async {
+      // TODO
+    });
+
   });
 }

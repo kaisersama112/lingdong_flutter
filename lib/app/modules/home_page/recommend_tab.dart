@@ -5,6 +5,7 @@ import '../../routes/app_router.dart';
 import '../user_profile_page.dart';
 import '../../services/dynamic_service.dart';
 import '../../services/user_auth_service.dart';
+import '../../core/components/optimized_image.dart';
 
 class RecommendTab extends StatefulWidget {
   const RecommendTab({super.key});
@@ -31,6 +32,9 @@ class _RecommendTabState extends State<RecommendTab> {
   final Map<String, int> _likeCounts = {};
   final Map<String, int> _commentCounts = {};
   final Map<String, int> _favoriteCounts = {};
+
+  // 用户头像缓存
+  final Map<String, String?> _userAvatars = {};
 
   void _ensureRecStatsInitialized(String postId, DynamicPost post) {
     _liked.putIfAbsent(postId, () => post.likedByCurrentUser);
@@ -251,6 +255,23 @@ class _RecommendTabState extends State<RecommendTab> {
     _startHeroAutoPlay();
     _loadRecommendedPosts();
     _scrollController.addListener(_onScroll);
+  }
+
+  Future<String?> _getUserAvatar(String authorId) async {
+    if (_userAvatars.containsKey(authorId)) {
+      return _userAvatars[authorId];
+    }
+
+    try {
+      final userInfo = await DynamicService().getOtherUserInfo(authorId);
+      final avatar = userInfo?.avatar;
+      _userAvatars[authorId] = avatar;
+      return avatar;
+    } catch (e) {
+      debugPrint('获取用户头像失败: $e');
+      _userAvatars[authorId] = null;
+      return null;
+    }
   }
 
   @override
@@ -720,15 +741,48 @@ class _RecommendTabState extends State<RecommendTab> {
                                   displayName: post.author,
                                 ),
                               ),
-                              child: CircleAvatar(
-                                radius: 16,
-                                backgroundColor: const Color(
-                                  0xFF8B5CF6,
-                                ).withValues(alpha: 0.1),
-                                child: const Text(
-                                  '🐕',
-                                  style: TextStyle(fontSize: 16),
-                                ),
+                              child: FutureBuilder<String?>(
+                                future: _getUserAvatar(post.authorId),
+                                builder: (context, snapshot) {
+                                  final avatarUrl = snapshot.data;
+                                  if (avatarUrl != null &&
+                                      avatarUrl.isNotEmpty) {
+                                    return OptimizedAvatar(
+                                      imageUrl: avatarUrl,
+                                      size: 32,
+                                      backgroundColor: const Color(
+                                        0xFF8B5CF6,
+                                      ).withValues(alpha: 0.1),
+                                      fallback: Text(
+                                        post.author.isNotEmpty
+                                            ? post.author[0].toUpperCase()
+                                            : 'U',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF8B5CF6),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return CircleAvatar(
+                                      radius: 16,
+                                      backgroundColor: const Color(
+                                        0xFF8B5CF6,
+                                      ).withValues(alpha: 0.1),
+                                      child: Text(
+                                        post.author.isNotEmpty
+                                            ? post.author[0].toUpperCase()
+                                            : 'U',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF8B5CF6),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
                               ),
                             ),
                             const SizedBox(width: 8),

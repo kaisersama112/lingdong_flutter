@@ -19,7 +19,6 @@ Method | HTTP request | Description
 [**getPostCommentsCountApiDynamicsPostsPostIdCommentsCountGet**](DynamicsApi.md#getpostcommentscountapidynamicspostspostidcommentscountget) | **GET** /api/dynamics/posts/{post_id}/comments/count | 获取帖子总评论数
 [**getPostParentCommentsApiDynamicsPostsPostIdParentCommentsGet**](DynamicsApi.md#getpostparentcommentsapidynamicspostspostidparentcommentsget) | **GET** /api/dynamics/posts/{post_id}/parent_comments | 获取动态下的顶级评论
 [**getPublicDynamicsApiDynamicsGetPublicDynamicsGet**](DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicsget) | **GET** /api/dynamics/get_public_dynamics | 获取广场动态
-[**getPublicDynamicsApiDynamicsGetPublicDynamicsPost**](DynamicsApi.md#getpublicdynamicsapidynamicsgetpublicdynamicspost) | **POST** /api/dynamics/get_public_dynamics | 获取广场动态
 [**getRecommendedDynamicsApiDynamicsRecommendedPost**](DynamicsApi.md#getrecommendeddynamicsapidynamicsrecommendedpost) | **POST** /api/dynamics/recommended | 获取推荐动态
 [**getUserFavoriteDynamicsApiDynamicsGetUserFavoriteDynamicsPost**](DynamicsApi.md#getuserfavoritedynamicsapidynamicsgetuserfavoritedynamicspost) | **POST** /api/dynamics/get_user_favorite_dynamics | 获取用户收藏的动态
 [**getUserPostsApiDynamicsUsersUserIdPostsGet**](DynamicsApi.md#getuserpostsapidynamicsusersuseridpostsget) | **GET** /api/dynamics/users/{user_id}/posts | 获取指定用户的动态列表
@@ -131,7 +130,7 @@ No authorization required
 import 'package:lingdong_server/api.dart';
 
 final api = LingdongServer().getDynamicsApi();
-final ReplyCreate replyCreate = {"content":"string","medias":[{"related_type":1,"related_id":0,"media_type":0,"url":"string","thumbnail_url":"string","description":"string","sort_order":0,"user_id":0}],"parent_comment_id":0,"reply_to_reply_id":0}; // ReplyCreate | 
+final ReplyCreate replyCreate = ; // ReplyCreate | 
 
 try {
     final response = api.createReplyApiDynamicsCommentsRepliesPost(replyCreate);
@@ -473,51 +472,6 @@ No authorization required
 ### HTTP request headers
 
  - **Content-Type**: Not defined
- - **Accept**: application/json
-
-[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
-
-# **getPublicDynamicsApiDynamicsGetPublicDynamicsPost**
-> GenericResponsePostListResponse getPublicDynamicsApiDynamicsGetPublicDynamicsPost(tag, paginationParams)
-
-获取广场动态
-
-
-
-### Example
-```dart
-import 'package:lingdong_server/api.dart';
-
-final api = LingdongServer().getDynamicsApi();
-final String tag = tag_example; // String | 
-final PaginationParams paginationParams = ; // PaginationParams | 
-
-try {
-    final response = api.getPublicDynamicsApiDynamicsGetPublicDynamicsPost(tag, paginationParams);
-    print(response);
-} catch on DioException (e) {
-    print('Exception when calling DynamicsApi->getPublicDynamicsApiDynamicsGetPublicDynamicsPost: $e\n');
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **tag** | **String**|  | [optional] 
- **paginationParams** | [**PaginationParams**](PaginationParams.md)|  | [optional] 
-
-### Return type
-
-[**GenericResponsePostListResponse**](GenericResponsePostListResponse.md)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
  - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)

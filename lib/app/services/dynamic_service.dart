@@ -5,6 +5,7 @@ import 'package:lingdong_server/lingdong_server.dart' as server;
 import 'package:built_value/json_object.dart';
 
 import 'user_auth_service.dart';
+import '../core/api_config.dart';
 
 /// 动态相关后端接口封装（基于 lingdong_server DynamicsApi）
 class DynamicService {
@@ -17,16 +18,17 @@ class DynamicService {
   server.DynamicsApi? _api;
   server.UserApi? _userApi;
   server.MediaApi? _mediaApi;
+  server.UserRelationshipApi? _relationshipApi;
 
   void _initializeApiClient() {
     if (_dio != null && _api != null) return;
 
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'http://172.16.4.114:7009',
-        connectTimeout: const Duration(seconds: 10),
-        receiveTimeout: const Duration(seconds: 15),
-        sendTimeout: const Duration(seconds: 10),
+        baseUrl: ApiConfig.baseUrl,
+        connectTimeout: ApiConfig.connectTimeout,
+        receiveTimeout: ApiConfig.receiveTimeout,
+        sendTimeout: ApiConfig.sendTimeout,
       ),
     );
     _addInterceptors();
@@ -34,6 +36,10 @@ class DynamicService {
     _api = server.DynamicsApi(_dio!, server.standardSerializers);
     _userApi = server.UserApi(_dio!, server.standardSerializers);
     _mediaApi = server.MediaApi(_dio!, server.standardSerializers);
+    _relationshipApi = server.UserRelationshipApi(
+      _dio!,
+      server.standardSerializers,
+    );
   }
 
   void _addInterceptors() {
@@ -66,6 +72,236 @@ class DynamicService {
         },
       ),
     );
+  }
+
+  /// 获取当前用户关注列表（我关注）
+  Future<List<UserFollowItem>> getMyFollowing({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    _initializeApiClient();
+    if (!_hasToken) return const [];
+    _updateAuthToken();
+    try {
+      final resp = await _relationshipApi!
+          .getMyFollowingApiUserRelationshipMyFollowingGet(
+            skip: skip,
+            limit: limit,
+          );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) return const [];
+      final data = resp.data?.data;
+      return _parseFollowList(data);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.getMyFollowing 失败: $e');
+      }
+      return const [];
+    }
+  }
+
+  /// 获取当前用户粉丝列表（关注我的）
+  Future<List<UserFollowItem>> getMyFollowers({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    _initializeApiClient();
+    if (!_hasToken) return const [];
+    _updateAuthToken();
+    try {
+      final resp = await _relationshipApi!
+          .getMyFollowersApiUserRelationshipMyFollowersGet(
+            skip: skip,
+            limit: limit,
+          );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) return const [];
+      final data = resp.data?.data;
+      return _parseFollowList(data);
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.getMyFollowers 失败: $e');
+      }
+      return const [];
+    }
+  }
+
+  /// 获取互相关注列表（前端组合：取两端交集）
+  Future<List<UserFollowItem>> getMyMutualFollows({
+    int skip = 0,
+    int limit = 20,
+  }) async {
+    // 简化实现：先取我关注与关注我的各一页，前端交集
+    final following = await getMyFollowing(skip: skip, limit: limit);
+    final followers = await getMyFollowers(skip: skip, limit: limit);
+    final followerIds = followers.map((e) => e.userId).toSet();
+    return following.where((e) => followerIds.contains(e.userId)).toList();
+  }
+
+  List<UserFollowItem> _parseFollowList(dynamic data) {
+    try {
+      // data 直返数组或 { items: [] }
+      final List<dynamic> items;
+      if (data is List) {
+        items = data;
+      } else {
+        final maybe = _get(data, ['items'], []) ?? [];
+        items = maybe is List ? maybe : <dynamic>[];
+      }
+      return items.map((e) {
+        return UserFollowItem(
+          userId: '${_get(e, ['user_id'], _get(e, ['id'], ''))}',
+          username: _get(e, ['username'], ''),
+          avatar: _get(e, ['avatar'], null),
+          isFollowing: _safeBool(
+            _get(e, ['is_following'], _get(e, ['isFollowing'], false)),
+          ),
+        );
+      }).toList();
+    } catch (e) {
+      if (kDebugMode) debugPrint('解析关注列表失败: $e');
+      return const [];
+    }
+  }
+
+  /// 关注指定用户
+  Future<bool> followUser(String userId) async {
+    _initializeApiClient();
+    if (!_hasToken) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.followUser 失败: 未登录');
+      }
+      return false;
+    }
+    
+    if (_relationshipApi == null) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.followUser 失败: _relationshipApi 为 null');
+      }
+      return false;
+    }
+    
+    _updateAuthToken();
+    
+    try {
+      // 验证用户ID
+      if (userId.isEmpty) {
+        if (kDebugMode) {
+          debugPrint('DynamicService.followUser 失败: 用户ID不能为空');
+        }
+        return false;
+      }
+      
+      // 提取数字ID
+      final numericUserId = userId.replaceAll(RegExp(r'[^0-9]'), '');
+      if (numericUserId.isEmpty) {
+        if (kDebugMode) {
+          debugPrint('DynamicService.followUser 失败: 无效的用户ID格式: $userId');
+        }
+        return false;
+      }
+      
+      final int uid = int.tryParse(numericUserId) ?? 0;
+      if (uid <= 0) {
+        if (kDebugMode) {
+          debugPrint('DynamicService.followUser 失败: 用户ID必须大于0: $uid');
+        }
+        return false;
+      }
+      
+      // 打印请求详情
+      if (kDebugMode) {
+        debugPrint('准备关注用户，ID: $uid');
+        debugPrint('请求URL: ${ApiConfig.baseUrl}/api/user_relationship/follow');
+        debugPrint('请求头: ${_dio?.options.headers}');
+      }
+      
+      // 创建请求体
+      final req = server.FollowRequest((b) => b..followingId = uid);
+      
+      // 打印请求体
+      if (kDebugMode) {
+        debugPrint('请求体: ${{
+          'following_id': uid,
+        }}');
+      }
+      
+      // 发送请求
+      final response = await _relationshipApi!.followApiUserRelationshipFollowPost(
+        followRequest: req,
+      );
+      
+      // 打印响应详情
+      if (kDebugMode) {
+        debugPrint('响应状态码: ${response.statusCode}');
+        debugPrint('响应头: ${response.headers}');
+        debugPrint('响应数据: ${response.data}');
+      }
+      
+      final code = response.data?.code ?? response.statusCode ?? 500;
+      
+      if (code != 200) {
+        if (kDebugMode) {
+          debugPrint('关注用户失败，状态码: $code');
+          debugPrint('响应数据: ${response.data}');
+        }
+        return false;
+      }
+      
+      return true;
+      
+    } on DioException catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.followUser Dio异常: ${e.type}');
+        debugPrint('错误信息: ${e.message}');
+        debugPrint('请求URL: ${e.requestOptions.uri}');
+        debugPrint('请求方法: ${e.requestOptions.method}');
+        debugPrint('请求头: ${e.requestOptions.headers}');
+        debugPrint('请求数据: ${e.requestOptions.data}');
+        
+        if (e.response != null) {
+          debugPrint('响应状态码: ${e.response?.statusCode}');
+          debugPrint('响应头: ${e.response?.headers}');
+          debugPrint('响应数据: ${e.response?.data}');
+        }
+      }
+      return false;
+      
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.followUser 未知异常: $e');
+        debugPrint('堆栈跟踪: $stackTrace');
+      }
+      return false;
+    }
+  }
+
+  /// 取消关注指定用户
+  Future<bool> unfollowUser(String userId) async {
+    _initializeApiClient();
+    if (!_hasToken) return false;
+    if (_relationshipApi == null) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.unfollowUser 失败: _relationshipApi 为 null');
+      }
+      return false;
+    }
+    _updateAuthToken();
+    try {
+      final int uid =
+          int.tryParse(userId.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+      if (uid == 0) return false;
+      final req = server.UnfollowRequest((b) => b..followingId = uid);
+      final resp = await _relationshipApi!
+          .unfollowApiUserRelationshipUnfollowPost(unfollowRequest: req);
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      return code == 200;
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.unfollowUser 失败: $e');
+      }
+      return false;
+    }
   }
 
   /// 创建广场动态
@@ -265,7 +501,7 @@ class DynamicService {
       final int uid =
           int.tryParse(userId.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
       if (uid == 0) return null;
-      final resp = await _userApi!.getOtherUserInfoApiAuthUsersUserIdGet(
+      final resp = await _userApi!.getOtherUserInfoApiAuthUsersOtherUserIdGet(
         userId: uid,
       );
       final code = resp.data?.code ?? resp.statusCode ?? 500;
@@ -276,6 +512,63 @@ class DynamicService {
         debugPrint('DynamicService.getOtherUserInfo 失败: $e');
       }
       return null;
+    }
+  }
+
+  /// 获取当前用户的关注统计（following_count / followers_count）
+  Future<UserFollowStats> getCurrentUserFollowStats() async {
+    _initializeApiClient();
+    if (!_hasToken) return const UserFollowStats();
+    _updateAuthToken();
+    try {
+      final resp = await _userApi!.readUsersMeApiAuthUsersMeGet();
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) return const UserFollowStats();
+      final data = resp.data?.data; // server.UserInfoResponse
+      final following = data?.followingCount ?? 0;
+      final followers = data?.followersCount ?? 0;
+      // 当前用户的 isFollowing 对自身没有意义，保持 null
+      return UserFollowStats(
+        followingCount: following,
+        followersCount: followers,
+        isFollowing: null,
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.getCurrentUserFollowStats 失败: $e');
+      }
+      return const UserFollowStats();
+    }
+  }
+
+  /// 获取指定用户的关注统计（following_count / followers_count / is_following）
+  Future<UserFollowStats> getOtherUserFollowStats(String userId) async {
+    _initializeApiClient();
+    if (!_hasToken) return const UserFollowStats();
+    _updateAuthToken();
+    try {
+      final int uid =
+          int.tryParse(userId.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+      if (uid == 0) return const UserFollowStats();
+      final resp = await _userApi!.getOtherUserInfoApiAuthUsersOtherUserIdGet(
+        userId: uid,
+      );
+      final code = resp.data?.code ?? resp.statusCode ?? 500;
+      if (code != 200) return const UserFollowStats();
+      final data = resp.data?.data; // server.UserResponse
+      final following = data?.followingCount ?? 0;
+      final followers = data?.followersCount ?? 0;
+      final isFollowing = data?.isFollowing;
+      return UserFollowStats(
+        followingCount: following,
+        followersCount: followers,
+        isFollowing: isFollowing,
+      );
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('DynamicService.getOtherUserFollowStats 失败: $e');
+      }
+      return const UserFollowStats();
     }
   }
 
@@ -1138,6 +1431,32 @@ class DynamicService {
       debugPrint('==================');
     }
   }
+}
+
+class UserFollowStats {
+  final int followingCount;
+  final int followersCount;
+  final bool? isFollowing;
+
+  const UserFollowStats({
+    this.followingCount = 0,
+    this.followersCount = 0,
+    this.isFollowing,
+  });
+}
+
+class UserFollowItem {
+  final String userId;
+  final String username;
+  final String? avatar;
+  final bool isFollowing; // 我是否已关注TA
+
+  const UserFollowItem({
+    required this.userId,
+    required this.username,
+    this.avatar,
+    this.isFollowing = false,
+  });
 }
 
 class DynamicPostStats {
