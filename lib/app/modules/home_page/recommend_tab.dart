@@ -291,7 +291,9 @@ class _RecommendTabState extends State<RecommendTab> {
 
   Future<void> _loadRecommendedPosts() async {
     if (_loadingRecommended) return;
-    setState(() => _loadingRecommended = true);
+    if (mounted) {
+      setState(() => _loadingRecommended = true);
+    }
     try {
       // 测试API连接
       await DynamicService().testApiConnection();
@@ -299,34 +301,44 @@ class _RecommendTabState extends State<RecommendTab> {
         page: 0,
         limit: 10,
       );
-      setState(() {
-        _recommendedPosts = posts;
-        _currentPage = 0;
-      });
+      if (mounted) {
+        setState(() {
+          _recommendedPosts = posts;
+          _currentPage = 0;
+        });
+      }
       debugPrint('成功加载 ${posts.length} 条推荐动态');
     } catch (e) {
       debugPrint('加载推荐动态失败: $e');
     } finally {
-      setState(() => _loadingRecommended = false);
+      if (mounted) {
+        setState(() => _loadingRecommended = false);
+      }
     }
   }
 
   Future<void> _loadMoreRecommendedPosts() async {
     if (_loadingRecommended) return;
-    setState(() => _loadingRecommended = true);
+    if (mounted) {
+      setState(() => _loadingRecommended = true);
+    }
     try {
       final posts = await DynamicService().getRecommendedDynamics(
         page: _currentPage + 1,
         limit: 10,
       );
-      setState(() {
-        _recommendedPosts.addAll(posts);
-        _currentPage++;
-      });
+      if (mounted) {
+        setState(() {
+          _recommendedPosts.addAll(posts);
+          _currentPage++;
+        });
+      }
     } catch (e) {
       debugPrint('加载更多推荐动态失败: $e');
     } finally {
-      setState(() => _loadingRecommended = false);
+      if (mounted) {
+        setState(() => _loadingRecommended = false);
+      }
     }
   }
 

@@ -311,6 +311,7 @@ class DynamicService {
     int? communityId,
     List<server.MediaCreate>? medias,
     String? location,
+    int? visibility, // 可见性: 0=公开, 1=私有, 2=仅好友
   }) async {
     _initializeApiClient();
     if (!_hasToken) {
@@ -318,28 +319,52 @@ class DynamicService {
     }
     _updateAuthToken();
     try {
+      // 从枚举名称中提取数字
+      final relatedTypeValue = int.parse(
+        (relatedType ?? server.RelatedTypeEnum.number2).name.replaceAll(
+          RegExp(r'[^0-9]'),
+          '',
+        ),
+      );
+
       final body = server.PostCreate(
         (b) => b
           ..content = content
-          ..relatedType = int.parse(
-            (relatedType ?? server.RelatedTypeEnum.number2).name.replaceAll(
-              RegExp(r'[^0-9]'),
-              '',
-            ),
-          )
+          ..relatedType = relatedTypeValue
           ..communityId = communityId
           ..location = location
+          ..visibility = visibility
           ..medias = medias != null
               ? collection.ListBuilder<server.MediaCreate>(medias)
               : null,
       );
 
+      // 调试信息
+      if (kDebugMode) {
+        debugPrint('准备发布动态:');
+        debugPrint('  content: $content');
+        debugPrint('  relatedType: ${(relatedType ?? server.RelatedTypeEnum.number2).name} -> $relatedTypeValue');
+        debugPrint('  communityId: $communityId');
+        debugPrint('  location: $location');
+        debugPrint('  visibility: $visibility');
+        debugPrint('  medias count: ${medias?.length ?? 0}');
+        debugPrint('  请求URL: ${ApiConfig.baseUrl}/api/dynamics/create_dynamic');
+        debugPrint('  请求头: ${_dio?.options.headers}');
+      }
+
       final resp = await _api!.createDynamicApiDynamicsCreateDynamicPost(
         postCreate: body,
       );
+
+      // 调试响应信息
+      if (kDebugMode) {
+        debugPrint('响应状态码: ${resp.statusCode}');
+        debugPrint('响应数据: ${resp.data}');
+      }
+
       final code = resp.data?.code ?? resp.statusCode ?? 500;
       if (code != 200) {
-        throw Exception(resp.data?.msg ?? '发布动态失败($code)');
+        throw Exception('发布动态失败: ${resp.data?.msg ?? '未知错误($code)'}');
       }
       final id = resp.data?.data?.id;
       if (id == null) throw Exception('发布成功但未返回ID');

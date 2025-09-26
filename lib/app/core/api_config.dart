@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 /// API配置管理类
 class ApiConfig {
   static const String _baseUrl = 'http://172.16.4.114:7009';
-  static const Duration _connectTimeout = Duration(seconds: 10);
-  static const Duration _receiveTimeout = Duration(seconds: 15);
-  static const Duration _sendTimeout = Duration(seconds: 10);
+  static const Duration _connectTimeout = Duration(seconds: 15);
+  static const Duration _receiveTimeout = Duration(seconds: 30);
+  static const Duration _sendTimeout = Duration(seconds: 15);
 
   /// 获取API基础URL
   static String get baseUrl => _baseUrl;
